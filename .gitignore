@@ -1,0 +1,12 @@
+node_modules
+.eslintcache
+.DS_Store
+build
+package-lock.json
+*.log
+**.log
+localCode
+playground
+logs
+.vscode
+deps.json
