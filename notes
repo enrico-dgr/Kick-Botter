@@ -1,9 +1,0 @@
-// pi
-browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
-    headless: true,
-    args: ['--disable-features=VizDisplayCompositor'],
-});
-//
-pm2 to keep applications running
-//

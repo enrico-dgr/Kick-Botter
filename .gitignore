@@ -1,12 +1,11 @@
-node_modules
-.eslintcache
 .DS_Store
-build
+node_modules
 package-lock.json
+.eslintcache
+build
 *.log
 **.log
-localCode
-playground
-logs
 .vscode
+logs
 deps.json
+notes
