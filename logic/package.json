@@ -7,6 +7,7 @@
     "build": "tsc -p ./tsconfig.build.json",
     "test": "jest",
     "ts:start": "ts-node src/index.ts",
+    "ts:listPrograms": "ts-node src/Scripts/listPrograms.ts",
     "ts:eg": "ts-node playground/index.ts",
     "dev:build": "tsc -b"
   },
