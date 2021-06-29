@@ -2,10 +2,10 @@ import { pipe } from 'fp-ts/function';
 import { Reader } from 'fp-ts/Reader';
 import path from 'path';
 
-import { click, expectedLength, type } from '../../src/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from '../../src/SettingsByLanguage';
-import * as WD from '../../src/WebDeps';
-import * as WP from '../../src/WebProgram';
+import { click, expectedLength, type } from 'launch-page/lib/ElementHandle';
+import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import * as WD from 'launch-page/lib/WebDeps';
+import * as WP from 'launch-page/lib/WebProgram';
 import {
     Settings as SettingsTelegram, settingsByLanguage as settingsByLanguageTelegram
 } from './SettingsByLanguage';

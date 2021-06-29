@@ -1,4 +1,4 @@
-import { ElementProps, HTMLElementProperties } from '../../../src/ElementHandle';
+import { ElementProps, HTMLElementProperties } from 'launch-page/lib/ElementHandle';
 
 export interface Settings {
   urls: {

@@ -5,10 +5,10 @@ import * as fs from 'fs';
 import path from 'path';
 import { devices } from 'puppeteer';
 
-import { click, uploadFile } from '../../src/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from '../../src/SettingsByLanguage';
-import { browser, emulate, keyboard, reload, waitFor$x } from '../../src/WebDeps';
-import * as WP from '../../src/WebProgram';
+import { click, uploadFile } from 'launch-page/lib/ElementHandle';
+import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import { browser, emulate, keyboard, reload, waitFor$x } from 'launch-page/lib/WebDeps';
+import * as WP from 'launch-page/lib/WebProgram';
 import {
     Settings as SettingsOfInstagram, settingsByLanguage as settingsByLanguageOfInstagram
 } from './SettingsByLanguage';

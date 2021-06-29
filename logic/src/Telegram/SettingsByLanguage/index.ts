@@ -1,4 +1,4 @@
-import { SettingsByLanguage } from '../../../src/SettingsByLanguage';
+import { SettingsByLanguage } from 'launch-page/lib/SettingsByLanguage';
 import { Settings } from './settings';
 
 export { Settings } from "./settings";

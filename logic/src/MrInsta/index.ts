@@ -1,9 +1,9 @@
 import { flow, pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 
-import * as EH from '../../src/ElementHandle';
-import * as WD from '../../src/WebDeps';
-import * as WP from '../../src/WebProgram';
+import * as EH from 'launch-page/lib/ElementHandle';
+import * as WD from 'launch-page/lib/WebDeps';
+import * as WP from 'launch-page/lib/WebProgram';
 import * as Instagram from '../Instagram';
 import { init } from './Init';
 import { plan } from './Plan';

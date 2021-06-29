@@ -1,6 +1,6 @@
 import { flow, pipe } from 'fp-ts/lib/function';
 
-import * as WP from '../../../src/WebProgram';
+import * as WP from 'launch-page/lib/WebProgram';
 
 const dummyRepeat: <A>(
   millis: number,

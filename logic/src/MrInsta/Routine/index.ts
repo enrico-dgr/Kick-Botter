@@ -1,6 +1,6 @@
 import { pipe } from 'fp-ts/lib/function';
 import * as S from 'fp-ts/lib/Semigroup';
-import * as WP from 'src/WebProgram';
+import * as WP from 'launch-page/lib/WebProgram';
 
 import { chainNOrElse } from '../index';
 

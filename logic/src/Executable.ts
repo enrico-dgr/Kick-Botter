@@ -1,17 +1,16 @@
 import * as A from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/lib/function';
+import { flow, pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
+import * as ErrorInfos from 'launch-page/lib/ErrorInfos';
+import * as J from 'launch-page/lib/Json';
+import * as JF from 'launch-page/lib/jsonFiles';
+import { LaunchOptions, launchPage } from 'launch-page/lib/Puppeteer';
+import { log, startFrom } from 'launch-page/lib/utils';
+import * as WP from 'launch-page/lib/WebProgram';
 import path from 'path';
-
-import { createErrorFromErrorInfos } from '../src/ErrorInfos';
-import * as J from '../src/Json';
-import * as JF from '../src/jsonFiles';
-import { LaunchOptions, launchPage } from '../src/Puppeteer';
-import { log, startFrom } from '../src/utils';
-import * as WP from '../src/WebProgram';
 
 const PATH = path.resolve(__filename);
 const INJS = path.resolve(__dirname, "./deps.json");
@@ -24,6 +23,8 @@ const INJS = path.resolve(__dirname, "./deps.json");
 export enum EnumNamesOfPrograms {
   "Socialgift",
   "OpenBrowser",
+  "FreeFollowerPlanMrInsta",
+  "FreeFollowerPlanTurboMedia",
 }
 export type NamesOfPrograms = keyof typeof EnumNamesOfPrograms;
 /**
@@ -63,7 +64,7 @@ export type Executable<R extends J.Json, A> = {
  * @description execute an `Executable` and log the result to console
  * with
  * ```ts
- * import { log } from '../src/utils';
+ * import { log } from 'launch-page/lib/utils';
  * ```
  * @param executable
  * @returns void
@@ -137,7 +138,7 @@ const getJson = <R extends J.Json>() =>
       Array.isArray(d)
         ? E.right(d)
         : E.left(
-            createErrorFromErrorInfos({
+            ErrorInfos.createErrorFromErrorInfos({
               message: "DB is an object, should be an array.",
               nameOfFunction: getJson.name,
               filePath: PATH,
@@ -146,9 +147,32 @@ const getJson = <R extends J.Json>() =>
     )
   );
 /**
- *
+ * @todo remove `parseToFormattedJson`, `postToJsonFile`
+ * at launch-page@1.0.7 with library functions
  */
-const setJson = <R extends J.Json>() => JF.postToJsonFile<Deps<R>[]>(INJS);
+const parseToFormattedJson = <A>(a: A) =>
+  pipe(
+    J.stringify<A>(a),
+    E.map((stringified) => JSON.stringify(JSON.parse(stringified), null, 2))
+  );
+//
+const postToJsonFile = <A extends J.Json>(pathToJsonFile: string) => (a: A) =>
+  pipe(
+    parseToFormattedJson(a),
+    E.map((strinfied) => fs.writeFileSync(pathToJsonFile, strinfied)),
+    E.orElse<Error, void, Error>(
+      flow(
+        ErrorInfos.stackErrorInfos({
+          message: "Some error while getting writing to a json-file.",
+          nameOfFunction: postToJsonFile.name,
+          filePath: PATH,
+        }),
+        E.left
+      )
+    )
+  );
+//
+const setJson = <R extends J.Json>() => postToJsonFile<Deps<R>[]>(INJS);
 /**
  *
  */

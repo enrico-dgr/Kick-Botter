@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "noEmit": false,
+    "noEmit": true,
     "target": "es5",
     "outDir": "./build",
     "module": "commonjs",
@@ -19,6 +19,6 @@
     "declaration": true,
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["./src"],
+  "include": ["./src", "./playground"],
   "exclude": ["node_modules", "**/node_modules/*", "build"]
 }

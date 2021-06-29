@@ -1,9 +1,9 @@
 import { pipe } from 'fp-ts/lib/function';
 
-import { expectedLength } from '../../../src/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from '../../../src/SettingsByLanguage';
-import * as WD from '../../../src/WebDeps';
-import * as WT from '../../../src/WebProgram';
+import { expectedLength } from 'launch-page/lib/ElementHandle';
+import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import * as WD from 'launch-page/lib/WebDeps';
+import * as WT from 'launch-page/lib/WebProgram';
 import { goto, StateOfInstagramPage } from '../goto';
 import {
     Settings as SettingsInstagram, settingsByLanguage as settingsOfInstagramByLanguage

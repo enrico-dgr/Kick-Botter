@@ -4,7 +4,11 @@
   "description": "bot's logic, programs",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "build": "tsc -p ./tsconfig.build.json",
+    "test": "jest",
+    "ts:start": "ts-node src/index.ts",
+    "ts:eg": "ts-node playground/index.ts",
+    "dev:build": "tsc -b"
   },
   "author": "enrico-dgr",
   "license": "ISC",

@@ -1,4 +1,4 @@
-import { HTMLElementProperties } from 'src/ElementHandle';
+import { HTMLElementProperties } from 'launch-page/lib/ElementHandle';
 
 import { TypeOfActions } from './index';
 

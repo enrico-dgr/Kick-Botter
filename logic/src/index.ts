@@ -1,5 +1,7 @@
 import { Executable, execute, NamesOfPrograms } from './Executable';
-import { openBrowserExec, socialgiftExec } from './executables';
+import {
+    freeFollowerPlanMIExec, freeFollowerPlanTMExec, openBrowserExec, socialgiftExec
+} from './executables';
 import { variables } from './variables';
 
 // ----------------------------------
@@ -10,6 +12,8 @@ export const programs: {
 } = {
   Socialgift: socialgiftExec,
   OpenBrowser: openBrowserExec,
+  FreeFollowerPlanMrInsta: freeFollowerPlanMIExec,
+  FreeFollowerPlanTurboMedia: freeFollowerPlanTMExec,
 };
 // ----------------------------------
 // Node Variables

@@ -2,12 +2,13 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
+import { createErrorFromErrorInfos } from 'launch-page/lib/ErrorInfos';
+import { jsonFiles, readline, WebDeps, WebProgram as WP } from 'launch-page/lib/index';
+import * as J from 'launch-page/lib/Json';
 import path from 'path';
 
-import { createErrorFromErrorInfos } from '../src/ErrorInfos';
-import { jsonFiles, readline, WebDeps, WebProgram as WP } from '../src/index';
-import * as J from '../src/Json';
 import { Deps, jsonExecutable, launchOptions, NamesOfPrograms } from './Executable';
+import { freeFollowerPlan as freeFollowerPlan_ } from './MrInsta/index';
 import { actuator, Options, Output } from './Socialgift/index';
 
 const PATH = path.resolve(__dirname, "./executables.ts");
@@ -64,10 +65,7 @@ const pathOfLogs = (
   user: string | null,
   program: NamesOfPrograms,
   fileName: string
-) =>
-  `src/../examples/logs/${
-    user !== null ? user : "generic"
-  }/${program}/${fileName}`;
+) => `src/logs/${user !== null ? user : "generic"}/${program}/${fileName}`;
 /**
  *
  */
@@ -152,3 +150,43 @@ const defaultDepsOB: Deps<null> = {
 
 export const openBrowserExec = (user: string | null) =>
   jsonExecutable<null, void>("OpenBrowser", user, openBrowser)(defaultDepsOB);
+
+// ----------------------------------
+// Mr Insta
+// ----------------------------------
+const freeFollowerPlanMI = (): WP.WebProgram<void> =>
+  freeFollowerPlan_("MrInsta");
+const freeFollowerPlanTM = (): WP.WebProgram<void> =>
+  freeFollowerPlan_("TurboMedia");
+
+const defaultDepsFFPMI: Deps<null> = {
+  nameOfProgram: "FreeFollowerPlanMrInsta",
+  user: null,
+  programOptions: null,
+  launchOptions: {
+    ...launchOptions.default,
+    headless: true,
+  },
+};
+const defaultDepsFFPTM: Deps<null> = {
+  nameOfProgram: "FreeFollowerPlanTurboMedia",
+  user: null,
+  programOptions: null,
+  launchOptions: {
+    ...launchOptions.default,
+    headless: true,
+  },
+};
+
+export const freeFollowerPlanMIExec = (user: string | null) =>
+  jsonExecutable<null, void>(
+    "FreeFollowerPlanMrInsta",
+    user,
+    freeFollowerPlanMI
+  )(defaultDepsFFPMI);
+export const freeFollowerPlanTMExec = (user: string | null) =>
+  jsonExecutable<null, void>(
+    "FreeFollowerPlanTurboMedia",
+    user,
+    freeFollowerPlanTM
+  )(defaultDepsFFPTM);

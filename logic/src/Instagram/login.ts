@@ -1,11 +1,11 @@
 import { pipe } from 'fp-ts/function';
 import path from 'path';
 
-import { click } from '../../src/ElementHandle';
-import { askData as askDataFromConsole } from '../../src/readline';
-import { getPropertiesFromSettingsAndLanguage, Languages } from '../../src/SettingsByLanguage';
-import { keyboard, setUserAgent, waitFor$x } from '../../src/WebDeps';
-import * as WP from '../../src/WebProgram';
+import { click } from 'launch-page/lib/ElementHandle';
+import { askData as askDataFromConsole } from 'launch-page/lib/readline';
+import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import { keyboard, setUserAgent, waitFor$x } from 'launch-page/lib/WebDeps';
+import * as WP from 'launch-page/lib/WebProgram';
 import { goto } from './goto';
 import {
     Settings as SettingsOfInstagram, settingsByLanguage as settingsByLanguageOfInstagram

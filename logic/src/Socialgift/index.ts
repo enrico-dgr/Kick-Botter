@@ -3,13 +3,15 @@ import { Reader } from 'fp-ts/lib/Reader';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as O from 'fp-ts/Option';
 import * as S from 'fp-ts/Semigroup';
+import * as EH from 'launch-page/lib/ElementHandle';
+import {
+    getPropertiesFromSettingsAndLanguage, Languages
+} from 'launch-page/lib/SettingsByLanguage';
+import * as WD from 'launch-page/lib/WebDeps';
+import * as WP from 'launch-page/lib/WebProgram';
 import path from 'path';
 import { ElementHandle } from 'puppeteer';
 
-import * as EH from '../../src/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from '../../src/SettingsByLanguage';
-import * as WD from '../../src/WebDeps';
-import * as WP from '../../src/WebProgram';
 import { FollowUser, LikeToPost, WatchStoryAtUrl } from '../Instagram/index';
 import {
     sendMessage, Settings as SettingsOfTelegram, settingsByLanguage as settingsOfTelegramByLanguage
@@ -177,6 +179,7 @@ const bodyOfActuator: BodyOfActuator = (D) => {
           Object.entries(
             D.settings.message.expectedContainedTextOfMessagesWithAction
           ).map(
+            // <[TypeOfActions,EH.HTMLElementProperties<HTMLElement, string>]>
             // Object.entries doesn't let you specify keys,
             // ending up with string keys.
             (actionAndProps) =>
@@ -269,8 +272,11 @@ const bodyOfActuator: BodyOfActuator = (D) => {
                   WP.chain((text) =>
                     WP.left(
                       new Error(
-                        `Found ${els.length} HTMLAnchorElement(s) containing 'http'.\n` +
-                          `Text of message is: ${text}`
+                        `Found ${els.length} HTMLAnchorElement(s) containing 'http'.` +
+                          O.match<string, string>(
+                            () => `No text found in message`,
+                            (t) => `Text of message is: ${t}`
+                          )(text)
                       )
                     )
                   )

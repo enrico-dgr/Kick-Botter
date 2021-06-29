@@ -1,10 +1,10 @@
 import { pipe } from 'fp-ts/lib/function';
 import { ElementHandle } from 'puppeteer';
 
-import { checkHTMLProperties, click, HTMLElementProperties } from '../../../src/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from '../../../src/SettingsByLanguage';
-import * as WebDeps from '../../../src/WebDeps';
-import * as WP from '../../../src/WebProgram';
+import { checkHTMLProperties, click, HTMLElementProperties } from 'launch-page/lib/ElementHandle';
+import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import * as WebDeps from 'launch-page/lib/WebDeps';
+import * as WP from 'launch-page/lib/WebProgram';
 import { Settings as SettingsOfInstagram, settingsByLanguage } from '../SettingsByLanguage';
 
 export interface Options {

@@ -1,12 +1,14 @@
 import * as A from 'fp-ts/Array';
 import { pipe } from 'fp-ts/lib/function';
+import * as EH from 'launch-page/lib//ElementHandle';
+import {
+    getPropertiesFromSettingsAndLanguage, Languages
+} from 'launch-page/lib//SettingsByLanguage';
+import * as WebDeps from 'launch-page/lib/WebDeps';
+import * as WP from 'launch-page/lib/WebProgram';
 import path from 'path';
 import { ElementHandle } from 'puppeteer';
 
-import * as EH from '../../../src/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from '../../../src/SettingsByLanguage';
-import * as WebDeps from '../../../src/WebDeps';
-import * as WP from '../../../src/WebProgram';
 import { goto } from '../goto';
 import {
     Settings as SettingsOfInstagram, settingsByLanguage as settingsByLanguageOfInstagram

@@ -1,6 +1,6 @@
 import { pipe } from 'fp-ts/lib/function';
 
-import * as WP from '../../../src/WebProgram';
+import * as WP from 'launch-page/lib/WebProgram';
 
 export interface InitDeps {
   readonly goToGrowthPlansPage: WP.WebProgram<void>;

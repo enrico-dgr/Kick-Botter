@@ -2,9 +2,9 @@ import * as A from 'fp-ts/Array';
 import { pipe } from 'fp-ts/function';
 import * as S from 'fp-ts/Semigroup';
 
-import { getPropertiesFromSettingsAndLanguage, Languages } from '../../src/SettingsByLanguage';
-import * as WD from '../../src/WebDeps';
-import * as WP from '../../src/WebProgram';
+import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import * as WD from 'launch-page/lib/WebDeps';
+import * as WP from 'launch-page/lib/WebProgram';
 import { Settings, settingsByLanguage } from './SettingsByLanguage';
 
 /**
