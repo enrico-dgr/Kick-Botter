@@ -1,9 +1,11 @@
 import { pipe } from 'fp-ts/lib/function';
-
 import { click, expectedLength } from 'launch-page/lib/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import {
+    getPropertiesFromSettingsAndLanguage, Languages
+} from 'launch-page/lib/SettingsByLanguage';
 import * as WD from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
+
 import { goto, StateOfInstagramPage } from '../goto';
 import { Settings as SettingsOfInstagram, settingsByLanguage } from '../SettingsByLanguage';
 import { Options, Output as OutputOfScrollStories, scrollStories, tag } from './scrollStories';
@@ -31,7 +33,7 @@ interface PageState extends tag {
 /**
  * @category Output
  */
-type Output = PageState | OutputOfScrollStories;
+export type Output = PageState | OutputOfScrollStories;
 /**
  * @category Body
  */
