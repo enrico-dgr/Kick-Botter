@@ -22,12 +22,19 @@ import {
 } from './settingsByBotChoice';
 
 const ABSOLUTE_PATH = path.resolve(__dirname, "./index.ts");
-
 /**
  *
  */
-export type Options<StringLiteralOfActions extends string> = {
-  skip: { [key in StringLiteralOfActions]: boolean };
+type StringLiteralOfActions<CustomStringLiteralOfActions extends string> =
+  | CustomStringLiteralOfActions
+  | "None";
+/**
+ *
+ */
+export type Options<CustomStringLiteralOfActions extends string> = {
+  skip: {
+    [key in StringLiteralOfActions<CustomStringLiteralOfActions>]: boolean;
+  };
   /**
    * Default to `3 * 60 * 1000 ms` (3 mins)
    */
@@ -37,12 +44,17 @@ export type Options<StringLiteralOfActions extends string> = {
 /**
  *
  */
-// type StringLiteralOfPostAction = "Confirm" | "Skip" | "NewAction" | "End";
+type StringLiteralOfPostAction<
+  CustomStringLiteralOfPostAction extends string
+> = CustomStringLiteralOfPostAction | "Default";
 /**
  *
  */
-type OutcomeOfAction<StringLiteralOfPostAction extends string,InfosFromAction> = {
-  kindOfPostAction: StringLiteralOfPostAction;
+type OutcomeOfAction<
+  CustomStringLiteralOfPostAction extends string,
+  InfosFromAction
+> = {
+  kindOfPostAction: StringLiteralOfPostAction<CustomStringLiteralOfPostAction>;
   infosFromAction: InfosFromAction;
 };
 /**
@@ -50,32 +62,32 @@ type OutcomeOfAction<StringLiteralOfPostAction extends string,InfosFromAction> =
  */
 type Report<
   StringLiteralOfActions extends string,
-  StringLiteralOfPostAction extends string,
+  CustomStringLiteralOfPostAction extends string,
   InfosForAction,
   InfosFromAction
 > = {
   action: StringLiteralOfActions;
-  kindOfPostAction: StringLiteralOfPostAction;
-  infosForAction: InfosForAction;
-  infosFromAction?: InfosFromAction;
+  kindOfPostAction: StringLiteralOfPostAction<CustomStringLiteralOfPostAction>;
+  infosForAction: InfosForAction | "None";
+  infosFromAction: InfosFromAction | "None";
 };
 /**
  *
  */
 interface Settings<
-  StringLiteralOfActions extends string,
-  StringLiteralOfPostAction extends string,
+  CustomStringLiteralOfActions extends string,
+  CustomStringLiteralOfPostAction extends string,
   InfosForAction,
   InfosFromAction,
   StateOfCycle extends {
-    _tag: StringLiteralOfPostAction
+    kindOfPostAction: StringLiteralOfPostAction<CustomStringLiteralOfPostAction>;
   }
 > {
   chatUrl: URL;
   fromBot: {
     message: {
       expectedContainedTextOfMessagesWithAction: {
-        [k in StringLiteralOfActions]: EH.HTMLElementProperties<
+        [k in StringLiteralOfActions<CustomStringLiteralOfActions>]: EH.HTMLElementProperties<
           HTMLElement,
           string
         >;
@@ -85,21 +97,30 @@ interface Settings<
       messageOfAction: ElementHandle<Element>
     ) => WP.WebProgram<InfosForAction>;
     implementationsOfActions: {
-      [k in StringLiteralOfActions]: (
+      [k in StringLiteralOfActions<CustomStringLiteralOfActions>]: (
         infosForAction: InfosForAction
-      ) => WP.WebProgram<OutcomeOfAction<StringLiteralOfPostAction,InfosFromAction >>;
+      ) => WP.WebProgram<
+        OutcomeOfAction<
+          StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+          InfosFromAction
+        >
+      >;
     };
     postAction: {
-      [k in StringLiteralOfPostAction]: (
-        report: Report<StringLiteralOfActions, StringLiteralOfPostAction,InfosForAction, InfosFromAction>
+      [k in StringLiteralOfPostAction<CustomStringLiteralOfPostAction>]: (
+        report: Report<
+          StringLiteralOfActions<CustomStringLiteralOfActions>,
+          StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+          InfosForAction,
+          InfosFromAction
+        >
       ) => WP.WebProgram<void>;
     };
-    cycle:{
+    cycle: {
       defaultState: StateOfCycle;
-      updateState: (stateOfCycle:StateOfCycle)=> StateOfCycle;
-      continueCycle: (stateOfCycle:StateOfCycle)=> boolean;
-    }
-
+      updateState: (stateOfCycle: StateOfCycle) => StateOfCycle;
+      continueCycle: (stateOfCycle: StateOfCycle) => boolean;
+    };
   };
   fromLanguage: {
     message: {
@@ -112,37 +133,43 @@ interface Settings<
  */
 type Loggers<
   StringLiteralOfActions extends string,
-  StringLiteralOfPostAction extends string,
+  CustomStringLiteralOfPostAction extends string,
   InfosForAction,
   InfosFromAction
 > = {
-  [k in StringLiteralOfPostAction]: ((
-    newReport: Report<StringLiteralOfActions,StringLiteralOfPostAction, InfosForAction, InfosFromAction>
+  [k in StringLiteralOfPostAction<CustomStringLiteralOfPostAction>]: ((
+    newReport: Report<
+      StringLiteralOfActions,
+      StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+      InfosForAction,
+      InfosFromAction
+    >
   ) => TE.TaskEither<Error, void>)[];
 };
+
 /**
  *
  */
 type InputOfBody<
   StringLiteralOfActions extends string,
-  StringLiteralOfPostAction extends string,
+  CustomStringLiteralOfPostAction extends string,
   InfosForAction,
   InfosFromAction,
   StateOfCycle extends {
-    _tag: StringLiteralOfPostAction
+    kindOfPostAction: StringLiteralOfPostAction<CustomStringLiteralOfPostAction>;
   }
 > = {
   nameOfBot: StringLiteralOfBots;
   language: Languages;
-  loggers?: Loggers<
-  StringLiteralOfActions,
-  StringLiteralOfPostAction,
+  loggers: Loggers<
+    StringLiteralOfActions,
+    StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
     InfosForAction,
     InfosFromAction
   >;
   settings: Settings<
     StringLiteralOfActions,
-    StringLiteralOfPostAction,
+    StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
     InfosForAction,
     InfosFromAction,
     StateOfCycle
@@ -155,22 +182,21 @@ type InputOfBody<
  */
 const bodyOfActuator = <
   StringLiteralOfActions extends string,
-  StringLiteralOfPostAction extends string,
+  CustomStringLiteralOfPostAction extends string,
   InfosForAction,
   InfosFromAction,
   StateOfCycle extends {
-    _tag: StringLiteralOfPostAction
-  },
-  Output
+    kindOfPostAction: StringLiteralOfPostAction<CustomStringLiteralOfPostAction>;
+  }
 >(
   I: InputOfBody<
     StringLiteralOfActions,
-    StringLiteralOfPostAction,
+    StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
     InfosForAction,
     InfosFromAction,
     StateOfCycle
   >
-): WP.WebProgram<Output> => {
+): WP.WebProgram<StateOfCycle> => {
   // --------------------------
   // Retrieve all loaded messages
   // --------------------------
@@ -179,7 +205,7 @@ const bodyOfActuator = <
   // Find message of Action
   // --------------------------
   type StateOfAction = {
-    action: StringLiteralOfPostAction;
+    action: StringLiteralOfActions;
     found: boolean;
   };
   /**
@@ -257,7 +283,7 @@ const bodyOfActuator = <
                 ),
                 WP.map((found) => ({
                   // To avoid typescript complaints -> `as TypeOfActions`
-                  action: actionAndProps[0] as StringLiteralOfPostAction,
+                  action: actionAndProps[0] as StringLiteralOfActions,
                   found,
                 }))
               )
@@ -279,104 +305,101 @@ const bodyOfActuator = <
           })
         );
   // --------------------------
-  // Cycle
+  // Run Action
   // --------------------------
-  
-  
-  /**
-   *
-   */
-  const cycle = (
-    stateOfCycle: StateOfCycle = I.settings.fromBot.cycle.defaultState
-  ): WP.WebProgram<StateOfCycle> => {
-    // --------------------------
-    // Action
-    // --------------------------
-    const runAction = (action: StringLiteralOfActions) => (
-      messageWithAction: ElementHandle<Element>
-    ): WP.WebProgram<OutcomeOfAction<StringLiteralOfPostAction,InfosFromAction>> => {
-      // --------------------------
-      // Actions Implementation
-      // --------------------------
-      /**
-       *
-       */
-
-      const semigroupReportLoggers: S.Semigroup<
-        (
-          newReport: Report<
-            StringLiteralOfActions,
-            StringLiteralOfPostAction,
-            InfosForAction,
-            InfosFromAction
-          >
-        ) => TE.TaskEither<Error, void>
-      > = {
-        concat: (x, y) =>
-          flow((newReport) =>
-            pipe(
-              x(newReport),
-              TE.chain(() => y(newReport))
-            )
-          ),
-      };
-      const ___emptyLogger = () => TE.of(undefined);
-      const concatAllReportLoggers = S.concatAll(semigroupReportLoggers)(
-        ___emptyLogger
-      );
-
-
-      /**
-       *
-       */
-      return pipe(
-        I.settings.fromBot.getInfosForAction(messageWithAction),
-        WP.chain((infosForAction) =>
-          pipe(
-            I.options.skip[action]
-              ? WP.of({
-                kind
-                infosForAction,
-                action
-              })
-              : pipe
-              (WD.runOnAnyDifferentPage(
-                I.settings.fromBot.implementationsOfActions[action](infosForAction)
-                ),
-            WP.chain(({infosFromAction, kindOfPostAction: kind}) => 
-                I.settings.fromBot.postAction[kind]({
-                  action,
-                  infosForAction,
-                  infosFromAction
-                })
-            ))
-          )
-        ),
-
-        WP.chainFirst(WP.delay(1000)),
-
-        WP.chainFirst(() => WD.bringToFront),
-        WP.chain(({ outcome: kindOfOutcome, infosForAction }) =>
-          fromActionToNewCycle[kindOfOutcome]({
-            action,
-            infosForAction,
-            infosFromAction,
-          })
-        )
-      );
-    };
+  const runAction = (action: StringLiteralOfActions) => (
+    infosForAction: InfosForAction
+  ): WP.WebProgram<
+    OutcomeOfAction<
+      StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+      InfosFromAction
+    >
+  > => {
     /**
      *
      */
-    const routineOfBot = flow(
-      findLastMessageWithAction,
-      WP.chain((messageWithAction) =>
+    return pipe(
+      WD.runOnAnyDifferentPage(
+        I.settings.fromBot.implementationsOfActions[action](infosForAction)
+      ),
+      WP.chainFirst(WP.delay(1000)),
+      WP.chainFirst(() => WD.bringToFront)
+    );
+  };
+  // -------------------------------
+  // Concat Loggers
+  // -------------------------------
+  const semigroupLoggers: S.Semigroup<
+    (
+      newReport: Report<
+        StringLiteralOfActions,
+        CustomStringLiteralOfPostAction,
+        InfosForAction,
+        InfosFromAction
+      >
+    ) => TE.TaskEither<Error, void>
+  > = {
+    concat: (x, y) =>
+      flow((newReport) =>
+        pipe(
+          x(newReport),
+          TE.chain(() => y(newReport))
+        )
+      ),
+  };
+  const concatAllLoggers = S.concatAll(semigroupLoggers)(() =>
+    TE.of(undefined)
+  );
+  // -------------------------------
+  // Routine
+  // -------------------------------
+  const routineOfBot = (messages: ElementHandle<Element>[]) =>
+    pipe(
+      findLastMessageWithAction(messages),
+      WP.chain<LastMessageWithAction, any>((messageWithAction) =>
         messageWithAction.found === false
           ? pipe(
-              I.settings.fromBot.postAction.NewAction showNewAction(),
-              WP.map<void, ResultOfCycle>(() => "NewAction")
+              I.settings.fromBot.postAction["Default"]({
+                action: "None",
+                kindOfPostAction: "Default",
+                infosForAction: "None",
+                infosFromAction: "None",
+              }),
+              WP.map<
+                void,
+                StringLiteralOfPostAction<CustomStringLiteralOfPostAction>
+              >(() => "Default")
             )
-          : runAction(messageWithAction.action)(messageWithAction.el)
+          : pipe(
+              I.settings.fromBot.getInfosForAction(messageWithAction.mess),
+              WP.chain((infosForAction) =>
+                pipe(
+                  runAction(messageWithAction.action)(infosForAction),
+                  WP.map((o) => ({ ...o, infosForAction }))
+                )
+              ),
+              WP.chainFirst(
+                ({ infosForAction, infosFromAction, kindOfPostAction }) =>
+                  I.settings.fromBot.postAction[kindOfPostAction]({
+                    action: messageWithAction.action,
+                    kindOfPostAction,
+                    infosForAction,
+                    infosFromAction,
+                  })
+              ),
+              WP.chainFirst(
+                ({ infosForAction, infosFromAction, kindOfPostAction }) =>
+                  WP.fromTaskEither(
+                    concatAllLoggers(I.loggers[kindOfPostAction])({
+                      action: messageWithAction.action,
+                      kindOfPostAction,
+                      infosForAction,
+                      infosFromAction,
+                    })
+                  )
+              ),
+              WP.map(({ kindOfPostAction }) => kindOfPostAction)
+            )
       ),
       WP.orElseStackErrorInfos({
         message: "",
@@ -384,7 +407,12 @@ const bodyOfActuator = <
         filePath: ABSOLUTE_PATH,
       })
     );
-
+  // --------------------------
+  // Cycle
+  // --------------------------
+  const cycle = (
+    stateOfCycle: StateOfCycle = I.settings.fromBot.cycle.defaultState
+  ): WP.WebProgram<StateOfCycle> => {
     return I.settings.fromBot.cycle.continueCycle(stateOfCycle) === false
       ? WP.of(stateOfCycle)
       : pipe(
@@ -392,11 +420,17 @@ const bodyOfActuator = <
 
           WP.chain(() => messages()),
           WP.chain((messages) => routineOfBot(messages)),
-          WP.map<StringLiteralOfPostAction, StateOfCycle>((_tag) =>
-           I.settings.fromBot.cycle.updateState({ ...stateOfCycle, _tag:_tag })
+          WP.map<
+            StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+            StateOfCycle
+          >((kindOfPostAction) =>
+            I.settings.fromBot.cycle.updateState({
+              ...stateOfCycle,
+              kindOfPostAction,
+            })
           ),
-
           WP.chain(cycle),
+
           WP.orElseStackErrorInfos({
             message: "",
             nameOfFunction: "cycle",
