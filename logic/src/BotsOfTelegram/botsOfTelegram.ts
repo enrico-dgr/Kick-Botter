@@ -1,4 +1,5 @@
 import { flow, pipe } from 'fp-ts/function';
+import * as E from 'fp-ts/lib/Either';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as O from 'fp-ts/Option';
 import * as S from 'fp-ts/Semigroup';
@@ -38,7 +39,7 @@ type StringLiteralOfActions<
  */
 type StringLiteralOfPostAction<
   CustomStringLiteralOfPostAction extends string
-> = CustomStringLiteralOfPostAction | "Default";
+> = CustomStringLiteralOfPostAction | "Default" | "Skip";
 /**
  *
  */
@@ -243,7 +244,7 @@ type InputOfBody<
     OtherPropsInStateOfCycle
   >;
   settingsFromLanguage: SettingsFromLanguage;
-  delayBetweenCycles: number;
+  options: Options<CustomStringLiteralOfActions>;
 };
 
 /**
@@ -263,11 +264,14 @@ const bodyOfBot = <
     InfosFromAction,
     OtherPropsInStateOfCycle
   >
-): WP.WebProgram<OtherPropsInStateOfCycle> => {
+): WP.WebProgram<
+  StateOfCycle<CustomStringLiteralOfPostAction, OtherPropsInStateOfCycle>
+> => {
   // --------------------------
   // Retrieve all loaded messages
   // --------------------------
-  const messages = () => WD.waitFor$x(I.settingsFromLanguage.message.xpath);
+  const retrieveAllLoadedMessages = () =>
+    WD.waitFor$x(I.settingsFromLanguage.message.xpath);
   // --------------------------
   // Find message with Action
   // --------------------------
@@ -401,12 +405,13 @@ const bodyOfBot = <
   // -------------------------------
   const postAction = (mess: ElementHandle<Element>) => ({
     kindOfPostAction,
-  }: OutcomeOfAction<
-    StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+  }: Report<
+    CustomStringLiteralOfActions,
+    CustomStringLiteralOfPostAction,
+    InfosForAction,
     InfosFromAction
-  > & {
-    infosForAction: InfosForAction;
-  }) => I.settingsFromBot.fromBot.postAction[kindOfPostAction](mess);
+  >): WP.WebProgram<void> =>
+    I.settingsFromBot.fromBot.postAction[kindOfPostAction](mess);
   // -------------------------------
   // Loggers
   // -------------------------------
@@ -435,12 +440,12 @@ const bodyOfBot = <
     infosForAction,
     infosFromAction,
     kindOfPostAction,
-  }: OutcomeOfAction<
-    StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+  }: Report<
+    CustomStringLiteralOfActions,
+    CustomStringLiteralOfPostAction,
+    InfosForAction,
     InfosFromAction
-  > & {
-    infosForAction: InfosForAction;
-  }) =>
+  >) =>
     WP.fromTaskEither(
       concatAllLoggers(I.loggers[kindOfPostAction])({
         action,
@@ -458,22 +463,49 @@ const bodyOfBot = <
       WP.chain((messageWithAction) =>
         messageWithAction.found === false
           ? pipe(
-              I.settingsFromBot.fromBot.postAction["Default"]("None"),
+              I.settingsFromBot.fromBot.postAction.Default("None"),
               WP.map<
                 void,
                 StringLiteralOfPostAction<CustomStringLiteralOfPostAction>
               >(() => "Default")
             )
           : pipe(
-              I.settingsFromBot.fromBot.getInfosForAction(
-                messageWithAction.mess
-              ),
-              WP.chain((infosForAction) =>
-                pipe(
-                  runAction(messageWithAction.action)(infosForAction),
-                  WP.map((o) => ({ ...o, infosForAction }))
-                )
-              ),
+              I.options.skip[messageWithAction.action]
+                ? WP.of<
+                    Report<
+                      CustomStringLiteralOfActions,
+                      CustomStringLiteralOfPostAction,
+                      InfosForAction,
+                      InfosFromAction
+                    >
+                  >({
+                    action: messageWithAction.action,
+                    kindOfPostAction: "Skip",
+                    infosForAction: "None",
+                    infosFromAction: "None",
+                  })
+                : pipe(
+                    I.settingsFromBot.fromBot.getInfosForAction(
+                      messageWithAction.mess
+                    ),
+                    WP.chain((infosForAction) =>
+                      pipe(
+                        runAction(messageWithAction.action)(infosForAction),
+                        WP.map<
+                          OutcomeOfAction<
+                            StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+                            InfosFromAction
+                          >,
+                          Report<
+                            CustomStringLiteralOfActions,
+                            CustomStringLiteralOfPostAction,
+                            InfosForAction,
+                            InfosFromAction
+                          >
+                        >((o) => ({ ...o, infosForAction, action: "None" }))
+                      )
+                    )
+                  ),
               WP.chainFirst(postAction(messageWithAction.mess)),
               WP.chainFirst(loggers(messageWithAction.action)),
               WP.map(({ kindOfPostAction }) => kindOfPostAction)
@@ -488,20 +520,49 @@ const bodyOfBot = <
   // --------------------------
   // Cycle
   // --------------------------
-  const cycle = (
-    stateOfCycle: StateOfCycle<
-      CustomStringLiteralOfPostAction,
-      OtherPropsInStateOfCycle
-    > = I.settingsFromBot.fromBot.cycle.defaultState
+  const cycle = () => (
+    webDeps: WD.WebDeps
   ): WP.WebProgram<
     StateOfCycle<CustomStringLiteralOfPostAction, OtherPropsInStateOfCycle>
-  > =>
-    I.settingsFromBot.fromBot.cycle.continueCycle(stateOfCycle) === false
-      ? WP.of(stateOfCycle)
-      : pipe(
-          WP.delay(I.delayBetweenCycles)(undefined),
-
-          WP.chain(() => messages()),
+  > => {
+    const asyncLoop = async () => {
+      /**
+       *
+       */
+      let stateOfCycle: StateOfCycle<
+        CustomStringLiteralOfPostAction,
+        OtherPropsInStateOfCycle
+      > = I.settingsFromBot.fromBot.cycle.defaultState;
+      /**
+       *
+       */
+      let continueCycle: boolean = true;
+      /**
+       *
+       */
+      let eitherOfWebProgram:
+        | E.Either<
+            Error,
+            StateOfCycle<
+              CustomStringLiteralOfPostAction,
+              OtherPropsInStateOfCycle
+            >
+          >
+        | undefined = undefined;
+      /**
+       *
+       */
+      const updateStateOfCycle = flow(
+        I.settingsFromBot.fromBot.cycle.updateState,
+        (updatedState) => (stateOfCycle = updatedState)
+      );
+      /**
+       *
+       */
+      while (continueCycle) {
+        await pipe(
+          WP.delay(I.options.delayBetweenCycles)(undefined),
+          WP.chain(() => retrieveAllLoadedMessages()),
           WP.chain((messages) => routineOfBot(messages)),
           WP.map<
             StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
@@ -510,26 +571,49 @@ const bodyOfBot = <
               OtherPropsInStateOfCycle
             >
           >((kindOfPostAction) =>
-            I.settingsFromBot.fromBot.cycle.updateState({
+            updateStateOfCycle({
               ...stateOfCycle,
               kindOfPostAction,
             })
           ),
-          WP.orElseStackErrorInfos({
-            message: "",
-            nameOfFunction: "cycle",
-            filePath: ABSOLUTE_PATH,
-          }),
-          WP.chain(cycle)
-        );
+          WP.match(
+            (e) => {
+              continueCycle = false;
+              eitherOfWebProgram = E.left(e);
+            },
+            (updatedState) => {
+              continueCycle = I.settingsFromBot.fromBot.cycle.continueCycle(
+                updatedState
+              );
+              eitherOfWebProgram = E.right(updatedState);
+            }
+          )
+        )(webDeps)();
+        eitherOfWebProgram;
+      }
+      /**
+       *
+       */
+      if (eitherOfWebProgram === undefined) {
+        return E.left(new Error("Cycle return value is undefined."));
+      }
+      // value is give inside: while > pipe > WP.match
+      return eitherOfWebProgram as E.Either<
+        Error,
+        StateOfCycle<CustomStringLiteralOfPostAction, OtherPropsInStateOfCycle>
+      >;
+    };
+
+    return WP.fromTaskEither(() => asyncLoop());
+  };
 
   /**
    *
    */
   return pipe(
     WD.goto(I.settingsFromBot.chatUrl.href),
-
-    WP.chain(() => cycle())
+    WP.chain(() => WP.ask()),
+    WP.chain(cycle())
   );
 };
 // --------------------------
@@ -582,7 +666,7 @@ export const injectBot = <
   InfosFromAction,
   OtherPropsInStateOfCycle
 >(
-  fromLanguageTomapOfSettingsByBot: (
+  fromLanguageToMapOfSettingsByBot: (
     language: SBL.Languages
   ) => MapOfSettingsByBot<
     CustomStringLiteralOfActions,
@@ -601,9 +685,8 @@ export const injectBot = <
 ) =>
   bodyOfBot({
     ...I,
-    delayBetweenCycles: I.options.delayBetweenCycles,
     settingsFromBot: mapSettingsByBot(
-      fromLanguageTomapOfSettingsByBot(I.language)
+      fromLanguageToMapOfSettingsByBot(I.language)
     )(I.nameOfBot),
     settingsFromLanguage: {
       message: {

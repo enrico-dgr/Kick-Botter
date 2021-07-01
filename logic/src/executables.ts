@@ -201,7 +201,7 @@ const socialmoney = (user: string | null) => (options: OptionsOfSocialMoney) =>
         (report) =>
           appendLog(
             user,
-            "Socialgift",
+            "SocialMoney",
             "skip.json"
           )(
             typeof report.infosForAction === "string"

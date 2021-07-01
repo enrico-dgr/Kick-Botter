@@ -1,14 +1,13 @@
 import { pipe } from 'fp-ts/function';
 import * as O from 'fp-ts/Option';
-import { ElementHandle as EH, SettingsByLanguage as SBL, WebProgram as WP } from 'launch-page';
-import path from 'path';
+import {
+    ElementHandle as EH, SettingsByLanguage as SBL, WebDeps as WD, WebProgram as WP
+} from 'launch-page';
 import { ElementHandle } from 'puppeteer';
 
 import { FollowUser, LikeToPost, WatchStoryAtUrl } from '../Instagram/index';
 import { sendMessage } from '../Telegram';
 import { OutcomeOfAction, SettingsFromBot } from './botsOfTelegram';
-
-const ABSOLUTE_PATH = path.resolve(__filename);
 
 // --------------------------
 // Types
@@ -47,7 +46,7 @@ type OtherPropsInStateOfCycle = {
 // Dom variables
 // --------------------------
 const chatWithBot = {
-  chatUrl: new URL(`https://web.telegram.org/?legacy=1#/im?p=@socialgiftbot`),
+  chatUrl: new URL(`https://web.telegram.org/?legacy=1#/im?p=@Socialmoneyybot`),
   message: {
     link: {
       relativeXPath: `.//div[@class='im_message_text']//a[contains(@href,'http')]`,
@@ -103,12 +102,7 @@ const getActionHref = (xpathOfLinkRelativeToMessage: string) => (
 
         (href) => WP.of(new URL(parseSafeHref(href)))
       )
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Error while trying to get link for action.`,
-      nameOfFunction: getActionHref.name,
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
 // --------------------------
 // Settings
@@ -122,7 +116,7 @@ export const socialmoney: (
   InfosFromAction,
   OtherPropsInStateOfCycle
 > = (language) => ({
-  chatUrl: new URL(`https://web.telegram.org/?legacy=1#/im?p=@socialgiftbot`),
+  chatUrl: chatWithBot.chatUrl,
   fromBot: {
     // --------------------------
     // Get Infos for Action
@@ -174,14 +168,7 @@ export const socialmoney: (
                         }
                   )
                 )
-          ),
-          WP.orElseStackErrorInfos<
-            OutcomeOfAction<CustomStringLiteralOfPostAction, InfosFromAction>
-          >({
-            message: "",
-            nameOfFunction: "Follow",
-            filePath: ABSOLUTE_PATH,
-          })
+          )
         ),
       /**
        *
@@ -228,42 +215,56 @@ export const socialmoney: (
                         }
                   )
                 )
-          ),
-          WP.orElseStackErrorInfos({
-            message: "",
-            nameOfFunction: "Like",
-            filePath: ABSOLUTE_PATH,
-          })
+          )
         ),
       /**
        *
        */
-      Story: (url) =>
+      Story: (urlOfAuth) =>
         pipe(
-          WatchStoryAtUrl.watchStoryAtUrl({
-            language,
-            storyUrl: url,
-            options: {},
-          }),
-          WP.map<
-            WatchStoryAtUrl.Output,
-            OutcomeOfAction<CustomStringLiteralOfPostAction, InfosFromAction>
-          >((outputOfStory) =>
-            outputOfStory._tag === "AllWatched"
-              ? {
-                  kindOfPostAction: "Confirm",
-                  infosFromAction: outputOfStory,
-                }
-              : {
-                  kindOfPostAction: "Skip",
-                  infosFromAction: outputOfStory,
-                }
+          WD.goto(urlOfAuth.href),
+          WP.chain(() => WD.waitFor$x(`//a`)),
+          WP.map((els) => els[0]),
+          WP.chain((a) =>
+            pipe(
+              EH.getHref(a),
+              WP.chainFirst(() => EH.click()(a))
+            )
           ),
-          WP.orElseStackErrorInfos({
-            message: "",
-            nameOfFunction: "WatchStory",
-            filePath: ABSOLUTE_PATH,
-          })
+          WP.chain(
+            O.match(
+              () =>
+                WP.left(
+                  new Error(`Can't get href in socialmoney pre-story page.`)
+                ),
+              (href) =>
+                pipe(
+                  WatchStoryAtUrl.watchStoryAtUrl({
+                    language,
+                    storyUrl: new URL(href),
+                    options: {},
+                  }),
+
+                  WP.map<
+                    WatchStoryAtUrl.Output,
+                    OutcomeOfAction<
+                      CustomStringLiteralOfPostAction,
+                      InfosFromAction
+                    >
+                  >((outputOfStory) =>
+                    outputOfStory._tag === "AllWatched"
+                      ? {
+                          kindOfPostAction: "Confirm",
+                          infosFromAction: outputOfStory,
+                        }
+                      : {
+                          kindOfPostAction: "Skip",
+                          infosFromAction: outputOfStory,
+                        }
+                  )
+                )
+            )
+          )
         ),
       Comment: () =>
         WP.of({
@@ -287,12 +288,7 @@ export const socialmoney: (
                   )
                 )
           ),
-          WP.chain(EH.click()),
-          WP.orElseStackErrorInfos({
-            message: `Error while trying to confirm action as done.`,
-            nameOfFunction: "Confirm",
-            filePath: ABSOLUTE_PATH,
-          })
+          WP.chain(EH.click())
         ),
       Skip: (mess) =>
         pipe(
@@ -306,22 +302,11 @@ export const socialmoney: (
                   )
                 )
           ),
-          WP.chain(EH.click()),
-          WP.orElseStackErrorInfos({
-            message: `Error while trying to skip action.`,
-            nameOfFunction: "Skip",
-            filePath: ABSOLUTE_PATH,
-          })
+          // debugging
+          // WP.map(() => undefined)
+          WP.chain(EH.click())
         ),
-      End: () =>
-        pipe(
-          WP.of(undefined),
-          WP.orElseStackErrorInfos({
-            message: `Error while trying to end cycle of bot.`,
-            nameOfFunction: "End",
-            filePath: ABSOLUTE_PATH,
-          })
-        ),
+      End: () => pipe(WP.of(undefined)),
       Default: () =>
         sendMessage(language)(chatWithBot.dialog.buttonNewAction.text),
     },
