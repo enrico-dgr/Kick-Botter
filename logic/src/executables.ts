@@ -7,10 +7,10 @@ import { jsonFiles, readline, WebDeps, WebProgram as WP } from 'launch-page/lib/
 import * as J from 'launch-page/lib/Json';
 import path from 'path';
 
+import { actuator, Options, Output } from './BotsOfTelegram/index';
+import { BotOfTelegram, Socialgift, SocialMoney } from './BotsOfTelegram/newIndex';
 import { Deps, jsonExecutable, launchOptions, NamesOfPrograms } from './Executable';
 import { freeFollowerPlan as freeFollowerPlan_ } from './MrInsta/index';
-import { actuator, Options, Output } from './Socialgift/index';
-import { bots } from './Socialgift/newIndex';
 
 const PATH = path.resolve(__dirname, "./executables.ts");
 // -----------------------
@@ -84,7 +84,6 @@ const appendLog = <R extends J.Json>(
 // -----------------------
 // Socialgift
 // -----------------------
-
 const socialgift = (user: string | null) => (opts: Options) =>
   actuator({
     language: "it",
@@ -125,8 +124,9 @@ export const socialgiftExec = (user: string | null) =>
 // -----------------------
 // Socialgift Refactor
 // -----------------------
-const socialgiftR = (user: string | null) => (opts: OptionsR) =>
-  bots({
+type OptionsOfSocialgift = BotOfTelegram.Options<Socialgift.CustomStringLiteralOfActions>;
+const socialgiftR = (user: string | null) => (options: OptionsOfSocialgift) =>
+  BotOfTelegram.bot({
     language: "it",
     nameOfBot: "Socialgift",
     loggers: {
@@ -160,12 +160,10 @@ const socialgiftR = (user: string | null) => (opts: OptionsR) =>
           TE.of(console.log("Default: " + JSON.stringify(report, null, 2))),
       ],
     },
-    options: {
-      delayBetweenCycles,
-    },
+    options,
   });
 
-const defaultDepsR: Deps<Options> = {
+const defaultDepsR: Deps<OptionsOfSocialgift> = {
   nameOfProgram: "Socialgift",
   user: null,
   programOptions: {
@@ -173,8 +171,7 @@ const defaultDepsR: Deps<Options> = {
       Follow: false,
       Like: false,
       Comment: true,
-      WatchStory: false,
-      Extra: true,
+      Story: false,
     },
     delayBetweenCycles: 3 * 60 * 1000,
   },
@@ -185,11 +182,77 @@ const defaultDepsR: Deps<Options> = {
 };
 
 export const socialgiftExecR = (user: string | null) =>
-  jsonExecutable<OptionsR, Output>(
-    "Socialgift",
+  jsonExecutable<OptionsOfSocialgift, Output>(
+    "SocialgiftR",
     user,
     socialgiftR(user)
   )(defaultDepsR);
+// -----------------------
+// SocialMoney
+// -----------------------
+type OptionsOfSocialMoney = BotOfTelegram.Options<SocialMoney.CustomStringLiteralOfActions>;
+const socialmoney = (user: string | null) => (options: OptionsOfSocialMoney) =>
+  BotOfTelegram.bot({
+    language: "it",
+    nameOfBot: "SocialMoney",
+    loggers: {
+      Confirm: [(report) => TE.of(console.log(report))],
+      Skip: [
+        (report) =>
+          appendLog(
+            user,
+            "Socialgift",
+            "skip.json"
+          )(
+            typeof report.infosForAction === "string"
+              ? { ...report, infosForAction: report.infosForAction }
+              : { ...report, infosForAction: report.infosForAction.href }
+          ),
+      ],
+      End: [
+        (report) =>
+          appendLog(
+            user,
+            "SocialMoney",
+            "end.json"
+          )(
+            typeof report.infosForAction === "string"
+              ? { ...report, infosForAction: report.infosForAction }
+              : { ...report, infosForAction: report.infosForAction.href }
+          ),
+      ],
+      Default: [
+        (report) =>
+          TE.of(console.log("Default: " + JSON.stringify(report, null, 2))),
+      ],
+    },
+    options,
+  });
+
+const defaultDepsOfSocialMoney: Deps<OptionsOfSocialMoney> = {
+  nameOfProgram: "SocialMoney",
+  user: null,
+  programOptions: {
+    skip: {
+      Follow: false,
+      Like: false,
+      Comment: true,
+      Story: false,
+    },
+    delayBetweenCycles: 3 * 60 * 1000,
+  },
+  launchOptions: {
+    ...launchOptions.default,
+    headless: false,
+  },
+};
+
+export const socialmoneyExec = (user: string | null) =>
+  jsonExecutable<OptionsOfSocialgift, Output>(
+    "SocialMoney",
+    user,
+    socialmoney(user)
+  )(defaultDepsOfSocialMoney);
 // ----------------------------------
 // Open browser
 // ----------------------------------

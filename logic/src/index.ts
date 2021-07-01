@@ -1,6 +1,7 @@
 import { Executable, execute, NamesOfPrograms } from './Executable';
 import {
-    freeFollowerPlanMIExec, freeFollowerPlanTMExec, openBrowserExec, socialgiftExec, socialgiftExecR
+    freeFollowerPlanMIExec, freeFollowerPlanTMExec, openBrowserExec, socialgiftExec,
+    socialgiftExecR, socialmoneyExec
 } from './executables';
 import { variables } from './variables';
 
@@ -12,6 +13,7 @@ export const programs: {
 } = {
   Socialgift: socialgiftExec,
   SocialgiftR: socialgiftExecR,
+  SocialMoney: socialmoneyExec,
   OpenBrowser: openBrowserExec,
   FreeFollowerPlanMrInsta: freeFollowerPlanMIExec,
   FreeFollowerPlanTurboMedia: freeFollowerPlanTMExec,

@@ -19,7 +19,7 @@ const ABSOLUTE_PATH = path.resolve(__dirname, "./index.ts");
  */
 enum EnumOfBots {
   Socialgift = "Socialgift",
-  SocialMoney = "SocialMoney",
+  SocialMoney = "Social Money",
 }
 /**
  *
@@ -608,7 +608,7 @@ export const injectBot = <
     settingsFromLanguage: {
       message: {
         xpath: getPropsByLanguage<string>(I.language)((sets) =>
-          sets.message.returnXPath(I.nameOfBot, "")
+          sets.message.returnXPath(EnumOfBots[I.nameOfBot], "")
         ),
       },
     },

@@ -6,14 +6,18 @@ import { ElementHandle } from 'puppeteer';
 
 import { FollowUser, LikeToPost, WatchStoryAtUrl } from '../Instagram/index';
 import { sendMessage } from '../Telegram';
-import { OutcomeOfAction, SettingsFromBot } from './bot';
+import { OutcomeOfAction, SettingsFromBot } from './botsOfTelegram';
 
 const ABSOLUTE_PATH = path.resolve(__filename);
 
 // --------------------------
 // Types
 // --------------------------
-type CustomStringLiteralOfActions = "Follow" | "Like" | "Comment" | "Story";
+export type CustomStringLiteralOfActions =
+  | "Follow"
+  | "Like"
+  | "Comment"
+  | "Story";
 /**
  *
  */
