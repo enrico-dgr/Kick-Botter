@@ -552,13 +552,13 @@ const bodyOfActuator: BodyOfActuator = (D) => {
           WP.map<ResultOfCycle, StateOfCycle>((_tag) =>
             updateState({ ...soc, _tag })
           ),
-
-          WP.chain(cycle),
           WP.orElseStackErrorInfos({
             message: "",
             nameOfFunction: "cycle",
             filePath: ABSOLUTE_PATH,
-          })
+          }),
+
+          WP.chain(cycle)
         );
   };
   /**

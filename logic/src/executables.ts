@@ -10,6 +10,7 @@ import path from 'path';
 import { Deps, jsonExecutable, launchOptions, NamesOfPrograms } from './Executable';
 import { freeFollowerPlan as freeFollowerPlan_ } from './MrInsta/index';
 import { actuator, Options, Output } from './Socialgift/index';
+import { bots } from './Socialgift/newIndex';
 
 const PATH = path.resolve(__dirname, "./executables.ts");
 // -----------------------
@@ -121,6 +122,74 @@ export const socialgiftExec = (user: string | null) =>
     user,
     socialgift(user)
   )(defaultDeps);
+// -----------------------
+// Socialgift Refactor
+// -----------------------
+const socialgiftR = (user: string | null) => (opts: OptionsR) =>
+  bots({
+    language: "it",
+    nameOfBot: "Socialgift",
+    loggers: {
+      Confirm: [(report) => TE.of(console.log(report))],
+      Skip: [
+        (report) =>
+          appendLog(
+            user,
+            "Socialgift",
+            "skip.json"
+          )(
+            typeof report.infosForAction === "string"
+              ? { ...report, infosForAction: report.infosForAction }
+              : { ...report, infosForAction: report.infosForAction.href }
+          ),
+      ],
+      End: [
+        (report) =>
+          appendLog(
+            user,
+            "Socialgift",
+            "end.json"
+          )(
+            typeof report.infosForAction === "string"
+              ? { ...report, infosForAction: report.infosForAction }
+              : { ...report, infosForAction: report.infosForAction.href }
+          ),
+      ],
+      Default: [
+        (report) =>
+          TE.of(console.log("Default: " + JSON.stringify(report, null, 2))),
+      ],
+    },
+    options: {
+      delayBetweenCycles,
+    },
+  });
+
+const defaultDepsR: Deps<Options> = {
+  nameOfProgram: "Socialgift",
+  user: null,
+  programOptions: {
+    skip: {
+      Follow: false,
+      Like: false,
+      Comment: true,
+      WatchStory: false,
+      Extra: true,
+    },
+    delayBetweenCycles: 3 * 60 * 1000,
+  },
+  launchOptions: {
+    ...launchOptions.default,
+    headless: false,
+  },
+};
+
+export const socialgiftExecR = (user: string | null) =>
+  jsonExecutable<OptionsR, Output>(
+    "Socialgift",
+    user,
+    socialgiftR(user)
+  )(defaultDepsR);
 // ----------------------------------
 // Open browser
 // ----------------------------------

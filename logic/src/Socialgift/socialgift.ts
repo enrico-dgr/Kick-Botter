@@ -1,15 +1,12 @@
 import { pipe } from 'fp-ts/function';
 import * as O from 'fp-ts/Option';
 import { ElementHandle as EH, SettingsByLanguage as SBL, WebProgram as WP } from 'launch-page';
-import { Languages } from 'launch-page/lib/SettingsByLanguage';
 import path from 'path';
 import { ElementHandle } from 'puppeteer';
 
 import { FollowUser, LikeToPost, WatchStoryAtUrl } from '../Instagram/index';
-import {
-    sendMessage, Settings as SettingsOfTelegram, settingsByLanguage as settingsOfTelegramByLanguage
-} from '../Telegram';
-import { Actions, bodyOfBot, Input, OutcomeOfAction } from './bot';
+import { sendMessage } from '../Telegram';
+import { Actions, OutcomeOfAction, SettingsFromBot } from './bot';
 
 const ABSOLUTE_PATH = path.resolve(__filename);
 
@@ -64,7 +61,6 @@ const chatWithBot = {
     },
   },
 };
-
 // --------------------------
 // Get Infos for Action
 // --------------------------
@@ -315,103 +311,68 @@ const End = () =>
 const Default = (language: SBL.Languages) => () =>
   sendMessage(language)(chatWithBot.dialog.buttonNewAction.text);
 // --------------------------
-// Settings from language
+// Settings
 // --------------------------
-const getPropsByLanguage = <A>(language: Languages) => (
-  selectProps: (g: SettingsOfTelegram) => A
-) =>
-  SBL.getPropertiesFromSettingsAndLanguage<A, SettingsOfTelegram>(selectProps)(
-    settingsOfTelegramByLanguage
-  )(language);
-// --------------------------
-// Injection
-// --------------------------
-export const socialgift = ({
-  delayBetweenCycles,
-  nameOfBot,
-  language,
-  loggers,
-}: Input<
+export const socialgift: (
+  language: SBL.Languages
+) => SettingsFromBot<
   CustomStringLiteralOfActions,
   CustomStringLiteralOfPostAction,
   InfosForAction,
-  InfosFromAction
->) =>
-  bodyOfBot<
-    CustomStringLiteralOfActions,
-    CustomStringLiteralOfPostAction,
-    InfosForAction,
-    InfosFromAction,
-    OtherPropsInStateOfCycle
-  >({
-    nameOfBot,
-    language,
-    loggers,
-    delayBetweenCycles,
-    settings: {
-      chatUrl: new URL(
-        `https://web.telegram.org/?legacy=1#/im?p=@socialgiftbot`
-      ),
-      fromBot: {
-        getInfosForAction: getActionHref(
-          chatWithBot.message.link.relativeXPath
-        ),
-        implementationsOfActions: implementationsOfActions(language),
-        postAction: {
-          Confirm,
-          Skip,
-          End,
-          Default: Default(language),
-        },
-        message: {
-          expectedContainedTextOfMessagesWithAction: {
-            Follow: [["innerText", "Segui il Profilo"]],
-            Like: [["innerText", "Like al Post"]],
-            Story: [["innerText", "Visualizza Stories"]],
-            Comment: [["innerText", "Comment"]],
-          },
-        },
-        cycle: {
-          defaultState: {
-            kindOfPostAction: "Confirm",
-            consecutiveSkips: 0,
-            consecutiveNewActions: 0,
-          },
-          updateState: (stateOfCycle) => {
-            switch (stateOfCycle.kindOfPostAction) {
-              case "Confirm":
-                return {
-                  ...stateOfCycle,
-                  consecutiveSkips: 0,
-                  consecutiveNewActions: 0,
-                };
-              case "Skip":
-                return {
-                  ...stateOfCycle,
-                  consecutiveSkips: stateOfCycle.consecutiveSkips + 1,
-                };
-              case "Default":
-                return {
-                  ...stateOfCycle,
-                  consecutiveNewActions: stateOfCycle.consecutiveNewActions + 1,
-                };
-              case "End":
-                return { ...stateOfCycle };
-            }
-          },
-          continueCycle: (stateOfCycle) =>
-            stateOfCycle.kindOfPostAction === "End"
-              ? false
-              : stateOfCycle.consecutiveNewActions < 5 &&
-                stateOfCycle.consecutiveSkips < 5,
-        },
-      },
-      fromLanguage: {
-        message: {
-          xpath: getPropsByLanguage<string>(language)((sets) =>
-            sets.message.returnXPath("Socialgift", "")
-          ),
-        },
+  InfosFromAction,
+  OtherPropsInStateOfCycle
+> = (language) => ({
+  chatUrl: new URL(`https://web.telegram.org/?legacy=1#/im?p=@socialgiftbot`),
+  fromBot: {
+    getInfosForAction: getActionHref(chatWithBot.message.link.relativeXPath),
+    implementationsOfActions: implementationsOfActions(language),
+    postAction: {
+      Confirm,
+      Skip,
+      End,
+      Default: Default(language),
+    },
+    message: {
+      expectedContainedTextOfMessagesWithAction: {
+        Follow: [["innerText", "Segui il Profilo"]],
+        Like: [["innerText", "Like al Post"]],
+        Story: [["innerText", "Visualizza Stories"]],
+        Comment: [["innerText", "Comment"]],
       },
     },
-  });
+    cycle: {
+      defaultState: {
+        kindOfPostAction: "Confirm",
+        consecutiveSkips: 0,
+        consecutiveNewActions: 0,
+      },
+      updateState: (stateOfCycle) => {
+        switch (stateOfCycle.kindOfPostAction) {
+          case "Confirm":
+            return {
+              ...stateOfCycle,
+              consecutiveSkips: 0,
+              consecutiveNewActions: 0,
+            };
+          case "Skip":
+            return {
+              ...stateOfCycle,
+              consecutiveSkips: stateOfCycle.consecutiveSkips + 1,
+            };
+          case "Default":
+            return {
+              ...stateOfCycle,
+              consecutiveNewActions: stateOfCycle.consecutiveNewActions + 1,
+            };
+          case "End":
+            return { ...stateOfCycle };
+        }
+      },
+      continueCycle: (stateOfCycle) =>
+        stateOfCycle.kindOfPostAction === "End"
+          ? false
+          : stateOfCycle.consecutiveNewActions < 5 &&
+            stateOfCycle.consecutiveSkips < 5,
+    },
+  },
+});

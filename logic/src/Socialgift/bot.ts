@@ -3,15 +3,29 @@ import * as TE from 'fp-ts/lib/TaskEither';
 import * as O from 'fp-ts/Option';
 import * as S from 'fp-ts/Semigroup';
 import * as EH from 'launch-page/lib/ElementHandle';
-import { Languages } from 'launch-page/lib/SettingsByLanguage';
+import * as SBL from 'launch-page/lib/SettingsByLanguage';
 import * as WD from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
 import path from 'path';
 import { ElementHandle } from 'puppeteer';
 
-import { Bots as StringLiteralOfBots } from './settingsByBotChoice';
+import {
+    Settings as SettingsOfTelegram, settingsByLanguage as settingsOfTelegramByLanguage
+} from '../Telegram';
 
 const ABSOLUTE_PATH = path.resolve(__dirname, "./index.ts");
+/**
+ *
+ */
+enum EnumOfBots {
+  Socialgift = "Socialgift",
+  SocialMoney = "SocialMoney",
+}
+/**
+ *
+ */
+export type StringLiteralOfBots = keyof typeof EnumOfBots;
+
 /**
  *
  */
@@ -79,7 +93,7 @@ export type StateOfCycle<
 /**
  *
  */
-interface Settings<
+export interface SettingsFromBot<
   CustomStringLiteralOfActions extends string,
   CustomStringLiteralOfPostAction extends string,
   InfosForAction,
@@ -134,12 +148,57 @@ interface Settings<
       ) => boolean;
     };
   };
-  fromLanguage: {
-    message: {
-      xpath: string;
-    };
+}
+/**
+ *
+ */
+interface SettingsFromLanguage {
+  message: {
+    xpath: string;
   };
 }
+/**
+ *
+ */
+export type MapOfSettingsByBot<
+  CustomStringLiteralOfActions extends string,
+  CustomStringLiteralOfPostAction extends string,
+  InfosForAction,
+  InfosFromAction,
+  OtherPropsInStateOfCycle
+> = {
+  [key in StringLiteralOfBots]: SettingsFromBot<
+    CustomStringLiteralOfActions,
+    StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+    InfosForAction,
+    InfosFromAction,
+    OtherPropsInStateOfCycle
+  >;
+};
+const mapSettingsByBot: <
+  CustomStringLiteralOfActions extends string,
+  CustomStringLiteralOfPostAction extends string,
+  InfosForAction,
+  InfosFromAction,
+  OtherPropsInStateOfCycle
+>(
+  mapOfSettingsByBot: MapOfSettingsByBot<
+    CustomStringLiteralOfActions,
+    CustomStringLiteralOfPostAction,
+    InfosForAction,
+    InfosFromAction,
+    OtherPropsInStateOfCycle
+  >
+) => (
+  nameOfBot: StringLiteralOfBots
+) => SettingsFromBot<
+  CustomStringLiteralOfActions,
+  StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+  InfosForAction,
+  InfosFromAction,
+  OtherPropsInStateOfCycle
+> = (mapOfSettingsByBot) => (nameOfBot) => mapOfSettingsByBot[nameOfBot];
+
 /**
  *
  */
@@ -163,34 +222,34 @@ type Loggers<
  *
  */
 type InputOfBody<
-  StringLiteralOfActions extends string,
+  CustomStringLiteralOfActions extends string,
   CustomStringLiteralOfPostAction extends string,
   InfosForAction,
   InfosFromAction,
   OtherPropsInStateOfCycle
 > = {
-  nameOfBot: StringLiteralOfBots;
-  language: Languages;
+  language: SBL.Languages;
   loggers: Loggers<
-    StringLiteralOfActions,
+    CustomStringLiteralOfActions,
     StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
     InfosForAction,
     InfosFromAction
   >;
-  settings: Settings<
-    StringLiteralOfActions,
+  settingsFromBot: SettingsFromBot<
+    CustomStringLiteralOfActions,
     StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
     InfosForAction,
     InfosFromAction,
     OtherPropsInStateOfCycle
   >;
+  settingsFromLanguage: SettingsFromLanguage;
   delayBetweenCycles: number;
 };
 
 /**
  *
  */
-export const bodyOfBot = <
+const bodyOfBot = <
   CustomStringLiteralOfActions extends string,
   CustomStringLiteralOfPostAction extends string,
   InfosForAction,
@@ -208,7 +267,7 @@ export const bodyOfBot = <
   // --------------------------
   // Retrieve all loaded messages
   // --------------------------
-  const messages = () => WD.waitFor$x(I.settings.fromLanguage.message.xpath);
+  const messages = () => WD.waitFor$x(I.settingsFromLanguage.message.xpath);
   // --------------------------
   // Find message with Action
   // --------------------------
@@ -277,7 +336,8 @@ export const bodyOfBot = <
           //   });
           // };
           Object.entries<EH.HTMLElementProperties<HTMLElement, string>>(
-            I.settings.fromBot.message.expectedContainedTextOfMessagesWithAction
+            I.settingsFromBot.fromBot.message
+              .expectedContainedTextOfMessagesWithAction
           ).map(
             // <[TypeOfActions,EH.HTMLElementProperties<HTMLElement, string>]>
             // Object.entries doesn't let you specify keys,
@@ -328,7 +388,9 @@ export const bodyOfBot = <
   > =>
     pipe(
       WD.runOnAnyDifferentPage(
-        I.settings.fromBot.implementationsOfActions[action](infosForAction)
+        I.settingsFromBot.fromBot.implementationsOfActions[action](
+          infosForAction
+        )
       ),
       WP.chainFirst(WP.delay(1000)),
       WP.chainFirst(() => WD.bringToFront)
@@ -344,7 +406,7 @@ export const bodyOfBot = <
     InfosFromAction
   > & {
     infosForAction: InfosForAction;
-  }) => I.settings.fromBot.postAction[kindOfPostAction](mess);
+  }) => I.settingsFromBot.fromBot.postAction[kindOfPostAction](mess);
   // -------------------------------
   // Loggers
   // -------------------------------
@@ -396,14 +458,16 @@ export const bodyOfBot = <
       WP.chain((messageWithAction) =>
         messageWithAction.found === false
           ? pipe(
-              I.settings.fromBot.postAction["Default"]("None"),
+              I.settingsFromBot.fromBot.postAction["Default"]("None"),
               WP.map<
                 void,
                 StringLiteralOfPostAction<CustomStringLiteralOfPostAction>
               >(() => "Default")
             )
           : pipe(
-              I.settings.fromBot.getInfosForAction(messageWithAction.mess),
+              I.settingsFromBot.fromBot.getInfosForAction(
+                messageWithAction.mess
+              ),
               WP.chain((infosForAction) =>
                 pipe(
                   runAction(messageWithAction.action)(infosForAction),
@@ -428,11 +492,11 @@ export const bodyOfBot = <
     stateOfCycle: StateOfCycle<
       CustomStringLiteralOfPostAction,
       OtherPropsInStateOfCycle
-    > = I.settings.fromBot.cycle.defaultState
+    > = I.settingsFromBot.fromBot.cycle.defaultState
   ): WP.WebProgram<
     StateOfCycle<CustomStringLiteralOfPostAction, OtherPropsInStateOfCycle>
   > =>
-    I.settings.fromBot.cycle.continueCycle(stateOfCycle) === false
+    I.settingsFromBot.fromBot.cycle.continueCycle(stateOfCycle) === false
       ? WP.of(stateOfCycle)
       : pipe(
           WP.delay(I.delayBetweenCycles)(undefined),
@@ -446,30 +510,43 @@ export const bodyOfBot = <
               OtherPropsInStateOfCycle
             >
           >((kindOfPostAction) =>
-            I.settings.fromBot.cycle.updateState({
+            I.settingsFromBot.fromBot.cycle.updateState({
               ...stateOfCycle,
               kindOfPostAction,
             })
           ),
-          WP.chain(cycle),
-
           WP.orElseStackErrorInfos({
             message: "",
             nameOfFunction: "cycle",
             filePath: ABSOLUTE_PATH,
-          })
+          }),
+          WP.chain(cycle)
         );
 
   /**
    *
    */
   return pipe(
-    WD.goto(I.settings.chatUrl.href),
+    WD.goto(I.settingsFromBot.chatUrl.href),
 
     WP.chain(() => cycle())
   );
 };
-
+// --------------------------
+// Input
+// --------------------------
+/**
+ *
+ */
+export type Options<CustomStringLiteralOfActions extends string> = {
+  skip: {
+    [key in StringLiteralOfActions<CustomStringLiteralOfActions>]: boolean;
+  };
+  /**
+   * Default to `3 * 60 * 1000 ms` (3 mins)
+   */
+  delayBetweenCycles: number;
+};
 export type Input<
   CustomStringLiteralOfActions extends string,
   CustomStringLiteralOfPostAction extends string,
@@ -477,12 +554,62 @@ export type Input<
   InfosFromAction
 > = {
   nameOfBot: StringLiteralOfBots;
-  language: Languages;
+  language: SBL.Languages;
   loggers: Loggers<
     CustomStringLiteralOfActions,
     StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
     InfosForAction,
     InfosFromAction
   >;
-  delayBetweenCycles: number;
+  options: Options<CustomStringLiteralOfActions>;
 };
+// --------------------------
+// Settings from language
+// --------------------------
+const getPropsByLanguage = <A>(language: SBL.Languages) => (
+  selectProps: (g: SettingsOfTelegram) => A
+) =>
+  SBL.getPropertiesFromSettingsAndLanguage<A, SettingsOfTelegram>(selectProps)(
+    settingsOfTelegramByLanguage
+  )(language);
+/**
+ *
+ */
+export const injectBot = <
+  CustomStringLiteralOfActions extends string,
+  CustomStringLiteralOfPostAction extends string,
+  InfosForAction,
+  InfosFromAction,
+  OtherPropsInStateOfCycle
+>(
+  fromLanguageTomapOfSettingsByBot: (
+    language: SBL.Languages
+  ) => MapOfSettingsByBot<
+    CustomStringLiteralOfActions,
+    CustomStringLiteralOfPostAction,
+    InfosForAction,
+    InfosFromAction,
+    OtherPropsInStateOfCycle
+  >
+) => (
+  I: Input<
+    CustomStringLiteralOfActions,
+    CustomStringLiteralOfPostAction,
+    InfosForAction,
+    InfosFromAction
+  >
+) =>
+  bodyOfBot({
+    ...I,
+    delayBetweenCycles: I.options.delayBetweenCycles,
+    settingsFromBot: mapSettingsByBot(
+      fromLanguageTomapOfSettingsByBot(I.language)
+    )(I.nameOfBot),
+    settingsFromLanguage: {
+      message: {
+        xpath: getPropsByLanguage<string>(I.language)((sets) =>
+          sets.message.returnXPath(I.nameOfBot, "")
+        ),
+      },
+    },
+  });
