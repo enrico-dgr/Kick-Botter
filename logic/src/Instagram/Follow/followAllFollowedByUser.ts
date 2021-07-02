@@ -1,12 +1,13 @@
 import * as A from 'fp-ts/Array';
-import { pipe } from 'fp-ts/lib/function';
+import * as E from 'fp-ts/Either';
+import { identity, pipe } from 'fp-ts/lib/function';
 import * as EH from 'launch-page/lib//ElementHandle';
 import {
     getPropertiesFromSettingsAndLanguage, Languages
 } from 'launch-page/lib//SettingsByLanguage';
+import * as J from 'launch-page/lib/Json';
 import * as WebDeps from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
-import path from 'path';
 import { ElementHandle } from 'puppeteer';
 
 import { goto } from '../goto';
@@ -14,8 +15,6 @@ import {
     Settings as SettingsOfInstagram, settingsByLanguage as settingsByLanguageOfInstagram
 } from '../SettingsByLanguage';
 import { clickButtonFollow } from './clickButtonFollow';
-
-const ABSOLUTE_PATH = path.resolve(__dirname, "./followAllFollowedByUser.ts");
 
 // -------------------------------
 // Input of body
@@ -49,12 +48,7 @@ const bodyOfProgram = (I: InputOfBody): WP.WebProgram<void> => {
         message: `No followed-list found for: ${I.settings.xpathOfLinkToListOfFollowed}`,
       }))
     ),
-    WP.chain((els) => EH.click()(els[0])),
-    WP.orElseStackErrorInfos({
-      message: `Problem at page ${I.profileUrl.href}`,
-      nameOfFunction: "showListOfFollowed",
-      filePath: ABSOLUTE_PATH,
-    })
+    WP.chain((els) => EH.click()(els[0]))
   );
   /**
    *
@@ -81,12 +75,7 @@ const bodyOfProgram = (I: InputOfBody): WP.WebProgram<void> => {
         message: `No element to scroll in followed-list found for: ${I.settings.xpathOfScrollableElement}`,
       }))
     ),
-    WP.map((els) => els[0]),
-    WP.orElseStackErrorInfos({
-      message: `Problem at page ${I.profileUrl.href}`,
-      nameOfFunction: "scroller",
-      filePath: ABSOLUTE_PATH,
-    })
+    WP.map((els) => els[0])
   );
   /**
    *
@@ -116,11 +105,21 @@ const bodyOfProgram = (I: InputOfBody): WP.WebProgram<void> => {
           WP.chainFirst((output) =>
             output._tag === "Followed"
               ? WP.of(undefined)
-              : WP.leftFromErrorInfos({
-                  message: JSON.stringify(output),
-                  nameOfFunction: "followCurrents",
-                  filePath: ABSOLUTE_PATH,
-                })
+              : pipe(
+                  J.stringify(output),
+                  E.match(
+                    (e) => `Couldn't stringify output because of: ${e.message}`,
+                    identity
+                  ),
+                  (strinigified) =>
+                    WP.left(
+                      new Error(
+                        `-Error on following current selection of followed users.\n` +
+                          `-Output: \n` +
+                          `---${strinigified}`
+                      )
+                    )
+                )
           ),
           WP.chain(WP.delay(4000)),
           WP.chain(() => followCurrents(els.slice(1)))

@@ -2,18 +2,17 @@ import * as A from 'fp-ts/Array';
 import * as B from 'fp-ts/boolean';
 import { pipe } from 'fp-ts/function';
 import * as fs from 'fs';
-import path from 'path';
-import { devices } from 'puppeteer';
-
 import { click, uploadFile } from 'launch-page/lib/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import {
+    getPropertiesFromSettingsAndLanguage, Languages
+} from 'launch-page/lib/SettingsByLanguage';
 import { browser, emulate, keyboard, reload, waitFor$x } from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
+import { devices } from 'puppeteer';
+
 import {
     Settings as SettingsOfInstagram, settingsByLanguage as settingsByLanguageOfInstagram
 } from './SettingsByLanguage';
-
-const ABSOLUTE_PATH = path.resolve(__dirname, "./postNewMedia.ts");
 
 // -----------------------------------
 // Input of body
@@ -67,12 +66,7 @@ const bodyOfPostNewMedia = (I: InputOfBody): WP.WebProgram<void> => {
       els.length === 1
         ? WP.right(els[0])
         : WP.leftAny(`Found '${els.length}' newPost-button(s).`)
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Not valid newPost-button.`,
-      nameOfFunction: "newPostButton",
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
   /**
    *
@@ -101,11 +95,7 @@ const bodyOfPostNewMedia = (I: InputOfBody): WP.WebProgram<void> => {
             )
         )
       ),
-      WP.orElseStackErrorInfos({
-        message: "Not valid media to post.",
-        nameOfFunction: "validateMedia",
-        filePath: ABSOLUTE_PATH,
-      }),
+
       WP.map<fs.PathLike, void>(() => undefined)
     );
   /**
@@ -117,12 +107,7 @@ const bodyOfPostNewMedia = (I: InputOfBody): WP.WebProgram<void> => {
       els.length === 1
         ? WP.right(els[0])
         : WP.leftAny(`Found '${els.length}' media-input(s).`)
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Not valid media-input.`,
-      nameOfFunction: "inputForMedia",
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
   /**
    *
@@ -133,12 +118,7 @@ const bodyOfPostNewMedia = (I: InputOfBody): WP.WebProgram<void> => {
       els.length === 1
         ? WP.right(els[0])
         : WP.leftAny(`Found '${els.length}' nextOperation-button(s).`)
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Not valid nextOperation-button.`,
-      nameOfFunction: "buttonForNextOperation",
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
   /**
    *
@@ -149,12 +129,7 @@ const bodyOfPostNewMedia = (I: InputOfBody): WP.WebProgram<void> => {
       els.length === 1
         ? WP.right(els[0])
         : WP.leftAny(`Found '${els.length}' description-textarea(s).`)
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Not valid description-textarea.`,
-      nameOfFunction: "textareaForDescription",
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
   /**
    *
@@ -165,12 +140,7 @@ const bodyOfPostNewMedia = (I: InputOfBody): WP.WebProgram<void> => {
       els.length === 1
         ? WP.right(els[0])
         : WP.leftAny(`Found '${els.length}' shareMedia-button(s).`)
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Not valid shareMedia-button.`,
-      nameOfFunction: "buttonToShareMedia",
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
   /**
    *
@@ -207,12 +177,7 @@ const bodyOfPostNewMedia = (I: InputOfBody): WP.WebProgram<void> => {
         WP.chain(() => reload())
       )
     ),
-    WP.map(() => undefined),
-    WP.orElseStackErrorInfos({
-      message: `Failed to post media.`,
-      nameOfFunction: "postNewMedia",
-      filePath: ABSOLUTE_PATH,
-    })
+    WP.map(() => undefined)
   );
 };
 // -----------------------------------

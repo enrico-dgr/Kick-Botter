@@ -1,14 +1,11 @@
 import { pipe } from 'fp-ts/function';
 import * as O from 'fp-ts/Option';
 import { ElementHandle as EH, SettingsByLanguage as SBL, WebProgram as WP } from 'launch-page';
-import path from 'path';
 import { ElementHandle } from 'puppeteer';
 
 import { FollowUser, LikeToPost, WatchStoryAtUrl } from '../Instagram/index';
 import { sendMessage } from '../Telegram';
 import { OutcomeOfAction, SettingsFromBot } from './botsOfTelegram';
-
-const ABSOLUTE_PATH = path.resolve(__filename);
 
 // --------------------------
 // Types
@@ -98,12 +95,7 @@ const getActionHref = (xpathOfLinkRelativeToMessage: string) => (
 
         (href) => WP.of(new URL(href))
       )
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Error while trying to get link for action.`,
-      nameOfFunction: getActionHref.name,
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
 
 // --------------------------
@@ -170,14 +162,7 @@ export const socialgift: (
                         }
                   )
                 )
-          ),
-          WP.orElseStackErrorInfos<
-            OutcomeOfAction<CustomStringLiteralOfPostAction, InfosFromAction>
-          >({
-            message: "",
-            nameOfFunction: "Follow",
-            filePath: ABSOLUTE_PATH,
-          })
+          )
         ),
       /**
        *
@@ -224,12 +209,7 @@ export const socialgift: (
                         }
                   )
                 )
-          ),
-          WP.orElseStackErrorInfos({
-            message: "",
-            nameOfFunction: "Like",
-            filePath: ABSOLUTE_PATH,
-          })
+          )
         ),
       /**
        *
@@ -254,12 +234,7 @@ export const socialgift: (
                   kindOfPostAction: "Skip",
                   infosFromAction: outputOfStory,
                 }
-          ),
-          WP.orElseStackErrorInfos({
-            message: "",
-            nameOfFunction: "WatchStory",
-            filePath: ABSOLUTE_PATH,
-          })
+          )
         ),
       /**
        *
@@ -286,12 +261,7 @@ export const socialgift: (
                   )
                 )
           ),
-          WP.chain(EH.click()),
-          WP.orElseStackErrorInfos({
-            message: `Error while trying to confirm action as done.`,
-            nameOfFunction: "Confirm",
-            filePath: ABSOLUTE_PATH,
-          })
+          WP.chain(EH.click())
         ),
       /**
        *
@@ -308,25 +278,12 @@ export const socialgift: (
                   )
                 )
           ),
-          WP.chain(EH.click()),
-          WP.orElseStackErrorInfos({
-            message: `Error while trying to skip action.`,
-            nameOfFunction: "Skip",
-            filePath: ABSOLUTE_PATH,
-          })
+          WP.chain(EH.click())
         ),
       /**
        *
        */
-      End: () =>
-        pipe(
-          WP.of(undefined),
-          WP.orElseStackErrorInfos({
-            message: `Error while trying to end cycle of bot.`,
-            nameOfFunction: "End",
-            filePath: ABSOLUTE_PATH,
-          })
-        ),
+      End: () => pipe(WP.of(undefined)),
       /**
        *
        */

@@ -1,16 +1,16 @@
 import { pipe } from 'fp-ts/function';
 import { Reader } from 'fp-ts/Reader';
-import path from 'path';
-
 import { click, expectedLength, type } from 'launch-page/lib/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import {
+    getPropertiesFromSettingsAndLanguage, Languages
+} from 'launch-page/lib/SettingsByLanguage';
 import * as WD from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
+
 import {
     Settings as SettingsTelegram, settingsByLanguage as settingsByLanguageTelegram
 } from './SettingsByLanguage';
 
-const PATH = path.resolve(__dirname, "./sendMessage.ts");
 interface Settings {
   xpathOfTextAreaInDialog: string;
 }
@@ -47,12 +47,7 @@ const bodyOfSendMessage: BodyOfSendMessage = (D) =>
     WP.chain((els) => WP.of(els[0])),
     WP.chainFirst(click()),
     WP.chain(WP.delay(700)),
-    WP.chain(type(D.text + String.fromCharCode(13), { delay: 150 })),
-    WP.orElseStackErrorInfos({
-      message: "",
-      nameOfFunction: "bodyOfSendMessage",
-      filePath: PATH,
-    })
+    WP.chain(type(D.text + String.fromCharCode(13), { delay: 150 }))
   );
 
 /**

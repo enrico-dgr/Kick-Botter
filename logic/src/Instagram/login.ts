@@ -1,17 +1,16 @@
 import { pipe } from 'fp-ts/function';
-import path from 'path';
-
 import { click } from 'launch-page/lib/ElementHandle';
 import { askData as askDataFromConsole } from 'launch-page/lib/readline';
-import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import {
+    getPropertiesFromSettingsAndLanguage, Languages
+} from 'launch-page/lib/SettingsByLanguage';
 import { keyboard, setUserAgent, waitFor$x } from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
+
 import { goto } from './goto';
 import {
     Settings as SettingsOfInstagram, settingsByLanguage as settingsByLanguageOfInstagram
 } from './SettingsByLanguage';
-
-const ABSOLUTE_PATH = path.resolve(__dirname, "./login.ts");
 
 // -----------------------------------
 // Input of body
@@ -54,12 +53,7 @@ const bodyOfLogin = (I: InputOfBody): WP.WebProgram<void> => {
       els.length === 1
         ? WP.right(els[0])
         : WP.leftAny(`Found '${els.length}' id-input(s).`)
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Not valid id-input.`,
-      nameOfFunction: "inputForId",
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
   /**
    *
@@ -70,12 +64,7 @@ const bodyOfLogin = (I: InputOfBody): WP.WebProgram<void> => {
       els.length === 1
         ? WP.right(els[0])
         : WP.leftAny(`Found '${els.length}' password-input(s).`)
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Not valid password-input.`,
-      nameOfFunction: "inputForPassword",
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
   /**
    *
@@ -86,12 +75,7 @@ const bodyOfLogin = (I: InputOfBody): WP.WebProgram<void> => {
       els.length === 1
         ? WP.right(els[0])
         : WP.leftAny(`Found '${els.length}' login-button(s).`)
-    ),
-    WP.orElseStackErrorInfos({
-      message: `Not valid login-button.`,
-      nameOfFunction: "buttonToLogin",
-      filePath: ABSOLUTE_PATH,
-    })
+    )
   );
 
   /**
@@ -117,11 +101,7 @@ const bodyOfLogin = (I: InputOfBody): WP.WebProgram<void> => {
     WP.chainFirst((a) =>
       a === "AvailablePage"
         ? WP.of(undefined)
-        : WP.leftFromErrorInfos({
-            message: a,
-            nameOfFunction: "login > goto",
-            filePath: ABSOLUTE_PATH,
-          })
+        : WP.left(new Error("Instagram login page is not available."))
     ),
     WP.chain(() =>
       pipe(
@@ -144,12 +124,7 @@ const bodyOfLogin = (I: InputOfBody): WP.WebProgram<void> => {
     ),
     WP.chainFirst(WP.delay(1500)),
     WP.chainFirst(WP.delay(3000)),
-    WP.map(() => undefined),
-    WP.orElseStackErrorInfos({
-      message: `Failed to login.`,
-      nameOfFunction: "login",
-      filePath: ABSOLUTE_PATH,
-    })
+    WP.map(() => undefined)
   );
 };
 // -----------------------------------

@@ -6,7 +6,6 @@ import {
 } from 'launch-page/lib/SettingsByLanguage';
 import * as WebDeps from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
-import path from 'path';
 
 import { goto, StateOfInstagramPage } from '../goto';
 import { Settings as SettingsInstagram, settingsByLanguage } from '../SettingsByLanguage';
@@ -16,7 +15,6 @@ import {
     Output as OutputOfClickButtonFollow, Reason as ReasonOfClickButtonFollow, tag
 } from './clickButtonFollow';
 
-const PATH = path.resolve(__filename);
 /**
  * @category Input of Body
  * @subcategory Subtype
@@ -184,12 +182,7 @@ const bodyOfFollowUser = (I: InputOfBody): WP.WebProgram<Output> => {
           url: r.page.url(),
         }))
       ),
-      WP.map((els) => els[0]),
-      WP.orElseStackErrorInfos({
-        message: `Can't find button-follow in profile page.`,
-        nameOfFunction: button.name,
-        filePath: PATH,
-      })
+      WP.map((els) => els[0])
     );
   const buttonFollow = () => button(I.settings.buttonFollowXPath);
   const buttonAlreadyFollow = () => button(I.settings.buttonAlreadyFollowXPath);

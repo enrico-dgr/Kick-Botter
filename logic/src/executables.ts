@@ -2,17 +2,14 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
-import { createErrorFromErrorInfos } from 'launch-page/lib/ErrorInfos';
 import { jsonFiles, readline, WebDeps, WebProgram as WP } from 'launch-page/lib/index';
 import * as J from 'launch-page/lib/Json';
-import path from 'path';
 
 import { actuator, Options, Output } from './BotsOfTelegram/index';
 import { BotOfTelegram, Socialgift, SocialMoney } from './BotsOfTelegram/newIndex';
 import { Deps, jsonExecutable, launchOptions, NamesOfPrograms } from './Executable';
 import { freeFollowerPlan as freeFollowerPlan_ } from './MrInsta/index';
 
-const PATH = path.resolve(__dirname, "./executables.ts");
 // -----------------------
 // utils
 // -----------------------
@@ -45,13 +42,7 @@ const getJson = <R extends J.Json>(path: string) =>
     E.chain((d) =>
       Array.isArray(d)
         ? E.right(d)
-        : E.left(
-            createErrorFromErrorInfos({
-              message: "DB is an object, should be an array.",
-              nameOfFunction: getJson.name,
-              filePath: PATH,
-            })
-          )
+        : E.left(new Error("DB is an object, should be an array."))
     )
   );
 /**

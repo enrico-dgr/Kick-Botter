@@ -1,16 +1,16 @@
 import { pipe } from 'fp-ts/function';
 import { Reader } from 'fp-ts/Reader';
-import path from 'path';
-
 import { click } from 'launch-page/lib/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import {
+    getPropertiesFromSettingsAndLanguage, Languages
+} from 'launch-page/lib/SettingsByLanguage';
 import * as WD from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
+
 import {
     Settings as SettingsTelegram, settingsByLanguage as settingsByLanguageTelegram
 } from './SettingsByLanguage';
 
-const ABSOLUTE_PATH = path.resolve(__dirname, "./index.ts");
 // --------------------------------
 // Input
 // --------------------------------
@@ -47,13 +47,12 @@ const bodyOfOpenDialog: BodyOfOpenDialog = (D) =>
     WP.chain((els) =>
       els.length === 1
         ? click()(els[0])
-        : WP.leftFromErrorInfos({
-            message:
+        : WP.left(
+            new Error(
               `Chat with ${D.interlocutor} has not been opened.\n` +
-              `${els.length} links to dialog found.`,
-            nameOfFunction: "bodyOfActuator",
-            filePath: ABSOLUTE_PATH,
-          })
+                `${els.length} links to dialog found.`
+            )
+          )
     )
   );
 /**

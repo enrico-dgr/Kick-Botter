@@ -7,14 +7,12 @@ import * as EH from 'launch-page/lib/ElementHandle';
 import * as SBL from 'launch-page/lib/SettingsByLanguage';
 import * as WD from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
-import path from 'path';
 import { ElementHandle } from 'puppeteer';
 
 import {
     Settings as SettingsOfTelegram, settingsByLanguage as settingsOfTelegramByLanguage
 } from '../Telegram';
 
-const ABSOLUTE_PATH = path.resolve(__dirname, "./index.ts");
 /**
  *
  */
@@ -372,12 +370,7 @@ const bodyOfBot = <
                   action,
                 })
               : findLastMessageWithAction(els.slice(0, els.length - 1))
-          ),
-          WP.orElseStackErrorInfos({
-            message: "",
-            nameOfFunction: "findLastMessageWithAction",
-            filePath: ABSOLUTE_PATH,
-          })
+          )
         );
   // --------------------------
   // Run Action
@@ -510,12 +503,7 @@ const bodyOfBot = <
               WP.chainFirst(loggers(messageWithAction.action)),
               WP.map(({ kindOfPostAction }) => kindOfPostAction)
             )
-      ),
-      WP.orElseStackErrorInfos({
-        message: "",
-        nameOfFunction: "routineOfBot",
-        filePath: ABSOLUTE_PATH,
-      })
+      )
     );
   // --------------------------
   // Cycle

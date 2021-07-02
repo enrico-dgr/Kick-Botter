@@ -1,10 +1,9 @@
 import * as A from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
-import { flow, pipe } from 'fp-ts/lib/function';
+import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
-import * as ErrorInfos from 'launch-page/lib/ErrorInfos';
 import * as J from 'launch-page/lib/Json';
 import * as JF from 'launch-page/lib/jsonFiles';
 import { LaunchOptions, launchPage } from 'launch-page/lib/Puppeteer';
@@ -12,7 +11,6 @@ import { log, startFrom } from 'launch-page/lib/utils';
 import * as WP from 'launch-page/lib/WebProgram';
 import path from 'path';
 
-const PATH = path.resolve(__filename);
 const INJS = path.resolve(__dirname, "./deps.json");
 // --------------------------------------
 // Models
@@ -139,13 +137,7 @@ const getJson = <R extends J.Json>() =>
     E.chain((d) =>
       Array.isArray(d)
         ? E.right(d)
-        : E.left(
-            ErrorInfos.createErrorFromErrorInfos({
-              message: "DB is an object, should be an array.",
-              nameOfFunction: getJson.name,
-              filePath: PATH,
-            })
-          )
+        : E.left(new Error("DB is an object, should be an array."))
     )
   );
 /**
@@ -162,14 +154,14 @@ const postToJsonFile = <A extends J.Json>(pathToJsonFile: string) => (a: A) =>
   pipe(
     parseToFormattedJson(a),
     E.map((strinfied) => fs.writeFileSync(pathToJsonFile, strinfied)),
-    E.orElse<Error, void, Error>(
-      flow(
-        ErrorInfos.stackErrorInfos({
-          message: "Some error while getting writing to a json-file.",
-          nameOfFunction: postToJsonFile.name,
-          filePath: PATH,
-        }),
-        E.left
+    E.orElse<Error, void, Error>((e) =>
+      E.left(
+        new Error(
+          "-Some error while writing to a json-file.\n" +
+            "-Writing error: \n" +
+            "--" +
+            e.message
+        )
       )
     )
   );
