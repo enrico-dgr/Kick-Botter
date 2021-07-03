@@ -14,7 +14,8 @@
   "author": "enrico-dgr",
   "license": "ISC",
   "dependencies": {
-    "launch-page": "^1.0.8"
+    "fp-ts": "^2.10.5",
+    "launch-page": "^1.0.9"
   },
   "devDependencies": {
     "@types/cors": "^2.8.10",

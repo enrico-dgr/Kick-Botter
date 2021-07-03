@@ -1,12 +1,11 @@
 import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/lib/function';
+import { pipe } from 'fp-ts/function';
 import * as TE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import { jsonFiles, readline, WebDeps, WebProgram as WP } from 'launch-page/lib/index';
 import * as J from 'launch-page/lib/Json';
 
-import { actuator, Options, Output } from './BotsOfTelegram/index';
-import { BotOfTelegram, Socialgift, SocialMoney } from './BotsOfTelegram/newIndex';
+import { BotOfTelegram, Socialgift, SocialMoney } from './BotsOfTelegram';
 import { Deps, jsonExecutable, launchOptions, NamesOfPrograms } from './Executable';
 import { freeFollowerPlan as freeFollowerPlan_ } from './MrInsta/index';
 
@@ -72,51 +71,12 @@ const appendLog = <R extends J.Json>(
       TE.fromEither(setJson(pathOfLogs(user, program, fileName))([...db, D]))
     )
   );
+
 // -----------------------
 // Socialgift
 // -----------------------
-const socialgift = (user: string | null) => (opts: Options) =>
-  actuator({
-    language: "it",
-    nameOfBot: "Socialgift",
-    loggers: {
-      Confirm: [(report) => TE.of(console.log(report))],
-      Skip: [(report) => appendLog(user, "Socialgift", "skip.json")(report)],
-      End: [(report) => appendLog(user, "Socialgift", "end.json")(report)],
-    },
-    options: opts,
-  });
-
-const defaultDeps: Deps<Options> = {
-  nameOfProgram: "Socialgift",
-  user: null,
-  programOptions: {
-    skip: {
-      Follow: false,
-      Like: false,
-      Comment: true,
-      WatchStory: false,
-      Extra: true,
-    },
-    delayBetweenCycles: 3 * 60 * 1000,
-  },
-  launchOptions: {
-    ...launchOptions.default,
-    headless: false,
-  },
-};
-
-export const socialgiftExec = (user: string | null) =>
-  jsonExecutable<Options, Output>(
-    "Socialgift",
-    user,
-    socialgift(user)
-  )(defaultDeps);
-// -----------------------
-// Socialgift Refactor
-// -----------------------
 type OptionsOfSocialgift = BotOfTelegram.Options<Socialgift.CustomStringLiteralOfActions>;
-const socialgiftR = (user: string | null) => (options: OptionsOfSocialgift) =>
+const socialgift = (user: string | null) => (options: OptionsOfSocialgift) =>
   BotOfTelegram.bot({
     language: "it",
     nameOfBot: "Socialgift",
@@ -172,11 +132,11 @@ const defaultDepsR: Deps<OptionsOfSocialgift> = {
   },
 };
 
-export const socialgiftExecR = (user: string | null) =>
-  jsonExecutable<OptionsOfSocialgift, Output>(
-    "SocialgiftR",
+export const socialgiftExec = (user: string | null) =>
+  jsonExecutable<OptionsOfSocialgift, {}>(
+    "Socialgift",
     user,
-    socialgiftR(user)
+    socialgift(user)
   )(defaultDepsR);
 // -----------------------
 // SocialMoney
@@ -228,6 +188,7 @@ const defaultDepsOfSocialMoney: Deps<OptionsOfSocialMoney> = {
       Follow: false,
       Like: false,
       Comment: true,
+      SpecificComment: false,
       Story: false,
     },
     delayBetweenCycles: 3 * 60 * 1000,
@@ -239,7 +200,7 @@ const defaultDepsOfSocialMoney: Deps<OptionsOfSocialMoney> = {
 };
 
 export const socialmoneyExec = (user: string | null) =>
-  jsonExecutable<OptionsOfSocialgift, Output>(
+  jsonExecutable<OptionsOfSocialMoney, {}>(
     "SocialMoney",
     user,
     socialmoney(user)

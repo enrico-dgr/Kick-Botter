@@ -1,9 +1,11 @@
 import { pipe } from 'fp-ts/lib/function';
-
 import { expectedLength } from 'launch-page/lib/ElementHandle';
-import { getPropertiesFromSettingsAndLanguage, Languages } from 'launch-page/lib/SettingsByLanguage';
+import {
+    getPropertiesFromSettingsAndLanguage, Languages
+} from 'launch-page/lib/SettingsByLanguage';
 import * as WD from 'launch-page/lib/WebDeps';
 import * as WT from 'launch-page/lib/WebProgram';
+
 import { goto, StateOfInstagramPage } from '../goto';
 import {
     Settings as SettingsInstagram, settingsByLanguage as settingsOfInstagramByLanguage
@@ -100,7 +102,7 @@ const bodyOfLikeToPost = (I: InputOfBody): WT.WebProgram<Output> => {
    */
   const button = (name: "Like" | "Unlike", XPath: string) =>
     pipe(
-      WD.$x(XPath),
+      WD.waitFor$x(XPath),
       WT.chain(
         expectedLength((n) => n === 1)((els, r) => ({
           ["button" + name + "XPath"]: XPath,

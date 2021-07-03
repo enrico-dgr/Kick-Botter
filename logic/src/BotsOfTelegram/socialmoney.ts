@@ -16,6 +16,7 @@ export type CustomStringLiteralOfActions =
   | "Follow"
   | "Like"
   | "Comment"
+  | "SpecificComment"
   | "Story";
 /**
  *
@@ -104,6 +105,9 @@ const getActionHref = (xpathOfLinkRelativeToMessage: string) => (
       )
     )
   );
+// --------------------------
+// Post Action
+// --------------------------
 // --------------------------
 // Settings
 // --------------------------
@@ -271,6 +275,11 @@ export const socialmoney: (
           kindOfPostAction: "Skip",
           infosFromAction: {},
         }),
+      SpecificComment: () =>
+        WP.of({
+          kindOfPostAction: "End",
+          infosFromAction: {},
+        }),
     },
     // --------------------------
     // Post Action
@@ -295,16 +304,22 @@ export const socialmoney: (
           EH.$x(chatWithBot.message.buttonSkip.relativeXPath)(mess),
           WP.chain((els) =>
             els.length === 1
-              ? WP.of(els[0])
-              : WP.left(
-                  new Error(
-                    `Found ${els.length} HTMLButtonElement(s) containing skip-button.`
+              ? pipe(WP.of(els[0]), WP.chain(EH.click()))
+              : pipe(
+                  EH.getInnerText(mess),
+                  WP.chain((text) =>
+                    WP.left(
+                      new Error(
+                        `${els.length} skip-button found.\n` +
+                          `Text of message: ${O.match<string, string>(
+                            () => `No text found`,
+                            (t) => t
+                          )(text)}`
+                      )
+                    )
                   )
                 )
-          ),
-          // debugging
-          // WP.map(() => undefined)
-          WP.chain(EH.click())
+          )
         ),
       End: () => pipe(WP.of(undefined)),
       Default: () =>
@@ -315,7 +330,8 @@ export const socialmoney: (
         Follow: [["innerText", "Segui il Profilo"]],
         Like: [["innerText", "Like al Post"]],
         Story: [["innerText", "Guarda la Storia"]],
-        Comment: [["innerText", "Comment"]],
+        Comment: [["innerText", "Commento al post"]],
+        SpecificComment: [["innerText", "Commento specifico"]],
       },
     },
     cycle: {
@@ -349,7 +365,7 @@ export const socialmoney: (
       continueCycle: (stateOfCycle) =>
         stateOfCycle.kindOfPostAction === "End"
           ? false
-          : stateOfCycle.consecutiveNewActions < 5 &&
+          : stateOfCycle.consecutiveNewActions < 3 &&
             stateOfCycle.consecutiveSkips < 5,
     },
   },

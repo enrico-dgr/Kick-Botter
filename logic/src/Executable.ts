@@ -20,7 +20,6 @@ const INJS = path.resolve(__dirname, "./deps.json");
  */
 export enum EnumNamesOfPrograms {
   "Socialgift",
-  "SocialgiftR",
   "SocialMoney",
   "OpenBrowser",
   "FreeFollowerPlanMrInsta",
