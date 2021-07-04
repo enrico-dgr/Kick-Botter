@@ -277,7 +277,7 @@ export const socialmoney: (
         }),
       SpecificComment: () =>
         WP.of({
-          kindOfPostAction: "End",
+          kindOfPostAction: "Skip",
           infosFromAction: {},
         }),
     },
@@ -331,7 +331,7 @@ export const socialmoney: (
         Like: [["innerText", "Like al Post"]],
         Story: [["innerText", "Guarda la Storia"]],
         Comment: [["innerText", "Commento al post"]],
-        SpecificComment: [["innerText", "Commento specifico"]],
+        SpecificComment: [["innerText", "Commento Specifico al post"]],
       },
     },
     cycle: {
