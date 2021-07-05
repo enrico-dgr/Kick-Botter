@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "noEmit": true,
+    "noEmit": false,
     "target": "es5",
     "outDir": "./build",
     "module": "commonjs",
@@ -20,6 +20,12 @@
     "declaration": true,
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["./src", "."],
-  "exclude": ["node_modules", "**/node_modules/*", "build"]
+  "include": ["./src"],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "build",
+    "./src/App",
+    "./src/renderer.ts"
+  ]
 }

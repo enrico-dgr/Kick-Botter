@@ -208,14 +208,14 @@ export const socialmoney: (
                       InfosFromAction
                     >
                   >((outputOfCheck) =>
-                    outputOfCheck._tag === "NotLiked"
+                    outputOfCheck._tag === "Liked"
                       ? {
-                          kindOfPostAction: "Confirm",
-                          infosFromAction: outputOfLike,
-                        }
-                      : {
                           kindOfPostAction: "End",
                           infosFromAction: outputOfCheck,
+                        }
+                      : {
+                          kindOfPostAction: "Confirm",
+                          infosFromAction: outputOfLike,
                         }
                   )
                 )

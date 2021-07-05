@@ -1,9 +1,9 @@
 import { flow, pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
-
 import * as EH from 'launch-page/lib/ElementHandle';
 import * as WD from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
+
 import * as Instagram from '../Instagram';
 import { init } from './Init';
 import { plan } from './Plan';
@@ -151,7 +151,7 @@ export const routineFreeFollower = routine<string>({
       5
     )(() =>
       pipe(
-        WD.$x(`//*//a[contains(.,'Skip')]`),
+        WD.waitFor$x(`//*//a[contains(.,'Skip')]`),
         WP.chain(
           EH.isOneElementArray(
             (els, r) => `Found "${els.length}" skip-button at ${r.page.url()}`

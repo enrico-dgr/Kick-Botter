@@ -1,19 +1,24 @@
 import * as React from 'react';
 
-export default class LikeButton extends React.Component<
-  {},
-  { liked: boolean }
-> {
-  constructor(props: {}) {
-    super(props);
-    this.state = { liked: false };
-  }
+import { DisplaySettings } from './DisplaySettings';
+import { Queries } from './Queries';
 
-  render() {
-    if (this.state.liked) {
-      return "You liked this.";
-    }
-
-    return <button onClick={() => this.setState({ liked: true })}>Like</button>;
-  }
-}
+export const App = () => {
+  return (
+    <div>
+      <Queries name="users" id="users" queries={["First", "Second"]} />
+      <Queries name="programs" id="programs" queries={["First", "Second"]} />
+      {DisplaySettings({
+        settings: {
+          name: "Franco",
+          surname: "Pagliaroto",
+          randomObject: {
+            name: "Enrico",
+            surname: "Di Grazia",
+          },
+          ciao: 12321,
+        },
+      })}
+    </div>
+  );
+};
