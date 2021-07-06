@@ -6,6 +6,7 @@ module.exports = {
   mode: "development",
   devtool: "inline-source-map",
   entry: path.resolve(__dirname, "src/renderer.ts"),
+
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "renderer.js",

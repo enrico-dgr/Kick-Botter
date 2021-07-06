@@ -128,7 +128,7 @@ const setDepsOnDB = <R extends J.Json>(
 /**
  *
  */
-const getJson = <R extends J.Json>() =>
+export const getJson = <R extends J.Json>() =>
   pipe(
     E.of(fs.existsSync(INJS)),
     E.map((exists) => (exists ? undefined : fs.writeFileSync(INJS, "[]"))),
@@ -169,7 +169,7 @@ const setJson = <R extends J.Json>() => postToJsonFile<Deps<R>[]>(INJS);
 /**
  *
  */
-const modifyDepsOnJsonFile = <R extends J.Json>(
+export const modifyDepsOnJsonFile = <R extends J.Json>(
   nameOfProgram: NamesOfPrograms,
   user: string | null
 ) => (D: Deps<R>) =>

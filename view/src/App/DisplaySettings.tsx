@@ -24,7 +24,9 @@ export const DisplaySettings = <Settings extends GenericSettings>(
   /**
    * State of Settings
    */
-  const [stateOfSettings, setState] = React.useState<Settings>(props.settings);
+  const [stateOfSettings, setStateOfSettingsHook] = React.useState<Settings>(
+    props.settings
+  );
   /**
    * Change not-object property by providing an array of keys
    * of the nested objects and property.
@@ -66,7 +68,7 @@ export const DisplaySettings = <Settings extends GenericSettings>(
     /**
      *
      */
-    setState((previousState) => mutateRecur(keys, previousState));
+    setStateOfSettingsHook((previousState) => mutateRecur(keys, previousState));
   };
   /**
    * Renderer
@@ -75,26 +77,74 @@ export const DisplaySettings = <Settings extends GenericSettings>(
     settings: GenericSettings,
     map: string[] = []
   ): RenderedSetting<Settings>[] => {
+    /**
+     *
+     */
+    const match = <A, B, C>(
+      onBoolean: (b: boolean) => A,
+      onNumber: (n: number) => B,
+      onString: (s: string) => C
+    ) => (thisSetting: string | boolean | number) => {
+      switch (typeof thisSetting) {
+        case "boolean":
+          return onBoolean(thisSetting);
+        case "string":
+          return onString(thisSetting);
+        case "number":
+          return onNumber(thisSetting);
+      }
+    };
+    /**
+     *
+     */
     let buffer: RenderedSetting<Settings>[] = [];
 
     Object.keys(settings).forEach((key) => {
       let setting = settings[key];
       const mapOfKeys = [...map, key];
 
-      if (setting && typeof setting === "object") {
+      if (typeof setting === "object") {
         buffer.push(
           <ul key={mapOfKeys.toString()}>
             {key}: {display(setting, mapOfKeys)}
           </ul>
         );
-      } else if (!!setting) {
+      } else {
         buffer.push(
           <li key={key}>
             {key}:
             {
               <input
-                value={setting as string | number}
-                onChange={(e) => setStateOfSettings(e.target.value, mapOfKeys)}
+                type={match(
+                  (_b) => "checkbox",
+                  (_n) => "number",
+                  (_s) => "text"
+                )(setting)}
+                {...{
+                  [match(
+                    (_b) => "checked",
+                    (_n) => `value`,
+                    (_s) => `value`
+                  )(setting)]: setting,
+                }}
+                onChange={(e) =>
+                  setStateOfSettings(
+                    match(
+                      (_b) => e.target.checked,
+                      (_n) => Number(e.target.value),
+                      (_s) => e.target.value
+                    )(
+                      typeof setting !== "object"
+                        ? setting
+                        : (() => {
+                            throw new Error(
+                              "Setting cannot be an object when updating state."
+                            );
+                          })()
+                    ),
+                    mapOfKeys
+                  )
+                }
               />
             }
           </li>
