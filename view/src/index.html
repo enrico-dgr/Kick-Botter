@@ -3,17 +3,18 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';
+    style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='
+    'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='
+    'sha256-pAKyLspf5M71yheQAsC/zs1dOTQn71mGPttqKKeoT78='
+    'sha256-SxFnS6q5INH1nWsNlzjWqZfOK5XIVCiIdEYZGGHMcso='">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>Hello World!</title>
+    <title>KicK Botter</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+    <div id="preload"></div>
     <div id="reactApp"></div>
+    <script src="style.js"></script>
     <script src="renderer.js"></script>
   </body>
-  <script id="preload"></script>
 </html>

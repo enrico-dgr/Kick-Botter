@@ -5,5 +5,11 @@
     "watch": true
   },
   "include": ["./src/*", "../logic/src"],
-  "exclude": ["./src/renderer.ts", "./src/App"]
+  "exclude": [
+    "./src/renderer.ts",
+    "./src/style.ts",
+    "./src/App",
+    "./src/preload.ts",
+    "./src/AppPreload"
+  ]
 }
