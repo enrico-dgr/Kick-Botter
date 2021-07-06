@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 
 import {
-    Deps, EnumNamesOfPrograms, getJson, modifyDepsOnJsonFile
+    Deps, EnumNamesOfPrograms, getJson, modifyDepsOnJsonFile, Queries, Settings
 } from '../../logic/src/Executable';
 
 function createWindow() {
@@ -43,11 +43,6 @@ app.on("window-all-closed", function () {
  * needed types to avoid conflicts
  */
 type Either<E, A> = { _tag: "Left"; left: E } | { _tag: "Right"; right: A };
-type Json = string | number | boolean | JsonRecord | JsonArray | null;
-interface JsonRecord {
-  readonly [key: string]: Json;
-}
-interface JsonArray extends ReadonlyArray<Json> {}
 /**
  * utils
  */
@@ -59,17 +54,15 @@ const match = <A, B>(onRight: (a: A) => B, onLeft: (e: Error) => B) => (
 ) =>
   safeItem._tag === "Right" ? onRight(safeItem.right) : onLeft(safeItem.left);
 //
-const fromSafeDB = (safeItem: Either<Error, Deps<Json>[]>) =>
-  match<Deps<Json>[], Deps<Json>[]>(
+const fromSafeDB = (safeItem: Either<Error, Deps[]>) =>
+  match<Deps[], Deps[]>(
     (a) => a,
     (_e) => []
   )(safeItem);
 
 //
-const mapSafe = <A>(
-  safeItem: Either<Error, Deps<Json>[]>,
-  select: (db: Deps<Json>) => A
-) => (safeItem._tag === "Right" ? safeItem.right.map(select) : []);
+const mapSafe = <A>(safeItem: Either<Error, Deps[]>, select: (db: Deps) => A) =>
+  safeItem._tag === "Right" ? safeItem.right.map(select) : [];
 /**
  * Get Queries
  */
@@ -148,18 +141,19 @@ ipcMain.handle("postSettings", async (_event, ...args) => {
    * Get Queries
    */
   const queries = args[0];
-  const { program, user } = queries ?? { user: "unknown", program: "unknown" };
+
+  const { nameOfProgram, user }: Queries = queries;
+
   /**
    * Get New Settings
    */
-  const newSettings = args[1];
-  console.log({ program, user, newSettings });
+  const newSettings = args[1] as Settings;
   /**
    * Query Settings
    */
   const indexOfSettings = fromSafeDB(safeDB).findIndex(
     ({ nameOfProgram, user: thisUser }) =>
-      nameOfProgram === program && thisUser === user
+      nameOfProgram === nameOfProgram && thisUser === user
   );
   /**
    * Post
@@ -174,11 +168,18 @@ ipcMain.handle("postSettings", async (_event, ...args) => {
     statusText: "No action by the server.",
   };
 
-  //
+  /**
+   * Return
+   */
   if (indexOfSettings < 0) {
     res = {
       status: 400,
       statusText: "User has not settings for this program.",
+    };
+  } else if (nameOfProgram === null || user === null) {
+    res = {
+      status: 400,
+      statusText: "Queries must have values.",
     };
   } else if (
     newSettings === undefined ||
@@ -189,7 +190,14 @@ ipcMain.handle("postSettings", async (_event, ...args) => {
       statusText: "New settings don't match type of previous ones.",
     };
   } else {
-    const post = await modifyDepsOnJsonFile(program, user)(newSettings)();
+    const post = await modifyDepsOnJsonFile(
+      nameOfProgram,
+      user
+    )({
+      nameOfProgram,
+      user,
+      ...newSettings,
+    } as Deps)();
     res = match<
       void,
       {
@@ -208,8 +216,5 @@ ipcMain.handle("postSettings", async (_event, ...args) => {
     )(post);
   }
 
-  /**
-   * Return
-   */
   return res;
 });

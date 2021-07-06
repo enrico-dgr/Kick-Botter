@@ -14,7 +14,7 @@ export const App = (props: Props) => {
    * States
    */
   const [user, setUser] = React.useState<string>("unknown");
-  const [program, setProgram] = React.useState<string>("unknown");
+  const [nameOfProgram, setNameOfProgram] = React.useState<string>("unknown");
   const [settings, setStateOfSettings] = React.useState({});
   /**
    * Fetch new settings
@@ -24,6 +24,7 @@ export const App = (props: Props) => {
       ipcRenderer.sendSync("getSettings", { user: user_, program: program_ }) ??
       {};
     setStateOfSettings((_pv) => settings_);
+    setButtonColor((_pv) => baseColor());
   };
   /**
    *  util
@@ -34,12 +35,12 @@ export const App = (props: Props) => {
    */
   const saveSettings = async (
     user_: string,
-    program_: string,
+    nameOfProgram_: string,
     settings: {}
   ) => {
     const res = (await ipcRenderer.invoke(
       "postSettings",
-      { user: user_, program: program_ },
+      { user: user_, nameOfProgram: nameOfProgram_ },
       settings
     )) as Response;
     //
@@ -72,7 +73,7 @@ export const App = (props: Props) => {
         defaultMessage="Select a User"
         onChange={(v) => {
           setUser((_pv) => v);
-          fetchSettings(v, program);
+          fetchSettings(v, nameOfProgram);
         }}
       />
       <Queries
@@ -81,7 +82,7 @@ export const App = (props: Props) => {
         queries={props.programs}
         defaultMessage="Select a Program"
         onChange={(v) => {
-          setProgram((_pv) => v);
+          setNameOfProgram((_pv) => v);
           fetchSettings(user, v);
         }}
       />
@@ -89,11 +90,14 @@ export const App = (props: Props) => {
 
       <button
         disabled={areSettingsAvailable() === false}
-        color={buttonColor}
+        style={{
+          backgroundColor: buttonColor,
+        }}
         onClick={() => {
-          setButtonColor(goodResponseColor);
-          saveSettings(user, program, settings).then((a) =>
-            setButtonColor(a !== 200 ? goodResponseColor : badReponseColor)
+          saveSettings(user, nameOfProgram, settings).then((a) =>
+            setButtonColor((_pv) =>
+              a === 200 ? goodResponseColor() : badReponseColor()
+            )
           );
         }}
       >

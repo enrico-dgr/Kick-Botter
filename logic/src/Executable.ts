@@ -29,12 +29,21 @@ export type NamesOfPrograms = keyof typeof EnumNamesOfPrograms;
 /**
  *
  */
-export type Deps<R extends J.Json> = J.Json & {
-  nameOfProgram: NamesOfPrograms | null;
+export type Settings<R extends J.Json = J.Json> = {
   programOptions: R;
-  user: null | string;
   launchOptions: LaunchOptions;
 };
+/**
+ *
+ */
+export type Queries = {
+  nameOfProgram: NamesOfPrograms | null;
+  user: null | string;
+};
+/**
+ *
+ */
+export type Deps<R extends J.Json = J.Json> = J.Json & Queries & Settings<R>;
 
 /**
  *
