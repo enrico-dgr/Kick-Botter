@@ -1,7 +1,17 @@
 var path = require("path");
+/**
+ *
+ */
 
+function isNotPackaging() {
+  return process.env.NODE_ENV !== "packaging";
+}
+
+/**
+ *
+ */
 module.exports = {
-  watch: true,
+  watch: isNotPackaging(),
   target: "electron-renderer",
   mode: "development",
   devtool: "inline-source-map",
@@ -12,7 +22,7 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname, isNotPackaging() ? "build" : "KickBotter"),
     filename: "[name].js",
   },
   resolve: {

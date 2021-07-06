@@ -10,4 +10,5 @@ deps.json
 **/basket
 **/local
 **/playground
-react-nodegui-starter
+out
+KickBotter
