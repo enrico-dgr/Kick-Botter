@@ -1,7 +1,9 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 
-import { Deps, EnumNamesOfPrograms, getJson } from '../../logic/src/Executable';
+import {
+    Deps, EnumNamesOfPrograms, getJson, modifyDepsOnJsonFile
+} from '../../logic/src/Executable';
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -52,8 +54,17 @@ interface JsonArray extends ReadonlyArray<Json> {}
 const array_unique = <A>(user: A, index: number, arr: A[]) =>
   arr.indexOf(user) === index;
 //
-const fromSafe = (safeItem: Either<Error, Deps<Json>[]>) =>
-  safeItem._tag === "Right" ? safeItem.right : [];
+const match = <A, B>(onRight: (a: A) => B, onLeft: (e: Error) => B) => (
+  safeItem: Either<Error, A>
+) =>
+  safeItem._tag === "Right" ? onRight(safeItem.right) : onLeft(safeItem.left);
+//
+const fromSafeDB = (safeItem: Either<Error, Deps<Json>[]>) =>
+  match<Deps<Json>[], Deps<Json>[]>(
+    (a) => a,
+    (_e) => []
+  )(safeItem);
+
 //
 const mapSafe = <A>(
   safeItem: Either<Error, Deps<Json>[]>,
@@ -63,7 +74,6 @@ const mapSafe = <A>(
  * Get Queries
  */
 ipcMain.on("getQueries", (event, _args) => {
-  //
   /**
    * Get DB of Settings
    */
@@ -98,7 +108,6 @@ ipcMain.on("getQueries", (event, _args) => {
  * Get Settings
  */
 ipcMain.on("getSettings", (event, ...args) => {
-  //
   /**
    * Get DB of Settings
    */
@@ -111,7 +120,7 @@ ipcMain.on("getSettings", (event, ...args) => {
   /**
    * Query Settings
    */
-  const settings = fromSafe(safeDB).find(
+  const settings = fromSafeDB(safeDB).find(
     ({ nameOfProgram, user: thisUser }) =>
       nameOfProgram === program && thisUser === user
   );
@@ -126,4 +135,81 @@ ipcMain.on("getSettings", (event, ...args) => {
         }
       : {};
   event.returnValue = res;
+});
+/**
+ * Post Settings
+ */
+ipcMain.handle("postSettings", async (_event, ...args) => {
+  /**
+   * Get DB of Settings
+   */
+  const safeDB = getJson();
+  /**
+   * Get Queries
+   */
+  const queries = args[0];
+  const { program, user } = queries ?? { user: "unknown", program: "unknown" };
+  /**
+   * Get New Settings
+   */
+  const newSettings = args[1];
+  console.log({ program, user, newSettings });
+  /**
+   * Query Settings
+   */
+  const indexOfSettings = fromSafeDB(safeDB).findIndex(
+    ({ nameOfProgram, user: thisUser }) =>
+      nameOfProgram === program && thisUser === user
+  );
+  /**
+   * Post
+   */
+  // default res
+  type Response = {
+    status: number;
+    statusText?: string;
+  };
+  let res: Response = {
+    status: 500,
+    statusText: "No action by the server.",
+  };
+
+  //
+  if (indexOfSettings < 0) {
+    res = {
+      status: 400,
+      statusText: "User has not settings for this program.",
+    };
+  } else if (
+    newSettings === undefined ||
+    typeof newSettings !== typeof fromSafeDB(safeDB)[indexOfSettings]
+  ) {
+    res = {
+      status: 400,
+      statusText: "New settings don't match type of previous ones.",
+    };
+  } else {
+    const post = await modifyDepsOnJsonFile(program, user)(newSettings)();
+    res = match<
+      void,
+      {
+        status: number;
+        statusText: string | undefined;
+      }
+    >(
+      () => ({
+        status: 200,
+        statusText: undefined,
+      }),
+      (e) => ({
+        status: 500,
+        statusText: e.message,
+      })
+    )(post);
+  }
+
+  /**
+   * Return
+   */
+  return res;
 });

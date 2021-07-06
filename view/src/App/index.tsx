@@ -19,15 +19,52 @@ export const App = (props: Props) => {
   /**
    * Fetch new settings
    */
-  const fetchSettings = (user: string, program: string) => {
-    const settings_ = ipcRenderer.sendSync("getSettings", { user, program });
+  const fetchSettings = (user_: string, program_: string) => {
+    const settings_ =
+      ipcRenderer.sendSync("getSettings", { user: user_, program: program_ }) ??
+      {};
     setStateOfSettings((_pv) => settings_);
   };
+  /**
+   *  util
+   */
+  const areSettingsAvailable = () => Object.keys(settings).length > 0;
+  /**
+   * Save Settings
+   */
+  const saveSettings = async (
+    user_: string,
+    program_: string,
+    settings: {}
+  ) => {
+    const res = (await ipcRenderer.invoke(
+      "postSettings",
+      { user: user_, program: program_ },
+      settings
+    )) as Response;
+    //
+    if (res.status !== 200) {
+      console.error({
+        status: res.status,
+        statusText: res.statusText,
+      });
+      return res.status;
+    }
+    return res.status;
+  };
+  /**
+   * Graphic Responses
+   */
+  const baseColor = () => "#f3f3f0";
+  const goodResponseColor = () => "#9ffca3";
+  const badReponseColor = () => "#ff5858";
+  const [buttonColor, setButtonColor] = React.useState<string>(baseColor());
   /**
    *
    */
   return (
     <div>
+      {/* Queries */}
       <Queries
         name="users"
         id="users"
@@ -48,10 +85,30 @@ export const App = (props: Props) => {
           fetchSettings(user, v);
         }}
       />
-      <DisplaySettings
-        settings={settings}
-        onChange={(pv) => setStateOfSettings(pv)}
-      />
+      {/* Editor */}
+
+      <button
+        disabled={areSettingsAvailable() === false}
+        color={buttonColor}
+        onClick={() => {
+          setButtonColor(goodResponseColor);
+          saveSettings(user, program, settings).then((a) =>
+            setButtonColor(a !== 200 ? goodResponseColor : badReponseColor)
+          );
+        }}
+      >
+        Save settings
+      </button>
+      {areSettingsAvailable() ? (
+        <>
+          <DisplaySettings
+            settings={settings}
+            onChange={(pv) => setStateOfSettings(pv)}
+          />
+        </>
+      ) : (
+        <p>This user has no settings for this program yet.</p>
+      )}
     </div>
   );
 };
