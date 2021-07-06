@@ -97,7 +97,7 @@ ipcMain.on("getQueries", (event, _args) => {
 /**
  * Get Settings
  */
-ipcMain.on("getSettings", (event, args) => {
+ipcMain.on("getSettings", (event, ...args) => {
   //
   /**
    * Get DB of Settings
@@ -106,7 +106,8 @@ ipcMain.on("getSettings", (event, args) => {
   /**
    * Get Queries
    */
-  const { program, user } = args[0];
+  const queries = args[0];
+  const { program, user } = queries ?? { user: "unknown", program: "unknown" };
   /**
    * Query Settings
    */

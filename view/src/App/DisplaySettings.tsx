@@ -8,6 +8,7 @@ type GenericSettings = {
  */
 type Props<Settings extends GenericSettings> = {
   settings: Settings;
+  onChange?: (settings: Settings) => void;
 };
 /**
  *
@@ -21,12 +22,6 @@ type RenderedSetting<
 export const DisplaySettings = <Settings extends GenericSettings>(
   props: Props<Settings>
 ): RenderedSetting<Settings> => {
-  /**
-   * State of Settings
-   */
-  const [stateOfSettings, setStateOfSettingsHook] = React.useState<Settings>(
-    props.settings
-  );
   /**
    * Change not-object property by providing an array of keys
    * of the nested objects and property.
@@ -68,17 +63,17 @@ export const DisplaySettings = <Settings extends GenericSettings>(
     /**
      *
      */
-    setStateOfSettingsHook((previousState) => mutateRecur(keys, previousState));
+    if (props.onChange) props.onChange(mutateRecur(keys, props.settings));
   };
   /**
    * Renderer
    */
   const display = (
-    settings: GenericSettings,
+    settings: GenericSettings = {},
     map: string[] = []
   ): RenderedSetting<Settings>[] => {
     /**
-     *
+     * util
      */
     const match = <A, B, C>(
       onBoolean: (b: boolean) => A,
@@ -98,28 +93,39 @@ export const DisplaySettings = <Settings extends GenericSettings>(
      *
      */
     let buffer: RenderedSetting<Settings>[] = [];
-
-    Object.keys(settings).forEach((key) => {
+    /**
+     * Display recursively
+     */
+    Object.keys(settings ?? {}).forEach((key) => {
       let setting = settings[key];
       const mapOfKeys = [...map, key];
 
       if (typeof setting === "object") {
+        /**
+         * New list at object (notice, this works for arrays too
+         * with numbered properties)
+         */
         buffer.push(
           <ul key={mapOfKeys.toString()}>
             {key}: {display(setting, mapOfKeys)}
           </ul>
         );
       } else {
+        /**
+         * List property
+         */
         buffer.push(
           <li key={key}>
             {key}:
             {
               <input
+                //
                 type={match(
                   (_b) => "checkbox",
                   (_n) => "number",
                   (_s) => "text"
                 )(setting)}
+                // value
                 {...{
                   [match(
                     (_b) => "checked",
@@ -127,6 +133,7 @@ export const DisplaySettings = <Settings extends GenericSettings>(
                     (_s) => `value`
                   )(setting)]: setting,
                 }}
+                //
                 onChange={(e) =>
                   setStateOfSettings(
                     match(
@@ -156,6 +163,8 @@ export const DisplaySettings = <Settings extends GenericSettings>(
      */
     return buffer;
   };
-
-  return <ul>{display(stateOfSettings)}</ul>;
+  /**
+   *
+   */
+  return <ul>{display(props.settings)}</ul>;
 };
