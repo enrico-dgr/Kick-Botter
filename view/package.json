@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "copyFiles": "ts-node ./Scripts/copyFiles.ts",
-    "build:webpack": "npx webpack --config webpack.config.js && npm run copyFiles",
+    "copyFilesToBuild": "ts-node ./Scripts/copyFilesToBuild.ts",
+    "build:webpack": "npx webpack --config webpack.config.js && npm run copyFilesToBuild",
     "start:electron": "electron ./build/view/src/index.js",
     "start": "concurrently \"npm:build:webpack\" \"npm:start:electron\"  ",
     "build:package": "tsc -p tsconfig.build-package.json",
