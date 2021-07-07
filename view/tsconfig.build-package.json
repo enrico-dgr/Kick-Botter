@@ -2,6 +2,7 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "watch": false,
-    "outDir": "./KickBotter"
+    "outDir": "./KickBotter",
+    "sourceMap": false
   }
 }

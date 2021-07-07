@@ -10,6 +10,7 @@
     "./src/style.ts",
     "./src/App",
     "./src/preload.ts",
-    "./src/AppPreload"
+    "./src/AppPreload",
+    "./Scripts"
   ]
 }

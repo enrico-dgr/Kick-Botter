@@ -17,7 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "stripInternal": true,
-    "declaration": true,
+    "declaration": false,
     "typeRoots": ["./node_modules/@types", "../logic/node_modules/@types"]
   },
   "include": ["./src", "./Scripts"],
