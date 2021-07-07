@@ -2,19 +2,15 @@ import * as fs from 'fs';
 import { join, relative, resolve } from 'path';
 
 /**
- * ENV
- */
-function isNotPackaging() {
-  return process.env.NODE_ENV !== "packaging";
-}
-
-/**
  * CONSTANTS
  */
-const BUILD_PATH: () => string = () =>
-  `../${isNotPackaging() ? "build" : "KickBotter"}`;
+const BUILD_PATH: string = `../KickBotter`;
 //
-const pathsToCopy: string[] = ["../src/index.html", "../assets"];
+const pathsToCopy: string[] = [
+  "../src/index.html",
+  "../assets",
+  "../src/logic",
+];
 // --------------------------------
 // Script
 // --------------------------------
@@ -22,7 +18,7 @@ const relativePath = (path: string) =>
   relative(resolve(__dirname, "../.."), resolve(__dirname, path));
 //
 const buildPath = (relativePath_: string) =>
-  resolve(__dirname, BUILD_PATH(), relativePath(relativePath_));
+  resolve(__dirname, BUILD_PATH, relativePath(relativePath_));
 /**
  * Copy Dir
  */

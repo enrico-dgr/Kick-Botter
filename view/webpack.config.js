@@ -6,7 +6,6 @@ var path = require("path");
 function isNotPackaging() {
   return process.env.NODE_ENV !== "packaging";
 }
-
 /**
  *
  */
@@ -22,10 +21,7 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(
-      __dirname,
-      isNotPackaging() ? "build" : "KickBotter" + "/view/src"
-    ),
+    path: path.resolve(__dirname, "KickBotter/view/src"),
     filename: "[name].js",
   },
   resolve: {

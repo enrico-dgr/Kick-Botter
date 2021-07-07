@@ -7,11 +7,10 @@
     "build": "tsc -p tsconfig.build.json",
     "copyFilesToBuild": "ts-node ./Scripts/copyFilesToBuild.ts",
     "build:webpack": "npm run copyFilesToBuild && npx webpack --config webpack.config.js",
-    "start:electron": "electron ./build/view/src/index.js",
+    "start:electron": "electron ./KickBotter/view/src/index.js",
     "start": "concurrently \"npm:build:webpack\" \"npm:start:electron\"  ",
     "build:package": "tsc -p tsconfig.build-package.json",
-    "postbuild:package": "export NODE_ENV=packaging && npm run build:webpack",
-    "package": "npm run build:package",
+    "package": "export NODE_ENV=packaging && npm run build:package && npm run build:webpack",
     "make": "cd ./KickBotter && npm run make",
     "prod": "npm run package && npm run make",
     "tryPackage": "cd ./KickBotter && npm run start"

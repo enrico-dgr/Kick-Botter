@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
+    "outDir": "./KickBotter",
     "watch": true
   },
   "include": ["./src/*", "../logic/src"],
