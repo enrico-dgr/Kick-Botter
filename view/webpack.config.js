@@ -21,7 +21,14 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, "KickBotter/view/src"),
+    path: path.resolve(
+      __dirname,
+      "KickBotter",
+      path.relative(
+        path.resolve(__dirname, ".."),
+        path.resolve(__dirname, "./src")
+      )
+    ),
     filename: "[name].js",
   },
   resolve: {

@@ -8,7 +8,7 @@
     "copyFilesOfView": "ts-node ./Scripts/copyFilesOfView.ts",
     "build:view": "npm run copyFilesOfView && npx webpack --config webpack.config.js",
     "build": "npm run build:logic && npm run build:view",
-    "start": "electron ./KickBotter/view/src/index.js",
+    "start": "electron ./KickBotter",
     "build:prod:logic": "tsc -p tsconfig.build-package.json",
     "clean:build": "rimraf ./KickBotter/logic ./KickBotter/view",
     "prebuild:prod": "npm run clean:build",
