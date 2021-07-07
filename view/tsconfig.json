@@ -18,7 +18,7 @@
     "forceConsistentCasingInFileNames": true,
     "stripInternal": true,
     "declaration": true,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "../logic/node_modules/@types"]
   },
   "include": ["./src"],
   "exclude": ["node_modules", "**/node_modules/*", "build"]
