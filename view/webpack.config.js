@@ -22,7 +22,10 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, isNotPackaging() ? "build" : "KickBotter"),
+    path: path.resolve(
+      __dirname,
+      isNotPackaging() ? "build" : "KickBotter" + "/view/src"
+    ),
     filename: "[name].js",
   },
   resolve: {

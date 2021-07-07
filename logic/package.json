@@ -2,11 +2,11 @@
   "name": "logic",
   "version": "1.0.0",
   "description": "bot's logic, programs",
-  "main": "index.js",
+  "main": "./src/index.ts",
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json",
     "test": "jest",
-    "ts:start": "ts-node src/index.ts",
+    "ts:cli": "ts-node src/index.ts",
     "ts:listPrograms": "ts-node src/Scripts/listPrograms.ts",
     "ts:eg": "ts-node playground/index.ts",
     "dev:build": "tsc -b"

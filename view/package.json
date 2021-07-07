@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "copyFiles": "ts-node ./Scripts/copyFiles.ts",
+    "build:webpack": "npx webpack --config webpack.config.js && npm run copyFiles",
     "start:electron": "electron ./build/view/src/index.js",
-    "build:webpack": "npx webpack --config webpack.config.js",
-    "start": "concurrently \"npm:start:electron\" \"npm:build:webpack\" ",
-    "dev:build": "tsc -b",
+    "start": "concurrently \"npm:build:webpack\" \"npm:start:electron\"  ",
     "build:package": "tsc -p tsconfig.build-package.json",
     "postbuild:package": "export NODE_ENV=packaging && npm run build:webpack",
     "package": "npm run build:package",

@@ -1,23 +1,21 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 
-import {
-    Deps, EnumNamesOfPrograms, getJson, modifyDepsOnJsonFile, Queries, Settings
-} from '../../logic/src/Executable';
+import { Executable } from './logic';
 
 function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, "../../preload"),
+      preload: path.join(__dirname, "./preload"),
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
     },
   });
 
-  win.loadFile(path.join(__dirname, "../../index.html"));
+  win.loadFile(path.join(__dirname, "./index.html"));
 }
 
 /**
@@ -54,15 +52,17 @@ const match = <A, B>(onRight: (a: A) => B, onLeft: (e: Error) => B) => (
 ) =>
   safeItem._tag === "Right" ? onRight(safeItem.right) : onLeft(safeItem.left);
 //
-const fromSafeDB = (safeItem: Either<Error, Deps[]>) =>
-  match<Deps[], Deps[]>(
+const fromSafeDB = (safeItem: Either<Error, Executable.Deps[]>) =>
+  match<Executable.Deps[], Executable.Deps[]>(
     (a) => a,
     (_e) => []
   )(safeItem);
 
 //
-const mapSafe = <A>(safeItem: Either<Error, Deps[]>, select: (db: Deps) => A) =>
-  safeItem._tag === "Right" ? safeItem.right.map(select) : [];
+const mapSafe = <A>(
+  safeItem: Either<Error, Executable.Deps[]>,
+  select: (db: Executable.Deps) => A
+) => (safeItem._tag === "Right" ? safeItem.right.map(select) : []);
 /**
  * Get Queries
  */
@@ -70,11 +70,11 @@ ipcMain.on("getQueries", (event, _args) => {
   /**
    * Get DB of Settings
    */
-  const safeDB = getJson();
+  const safeDB = Executable.getJson();
   /**
    * Get Programs
    */
-  let programs = Object.keys(EnumNamesOfPrograms);
+  let programs = Object.keys(Executable.EnumNamesOfPrograms);
   programs = programs.slice(
     programs.length % 2 === 0
       ? programs.length * 0.5
@@ -104,7 +104,7 @@ ipcMain.on("getSettings", (event, ...args) => {
   /**
    * Get DB of Settings
    */
-  const safeDB = getJson();
+  const safeDB = Executable.getJson();
   /**
    * Get Queries
    */
@@ -136,18 +136,18 @@ ipcMain.handle("postSettings", async (_event, ...args) => {
   /**
    * Get DB of Settings
    */
-  const safeDB = getJson();
+  const safeDB = Executable.getJson();
   /**
    * Get Queries
    */
   const queries = args[0];
 
-  const { nameOfProgram, user }: Queries = queries;
+  const { nameOfProgram, user }: Executable.Queries = queries;
 
   /**
    * Get New Settings
    */
-  const newSettings = args[1] as Settings;
+  const newSettings = args[1] as Executable.Settings;
   /**
    * Query Settings
    */
@@ -190,14 +190,14 @@ ipcMain.handle("postSettings", async (_event, ...args) => {
       statusText: "New settings don't match type of previous ones.",
     };
   } else {
-    const post = await modifyDepsOnJsonFile(
+    const post = await Executable.modifyDepsOnJsonFile(
       nameOfProgram,
       user
     )({
       nameOfProgram,
       user,
       ...newSettings,
-    } as Deps)();
+    } as Executable.Deps)();
     res = match<
       void,
       {

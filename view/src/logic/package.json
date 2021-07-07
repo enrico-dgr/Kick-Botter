@@ -1,0 +1,5 @@
+{
+  "main": "../../../logic/src/index",
+  "module": "../../../logic/src/index",
+  "typings": "../../../logic/src/index"
+}
