@@ -44,7 +44,12 @@ export type Queries = {
  *
  */
 export type Deps<R extends J.Json = J.Json> = J.Json & Queries & Settings<R>;
-
+/**
+ * Options Of Inject
+ */
+export type OptionsOfInject = {
+  userDataDirBasePath?: string;
+};
 /**
  *
  */
@@ -85,10 +90,10 @@ export const execute = <R extends J.Json, A>(executable: Executable<R, A>) =>
 
 export const launchOptions = {
   userDataDir: (user: string | null) =>
-    `src/../userDataDirs/folders/${user ?? "generic"}`,
+    path.resolve(__dirname, `../userDataDirs/${user ?? "generic"}`),
   default: {
     headless: false,
-    userDataDir: `src/../userDataDirs/folders/generic`,
+    userDataDir: path.resolve(__dirname, `../userDataDirs/generic`),
     args: [
       "--lang=it",
       "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36",
