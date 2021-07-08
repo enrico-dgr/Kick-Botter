@@ -2,7 +2,9 @@ import { ipcRenderer } from 'electron';
 import * as React from 'react';
 
 import { DisplaySettings } from './DisplaySettings';
+import { GetText } from './GetText';
 import { Queries } from './Queries';
+import { RunProgram } from './RunProgram';
 
 export type Props = {
   users: string[];
@@ -49,7 +51,6 @@ export const App = (props: Props) => {
         status: res.status,
         statusText: res.statusText,
       });
-      return res.status;
     }
     return res.status;
   };
@@ -63,19 +64,29 @@ export const App = (props: Props) => {
   /**
    *
    */
+  const [listUsers, setListUsers] = React.useState<string[]>(props.users);
+  const updateListUsers = (value: string) => {
+    if (listUsers.indexOf(value) < 0) setListUsers((pv) => [value, ...pv]);
+  };
   return (
     <div>
       {/* Queries */}
-      <Queries
-        name="users"
-        id="users"
-        queries={props.users}
-        defaultMessage="Select a User"
-        onChange={(v) => {
-          setUser((_pv) => v);
-          fetchSettings(v, nameOfProgram);
-        }}
-      />
+      <div>
+        <Queries
+          name="users"
+          id="users"
+          queries={listUsers}
+          defaultMessage="Select a User"
+          onChange={(v) => {
+            setUser((_pv) => v);
+            fetchSettings(v, nameOfProgram);
+          }}
+        />
+        <GetText
+          buttonText="Add User"
+          onClick={(value) => updateListUsers(value)}
+        />
+      </div>
       <Queries
         name="programs"
         id="programs"
@@ -103,6 +114,11 @@ export const App = (props: Props) => {
       >
         Save settings
       </button>
+      <RunProgram
+        user={user}
+        nameOfProgram={nameOfProgram}
+        disabled={user === "unknown" || nameOfProgram === "unknown"}
+      />
       {areSettingsAvailable() ? (
         <>
           <DisplaySettings

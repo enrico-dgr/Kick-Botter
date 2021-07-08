@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 
-import { Executable } from './logic';
+import { Executable, runProgram } from './logic';
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -38,7 +38,7 @@ app.on("window-all-closed", function () {
 // Channels
 // --------------------------------
 /**
- * needed types to avoid conflicts
+ * needed types
  */
 type Either<E, A> = { _tag: "Left"; left: E } | { _tag: "Right"; right: A };
 /**
@@ -108,6 +108,7 @@ ipcMain.on("getSettings", (event, ...args) => {
   /**
    * Get Queries
    */
+
   const queries = args[0];
   const { program, user } = queries ?? { user: "unknown", program: "unknown" };
   /**
@@ -216,5 +217,50 @@ ipcMain.handle("postSettings", async (_event, ...args) => {
     )(post);
   }
 
+  return res;
+});
+/**
+ * Run Program
+ */
+ipcMain.handle("runProgram", async (_event, ...args) => {
+  /**
+   * Get Queries
+   */
+  const queries = args[0];
+
+  const { nameOfProgram, user }: Executable.Queries = queries;
+
+  /**
+   * Run Program && Return
+   */
+  // default res
+  type Response = {
+    status: number;
+    statusText?: string;
+  };
+  let res: Response = {
+    status: 500,
+    statusText: "No action by the server.",
+  };
+
+  if (nameOfProgram === null || user === null) {
+    res = {
+      status: 400,
+      statusText: "Queries must have values.",
+    };
+  } else {
+    const err = await runProgram(nameOfProgram, user).catch((err) =>
+      JSON.stringify(err)
+    );
+    typeof err !== "string"
+      ? (res = {
+          status: 200,
+          statusText: undefined,
+        })
+      : (res = {
+          status: 400,
+          statusText: err,
+        });
+  }
   return res;
 });
