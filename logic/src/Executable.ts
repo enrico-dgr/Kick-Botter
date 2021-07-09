@@ -154,32 +154,9 @@ export const getJson = <R extends J.Json>() =>
     )
   );
 /**
- * @todo remove `parseToFormattedJson`, `postToJsonFile`
- * at launch-page@1.0.7 with library functions
+ *
  */
-const parseToFormattedJson = <A>(a: A) =>
-  pipe(
-    J.stringify<A>(a),
-    E.map((stringified) => JSON.stringify(JSON.parse(stringified), null, 2))
-  );
-//
-const postToJsonFile = <A extends J.Json>(pathToJsonFile: string) => (a: A) =>
-  pipe(
-    parseToFormattedJson(a),
-    E.map((strinfied) => fs.writeFileSync(pathToJsonFile, strinfied)),
-    E.orElse<Error, void, Error>((e) =>
-      E.left(
-        new Error(
-          "-Some error while writing to a json-file.\n" +
-            "-Writing error: \n" +
-            "--" +
-            e.message
-        )
-      )
-    )
-  );
-//
-const setJson = <R extends J.Json>() => postToJsonFile<Deps<R>[]>(INJS);
+const setJson = <R extends J.Json>() => JF.postToJsonFile<Deps<R>[]>(INJS);
 /**
  *
  */
