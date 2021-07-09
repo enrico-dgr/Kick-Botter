@@ -14,9 +14,6 @@
     "build:prod:logic": "tsc -p tsconfig.build-package.json",
     "prebuild:prod": "npm run clean:build",
     "build:prod": "export NODE_ENV=packaging && npm run build:prod:logic && npm run build:view",
-    "postbuild:prod": "cd ./KickBotter && npm install",
-    "clean:forge": "rimraf ./KickBotter/node_modules",
-    "preforge:build": "npm run clean:forge",
     "forge:build": "npm run build:prod && cd ./KickBotter && npm run make",
     "forge:start": "cd ./KickBotter && npm run start"
   },
