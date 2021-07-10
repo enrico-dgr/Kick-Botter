@@ -6,11 +6,7 @@ import { join, relative, resolve } from 'path';
  */
 const BUILD_PATH: string = `../KickBotter`;
 //
-const pathsToCopy: string[] = [
-  "../src/index.html",
-  "../assets",
-  "../src/logic",
-];
+const pathsToCopy: string[] = ["../src/index.html", "../src/logic"];
 // --------------------------------
 // Script
 // --------------------------------
