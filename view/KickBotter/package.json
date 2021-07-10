@@ -70,7 +70,8 @@
               "owner": "enrico-dgr",
               "name": "Kick-Botter"
             }
-          }
+          },
+          "draft": true
         }
       ]
     }
