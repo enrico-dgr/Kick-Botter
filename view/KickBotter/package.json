@@ -67,8 +67,8 @@
           ],
           "config": {
             "repository": {
-              "owner": "Enrico Di Grazia",
-              "name": "Kick Botter"
+              "owner": "enrico-dgr",
+              "name": "Kick-Botter"
             }
           }
         }

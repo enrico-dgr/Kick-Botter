@@ -15,10 +15,11 @@
     "prebuild:prod": "npm run clean:build",
     "build:prod": "export NODE_ENV=packaging && npm run build:prod:logic && npm run build:view",
     "forge:build": "npm run build:prod && cd ./KickBotter && npm run make",
+    "forge:publish": "npm run build:prod && cd ./KickBotter && npm run publish",
     "forge:start": "cd ./KickBotter && npm run start"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",
     "@types/cors": "^2.8.10",
