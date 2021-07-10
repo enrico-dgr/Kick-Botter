@@ -4,8 +4,10 @@ import * as TE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import { jsonFiles, readline, WebDeps, WebProgram as WP } from 'launch-page/lib/index';
 import * as J from 'launch-page/lib/Json';
+import path from 'path';
 
 import { BotOfTelegram, Socialgift, SocialMoney } from './BotsOfTelegram';
+import { StateOfCycle } from './BotsOfTelegram/botsOfTelegram';
 import { Deps, jsonExecutable, launchOptions, NamesOfPrograms } from './Executable';
 import { freeFollowerPlan as freeFollowerPlan_ } from './MrInsta/index';
 
@@ -56,7 +58,11 @@ const pathOfLogs = (
   user: string | null,
   program: NamesOfPrograms,
   fileName: string
-) => `src/logs/${user !== null ? user : "generic"}/${program}/${fileName}`;
+) =>
+  path.resolve(
+    __dirname,
+    `../logs/${user !== null ? user : "generic"}/${program}/${fileName}`
+  );
 /**
  *
  */
@@ -142,43 +148,55 @@ export const socialgiftExec = (user: string | null) =>
 // SocialMoney
 // -----------------------
 type OptionsOfSocialMoney = BotOfTelegram.Options<SocialMoney.CustomStringLiteralOfActions>;
-const socialmoney = (user: string | null) => (options: OptionsOfSocialMoney) =>
-  BotOfTelegram.bot({
-    language: "it",
-    nameOfBot: "SocialMoney",
-    loggers: {
-      Confirm: [(report) => TE.of(console.log(report))],
-      Skip: [
-        (report) =>
-          appendLog(
-            user,
-            "SocialMoney",
-            "skip.json"
-          )(
-            typeof report.infosForAction === "string"
-              ? { ...report, infosForAction: report.infosForAction }
-              : { ...report, infosForAction: report.infosForAction.href }
-          ),
-      ],
-      End: [
-        (report) =>
-          appendLog(
-            user,
-            "SocialMoney",
-            "end.json"
-          )(
-            typeof report.infosForAction === "string"
-              ? { ...report, infosForAction: report.infosForAction }
-              : { ...report, infosForAction: report.infosForAction.href }
-          ),
-      ],
-      Default: [
-        (report) =>
-          TE.of(console.log("Default: " + JSON.stringify(report, null, 2))),
-      ],
-    },
-    options,
-  });
+const socialmoney = (user: string | null) => (
+  options: OptionsOfSocialMoney
+): WP.WebProgram<
+  StateOfCycle<"Confirm" | "End", SocialMoney.OtherPropsInStateOfCycle>
+> =>
+  pipe(
+    BotOfTelegram.bot({
+      language: "it",
+      nameOfBot: "SocialMoney",
+      loggers: {
+        Confirm: [(report) => TE.of(console.log(report))],
+        Skip: [
+          (report) =>
+            appendLog(
+              user,
+              "SocialMoney",
+              "skip.json"
+            )(
+              typeof report.infosForAction === "string"
+                ? { ...report, infosForAction: report.infosForAction }
+                : { ...report, infosForAction: report.infosForAction.href }
+            ),
+        ],
+        End: [
+          (report) =>
+            appendLog(
+              user,
+              "SocialMoney",
+              "end.json"
+            )(
+              typeof report.infosForAction === "string"
+                ? { ...report, infosForAction: report.infosForAction }
+                : { ...report, infosForAction: report.infosForAction.href }
+            ),
+        ],
+        Default: [
+          (report) =>
+            TE.of(console.log("Default: " + JSON.stringify(report, null, 2))),
+        ],
+      },
+      options,
+    }),
+    WP.orElse((_e) =>
+      pipe(
+        WP.fromIO(() => console.log(_e)),
+        WP.chain(() => socialmoney(user)(options))
+      )
+    )
+  );
 
 const defaultDepsOfSocialMoney: Deps<OptionsOfSocialMoney> = {
   nameOfProgram: "SocialMoney",

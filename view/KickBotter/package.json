@@ -10,7 +10,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",
     "@electron-forge/maker-deb": "^6.0.0-beta.57",
@@ -18,12 +18,14 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.57",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.57",
     "@electron-forge/maker-zip": "^6.0.0-beta.57",
+    "@electron-forge/publisher-github": "^6.0.0-beta.57",
     "electron": "13.1.6"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "fp-ts": "^2.10.5",
-    "launch-page": "^1.0.9"
+    "launch-page": "^1.0.9",
+    "update-electron-app": "^2.0.1"
   },
   "config": {
     "forge": {
@@ -53,6 +55,20 @@
           "name": "@electron-forge/maker-dmg",
           "config": {
             "format": "ULFO"
+          }
+        }
+      ],
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "platforms": [
+            "darwin"
+          ],
+          "config": {
+            "repository": {
+              "owner": "Enrico Di Grazia",
+              "name": "Kick Botter"
+            }
           }
         }
       ]

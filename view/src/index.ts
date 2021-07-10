@@ -3,6 +3,7 @@ import path from 'path';
 
 import { Executable, runProgram } from './logic';
 
+require("update-electron-app")();
 function createWindow() {
   const win = new BrowserWindow({
     width: 1000,

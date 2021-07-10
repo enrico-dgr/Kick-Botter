@@ -1,1 +1,4 @@
-export { CustomStringLiteralOfActions } from "../socialmoney";
+export {
+  CustomStringLiteralOfActions,
+  OtherPropsInStateOfCycle,
+} from "../socialmoney";

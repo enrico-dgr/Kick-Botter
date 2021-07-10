@@ -33,7 +33,7 @@ type InfosFromAction = {};
 /**
  *
  */
-type OtherPropsInStateOfCycle = {
+export type OtherPropsInStateOfCycle = {
   /**
    * should be less than 5
    */
