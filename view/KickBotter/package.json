@@ -1,5 +1,6 @@
 {
   "name": "kickbotter",
+  "productName": "KickBotter",
   "version": "1.0.0",
   "main": "./view/src/index.js",
   "description": "Automated socials' actions",
