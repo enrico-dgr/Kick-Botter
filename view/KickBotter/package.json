@@ -37,7 +37,9 @@
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "kickbotter",
-            "exe": "KickBotter"
+            "exe": "KickBotter",
+            "authors": "Enrico Di Grazia",
+            "description": "Some automated browser program."
           }
         },
         {
@@ -51,7 +53,9 @@
           "config": {
             "options": {
               "maintainer": "enrico-dgr",
-              "homepage": "https://github.com/enrico-dgr/Kick-Botter"
+              "homepage": "https://github.com/enrico-dgr/Kick-Botter",
+              "description": "Some automated browser program.",
+              "productDescription": "Some automated browser program."
             }
           }
         },
