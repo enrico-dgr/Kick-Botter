@@ -4,6 +4,8 @@ on:
     types:
       - created
       - edited
+      - published
+      - released
 
 jobs:
   build_on_linux:
