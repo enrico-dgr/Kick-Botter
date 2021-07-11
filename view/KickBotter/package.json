@@ -35,8 +35,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "name": "KickBotter",
-        "executableName": "KickBotter",
+        "executableName": "kickbotter",
         "win32metadata": {
           "ProductName": "KickBotter"
         }
