@@ -1,7 +1,8 @@
 {
   "name": "view",
   "version": "1.0.0",
-  "description": "",
+  "description": "Automated actions for socials",
+  "author": "enrico-dgr",
   "main": "index.js",
   "scripts": {
     "build:logic": "tsc -p tsconfig.build.json",
@@ -19,7 +20,6 @@
     "forge:publish": "npm run build:prod && cd ./KickBotter && npm run publish",
     "forge:start": "cd ./KickBotter && npm run start"
   },
-  "author": "",
   "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",

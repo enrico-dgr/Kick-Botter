@@ -4,6 +4,7 @@ import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
+import { WebDeps } from 'launch-page';
 import * as J from 'launch-page/lib/Json';
 import * as JF from 'launch-page/lib/jsonFiles';
 import { LaunchOptions, launchPage } from 'launch-page/lib/Puppeteer';
@@ -204,10 +205,25 @@ const injectionFromJsonFile = <R extends J.Json>(
 /**
  *
  */
+const closeBrowserAtEnd = <A>(program: WP.WebProgram<A>) =>
+  pipe(
+    program,
+    WP.chainFirst(() =>
+      pipe(
+        WebDeps.browser,
+        WP.chain((browser) => WP.of(browser.close()))
+      )
+    )
+  );
+/**
+ *
+ */
 const runnerOfJsonExecutable = <R extends J.Json, A>(
   f: (i: R) => WP.WebProgram<A>
 ) => (D: Deps<R>) =>
-  startFrom(f(D.programOptions))(launchPage(D.launchOptions));
+  startFrom(closeBrowserAtEnd(f(D.programOptions)))(
+    launchPage(D.launchOptions)
+  );
 /**
  *
  */
