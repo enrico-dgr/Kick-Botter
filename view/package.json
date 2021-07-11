@@ -4,6 +4,9 @@
   "description": "Automated actions for socials",
   "author": "enrico-dgr",
   "main": "index.js",
+  "repository": {
+    "url": "https://github.com/enrico-dgr/Kick-Botter"
+  },
   "scripts": {
     "build:logic": "tsc -p tsconfig.build.json",
     "copyFilesOfView": "ts-node ./Scripts/copyFilesOfView.ts",

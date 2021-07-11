@@ -4,6 +4,9 @@
   "main": "./view/src/index.js",
   "description": "Automated socials' actions",
   "author": "enrico-dgr",
+  "repository": {
+    "url": "https://github.com/enrico-dgr/Kick-Botter"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron-forge start",
@@ -36,8 +39,6 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "kickbotter",
-            "exe": "KickBotter",
             "authors": "Enrico Di Grazia",
             "description": "Some automated browser program."
           }
