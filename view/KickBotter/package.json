@@ -35,7 +35,8 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "kickbotter"
+            "name": "kickbotter",
+            "exe": "KickBotter"
           }
         },
         {
@@ -46,7 +47,12 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "options": {
+              "maintainer": "enrico-dgr",
+              "homepage": "https://github.com/enrico-dgr/Kick-Botter"
+            }
+          }
         },
         {
           "name": "@electron-forge/maker-rpm",

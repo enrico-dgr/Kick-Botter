@@ -6,14 +6,15 @@
   "scripts": {
     "build:logic": "tsc -p tsconfig.build.json",
     "copyFilesOfView": "ts-node ./Scripts/copyFilesOfView.ts",
-    "build:view": "npm run copyFilesOfView && npx webpack --config webpack.config.js",
+    "build:view": "npm run copyFilesOfView && npx webpack --config webpack.config-dev.js",
     "clean:build": "rimraf ./KickBotter/logic ./KickBotter/view",
     "build": "npm run clean:build && npm run build:logic && npm run build:view",
     "start": "electron ./KickBotter",
     "start:dev": "concurrently \"npm:build\" \"npm:start\" ",
     "build:prod:logic": "tsc -p tsconfig.build-package.json",
+    "build:prod:view": "npm run copyFilesOfView && npx webpack --config webpack.config.js",
     "prebuild:prod": "npm run clean:build",
-    "build:prod": "export NODE_ENV=packaging && npm run build:prod:logic && npm run build:view",
+    "build:prod": "npm run build:prod:logic && npm run build:prod:view",
     "forge:build": "npm run build:prod && cd ./KickBotter && npm run make",
     "forge:publish": "npm run build:prod && cd ./KickBotter && npm run publish",
     "forge:start": "cd ./KickBotter && npm run start"
