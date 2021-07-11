@@ -35,7 +35,13 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "executableName": "kickbotter"
+        "executableName": "kickbotter",
+        "win32metadata": {
+          "FileDescription": "Automated socials' actions",
+          "InternalName": "kickbotter",
+          "OriginalFilename": "kickbotter",
+          "ProductName": "kickbotter"
+        }
       },
       "makers": [
         {
