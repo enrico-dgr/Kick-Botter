@@ -47,8 +47,8 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "kickbotter",
-            "exe": "kickbotter.exe",
+            "name": "Kickbotter",
+            "exe": "KickBotter.exe",
             "authors": "Enrico Di Grazia",
             "description": "Some automated browser program."
           }
