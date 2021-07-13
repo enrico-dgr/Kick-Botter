@@ -4,7 +4,7 @@
     "noEmit": false,
     "outDir": "../KickBotter"
   },
-  "include": ["./src/*", "../logic/src"],
+  "include": ["./src/*"],
   "exclude": [
     "./src/renderer.ts",
     "./src/style.ts",

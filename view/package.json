@@ -8,17 +8,18 @@
     "url": "https://github.com/enrico-dgr/Kick-Botter"
   },
   "scripts": {
-    "build:logic": "tsc -p tsconfig.build.json",
+    "build:main": "tsc -p tsconfig.build.json",
     "copyFilesOfView": "ts-node ./Scripts/copyFilesOfView.ts",
-    "build:view": "npm run copyFilesOfView && npx webpack --config webpack.config-dev.js",
-    "clean:build": "rimraf ../KickBotter/logic ../KickBotter/view",
-    "build": "npm run clean:build && npm run build:logic && npm run build:view",
+    "build:react": "npm run copyFilesOfView && npx webpack --config webpack.config-dev.js",
+    "clean": "rimraf ../KickBotter/view",
+    "prebuild": "npm run clean",
+    "build": "npm run build:main && npm run build:react",
     "start": "electron ../KickBotter",
     "start:dev": "concurrently \"npm:build\" \"npm:start\" ",
-    "build:prod:logic": "tsc -p tsconfig.build-package.json",
-    "build:prod:view": "npm run copyFilesOfView && npx webpack --config webpack.config.js",
-    "prebuild:prod": "npm run clean:build",
-    "build:prod": "npm run build:prod:logic && npm run build:prod:view"
+    "build:main:prod": "tsc -p tsconfig.build-prod.json",
+    "build:react:prod": "npm run copyFilesOfView && npx webpack --config webpack.config.js",
+    "prebuild:prod": "npm run clean",
+    "build:prod": "npm run build:main:prod && npm run build:react:prod"
   },
   "license": "MIT",
   "devDependencies": {
