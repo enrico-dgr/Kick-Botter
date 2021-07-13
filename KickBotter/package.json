@@ -8,11 +8,14 @@
     "url": "https://github.com/enrico-dgr/Kick-Botter"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish"
+    "install:view": "cd view && npm install && cd ..",
+    "install:logic": "cd logic && npm install && cd ..",
+    "install:all": "npm run install:view && npm run install:logic && npm install",
+    "build:prod": "cd view && npm run build:prod",
+    "start": "cd ./KickBotter && electron-forge start",
+    "package": "cd ./KickBotter && electron-forge package",
+    "make": "cd ./KickBotter && electron-forge make",
+    "publish": "cd ./KickBotter && electron-forge publish"
   },
   "keywords": [],
   "license": "MIT",

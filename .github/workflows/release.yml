@@ -15,16 +15,12 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14
-      - name: install logic's dependencies
-        run: cd logic && npm install
-      - name: install view's dependencies
-        run: cd view && npm install
-      - name: install Kick-Botter's dependencies
-        run: cd view/KickBotter && npm install
+      - name: install dependencies
+        run: npm run install:all
       - name: publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: cd view && npm run forge:publish
+        run: npm run publish
   publish_on_mac:
     runs-on: macos-latest
     steps:
@@ -32,16 +28,12 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14
-      - name: install logic's dependencies
-        run: cd logic && npm install
-      - name: install view's dependencies
-        run: cd view && npm install
-      - name: install Kick-Botter's dependencies
-        run: cd view/KickBotter && npm install
+      - name: install dependencies
+        run: npm run install:all
       - name: publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: cd view && npm run forge:publish
+        run: npm run publish
   build_on_win:
     runs-on: windows-latest
     steps:
@@ -49,13 +41,9 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14
-      - name: install logic's dependencies
-        run: cd logic && npm install
-      - name: install view's dependencies
-        run: cd view && npm install
-      - name: install Kick-Botter's dependencies
-        run: cd view/KickBotter && npm install
+      - name: install dependencies
+        run: npm run install:all
       - name: publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: cd view && npm run forge:publish
+        run: npm run publish
