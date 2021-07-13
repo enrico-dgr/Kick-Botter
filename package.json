@@ -1,0 +1,16 @@
+{
+    "name": "main",
+    "version": "1.0.0",
+    "description": "Automated actions for socials",
+    "author": "enrico-dgr",
+    "repository": {
+      "url": "https://github.com/enrico-dgr/Kick-Botter"
+    },
+    "scripts": {
+      "install:view": "cd view && npm install && cd ..",
+      "install:view-kickbotter": "cd view/KickBotter && npm install && cd ../..",
+      "install:logic": "cd logic && npm install && cd ..",
+      "install:all": "npm run install:view && npm run install:logic && npm run install:view-kickbotter "
+    }
+  }
+  
