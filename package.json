@@ -8,8 +8,8 @@
     "url": "https://github.com/enrico-dgr/Kick-Botter"
   },
   "scripts": {
-    "install:view": "cd view && npm install && cd ..",
-    "install:logic": "cd logic && npm install && cd ..",
+    "install:view": "cd view && npm install",
+    "install:logic": "cd logic && npm install",
     "install:all": "npm run install:view && npm run install:logic && npm install",
     "build:prod:logic": "cd logic && npm run build:prod",
     "build:prod:view": "cd view && npm run build:prod",

@@ -1,8 +1,6 @@
 {
   "name": "logic",
-  "version": "1.0.0",
-  "description": "bot's logic, programs",
-  "main": "./src/index.ts",
+  "description": "App's programs",
   "scripts": {
     "build": "tsc -b",
     "test": "jest",
@@ -10,8 +8,6 @@
     "ts:listPrograms": "ts-node src/Scripts/listPrograms.ts",
     "ts:eg": "ts-node playground/index.ts"
   },
-  "author": "enrico-dgr",
-  "license": "ISC",
   "dependencies": {
     "fp-ts": "^2.10.5",
     "launch-page": "^1.0.9"

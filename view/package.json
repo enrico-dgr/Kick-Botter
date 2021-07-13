@@ -1,27 +1,21 @@
 {
   "name": "view",
-  "version": "1.0.0",
-  "description": "Automated actions for socials",
+  "description": "GUI",
   "author": "enrico-dgr",
-  "main": "index.js",
-  "repository": {
-    "url": "https://github.com/enrico-dgr/Kick-Botter"
-  },
   "scripts": {
     "build:main": "tsc -p tsconfig.build.json",
     "copyFilesOfView": "ts-node ./Scripts/copyFilesOfView.ts",
-    "build:react": "npm run copyFilesOfView && npx webpack --config webpack.config-dev.js",
+    "build:react": "npm run copyFilesOfView && npx webpack --config webpack.config.js",
     "clean": "rimraf ../KickBotter/view",
     "prebuild": "npm run clean",
     "build": "npm run build:main && npm run build:react",
     "start": "electron ../KickBotter",
     "start:dev": "concurrently \"npm:build\" \"npm:start\" ",
     "build:main:prod": "tsc -p tsconfig.build-prod.json",
-    "build:react:prod": "npm run copyFilesOfView && npx webpack --config webpack.config.js",
+    "build:react:prod": "npm run copyFilesOfView && npx webpack --config webpack.config-prod.js",
     "prebuild:prod": "npm run clean",
     "build:prod": "npm run build:main:prod && npm run build:react:prod"
   },
-  "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",
     "@types/cors": "^2.8.10",
