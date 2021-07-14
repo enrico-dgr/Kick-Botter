@@ -46,12 +46,6 @@ export type Queries = {
  */
 export type Deps<R extends J.Json = J.Json> = J.Json & Queries & Settings<R>;
 /**
- * Options Of Inject
- */
-export type OptionsOfInject = {
-  userDataDirBasePath?: string;
-};
-/**
  *
  */
 type Injecter<R extends J.Json> = TE.TaskEither<Error, Deps<R>>;
