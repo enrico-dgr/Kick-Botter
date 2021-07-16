@@ -8,9 +8,6 @@ import { Puppeteer as P, WebDeps as WD, WebProgram as WP } from 'launch-page';
 /**
  *
  */
-/**
- *
- */
 export interface Options<ProgramOptions> {
   programOptions: ProgramOptions;
   launchOptions: P.LaunchOptions;
@@ -20,7 +17,6 @@ export interface Options<ProgramOptions> {
  * Use `getProgram` instead.
  */
 export interface Program<ProgramOptions, B> {
-  name: string;
   defaultOptions: Options<ProgramOptions>;
   self: (options: ProgramOptions) => WP.WebProgram<B>;
   end: () => TE.TaskEither<Error, void>;
