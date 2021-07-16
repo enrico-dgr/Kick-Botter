@@ -1,6 +1,7 @@
 import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
+import * as t from 'io-ts';
 import { Puppeteer as P, utils as LP_utils } from 'launch-page';
 
 import * as Program from './Program';
@@ -11,10 +12,12 @@ import * as Program from './Program';
 /**
  *
  */
-export interface ProgramQueries {
-  user: string;
-  name: string;
-}
+
+export const ProgramQueries = t.type({
+  user: t.string,
+  name: t.string,
+});
+export type ProgramQueries = t.TypeOf<typeof ProgramQueries>;
 /**
  *
  */
@@ -24,28 +27,38 @@ export interface ProgramModel<ProgramOptions, B> extends ProgramQueries {
 /**
  *
  */
+const State = t.type({});
+/**
+ *
+ */
+export interface ProgramStateModel<ProgramOptions, B> extends ProgramQueries {
+  program: Program.Program<ProgramOptions, B>;
+}
+/**
+ *
+ */
 export type GetProgram = (
   programQueries: ProgramQueries
-) => O.Option<ProgramModel<any, any>>;
+) => TE.TaskEither<Error, O.Option<ProgramModel<any, any>>>;
 /**
  * @returns the new set program
  */
 export type SetProgram = (
   programQueries: ProgramQueries
-) => O.Option<ProgramModel<any, any>>;
+) => TE.TaskEither<Error, O.Option<ProgramModel<any, any>>>;
 /**
  *
  */
 export type GetOptions = <ProgramOptions>(
   programQueries: ProgramQueries
-) => TE.TaskEither<Error, O.Option<Program.Options<ProgramOptions>>>;
+) => TE.TaskEither<Error, O.Option<Program.ProgramOptions<ProgramOptions>>>;
 /**
  *
  */
 export type SetOptions = (
   programQueries: ProgramQueries
 ) => <ProgramOptions>(
-  options: Program.Options<ProgramOptions>
+  options: Program.ProgramOptions<ProgramOptions>
 ) => TE.TaskEither<Error, void>;
 /**
  *
@@ -61,6 +74,7 @@ export interface ProgramController {
  */
 export interface BuilderDeps {
   getProgram: GetProgram;
+  setProgram: SetProgram;
   getOptions: GetOptions;
   setOptions: SetOptions;
 }
@@ -76,9 +90,11 @@ const getLaunchProgram = (setProgram: SetProgram) => (
 ) => <A>({ user, name }: ProgramQueries): TE.TaskEither<Error, A> =>
   pipe(
     setProgram({ user, name }),
-    O.match(
-      () => TE.left(new Error(`Program not found.`)),
-      (program) => TE.right(program)
+    TE.chain(
+      O.match(
+        () => TE.left(new Error(`Program not found.`)),
+        (program) => TE.right(program)
+      )
     ),
     TE.chain((program) =>
       pipe(
@@ -93,7 +109,7 @@ const getLaunchProgram = (setProgram: SetProgram) => (
             TE.of
           )
         ),
-        TE.chain(({ programOptions, launchOptions }) =>
+        TE.chain(({ extraOptions: programOptions, launchOptions }) =>
           pipe(
             P.launchPage(launchOptions),
             LP_utils.startFrom<A>(program.program.self(programOptions))
@@ -111,9 +127,11 @@ const getEndProgram = (getProgram: GetProgram) => ({
 }: ProgramQueries): TE.TaskEither<Error, void> =>
   pipe(
     getProgram({ user, name }),
-    O.match(
-      () => TE.left(new Error(`Program is not running.`)),
-      (program) => program.program.end()
+    TE.chain(
+      O.match(
+        () => TE.left(new Error(`Program is not running.`)),
+        (program) => program.program.end()
+      )
     )
   );
 /**
@@ -121,10 +139,11 @@ const getEndProgram = (getProgram: GetProgram) => ({
  */
 export const buildController = ({
   getProgram,
+  setProgram,
   getOptions,
   setOptions,
 }: BuilderDeps): ProgramController => ({
-  launchProgram: getLaunchProgram(getProgram)(getOptions, setOptions),
+  launchProgram: getLaunchProgram(setProgram)(getOptions, setOptions),
   endProgram: getEndProgram(getProgram),
   getOptions,
   setOptions,

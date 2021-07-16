@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "fp-ts": "^2.10.5",
+    "io-ts": "^2.2.16",
     "launch-page": "^1.0.9"
   },
   "devDependencies": {

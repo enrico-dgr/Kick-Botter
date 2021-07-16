@@ -8,17 +8,17 @@ import { Puppeteer as P, WebDeps as WD, WebProgram as WP } from 'launch-page';
 /**
  *
  */
-export interface Options<ProgramOptions> {
-  programOptions: ProgramOptions;
+export interface ProgramOptions<ExtraOptions> {
+  extraOptions: ExtraOptions;
   launchOptions: P.LaunchOptions;
 }
 /**
  * It is not intended to construct instances on your own.
  * Use `getProgram` instead.
  */
-export interface Program<ProgramOptions, B> {
-  defaultOptions: Options<ProgramOptions>;
-  self: (options: ProgramOptions) => WP.WebProgram<B>;
+export interface Program<ExtraOptions, B> {
+  defaultOptions: ProgramOptions<ExtraOptions>;
+  self: (extraOptions: ExtraOptions) => WP.WebProgram<B>;
   end: () => TE.TaskEither<Error, void>;
 }
 // ------------------------------------
