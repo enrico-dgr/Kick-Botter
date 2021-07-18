@@ -1,4 +1,5 @@
-import { pipe } from 'fp-ts/lib/function';
+import * as A from 'fp-ts/Array';
+import { pipe } from 'fp-ts/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 import * as t from 'io-ts';
@@ -6,145 +7,153 @@ import { Puppeteer as P, utils as LP_utils } from 'launch-page';
 
 import * as Program from './Program';
 
-// ------------------------------------
-// Models
-// ------------------------------------
-/**
- *
- */
+export namespace Models {
+  export const ProgramDatabasesSharedProps = t.type({
+    user: t.string,
+    name: t.string,
+  });
 
-export const ProgramQueries = t.type({
-  user: t.string,
-  name: t.string,
-});
-export type ProgramQueries = t.TypeOf<typeof ProgramQueries>;
-/**
- *
- */
-export interface ProgramModel<ProgramOptions, B> extends ProgramQueries {
-  program: Program.Program<ProgramOptions, B>;
+  export type ProgramDatabasesSharedProps = t.TypeOf<
+    typeof ProgramDatabasesSharedProps
+  >;
+
+  export const ProgramStatePropsOnly = t.type({
+    running: t.boolean,
+  });
+
+  export const ProgramState = t.intersection([
+    ProgramDatabasesSharedProps,
+    ProgramStatePropsOnly,
+  ]);
+
+  export type ProgramState = t.TypeOf<typeof ProgramState>;
+
+  export const ProgramOptions = t.intersection([
+    ProgramDatabasesSharedProps,
+    Program.Models.ProgramOptions,
+  ]);
+
+  export type ProgramOptions = t.TypeOf<typeof ProgramOptions>;
+  export namespace Methods {
+    export type GetProgram = (
+      programQueries: Pick<ProgramState, "name" | "user">
+    ) => TE.TaskEither<Error, O.Option<ProgramState>>;
+
+    export type SetProgram = (
+      programState: ProgramState
+    ) => TE.TaskEither<Error, void>;
+
+    export type GetOptions = (
+      programQueries: Pick<ProgramOptions, "name" | "user">
+    ) => TE.TaskEither<Error, O.Option<ProgramOptions>>;
+
+    export type SetOptions = (
+      options: ProgramOptions
+    ) => TE.TaskEither<Error, void>;
+  }
+  export interface ProgramController {
+    launchProgram: (
+      programQueries: Pick<Models.ProgramState, "name" | "user">
+    ) => TE.TaskEither<Error, void>;
+    endProgram: (
+      programQueries: Models.ProgramState
+    ) => TE.TaskEither<Error, void>;
+    getOptions: Models.Methods.GetOptions;
+    setOptions: Models.Methods.SetOptions;
+  }
+
+  export interface BuilderDeps {
+    programs: Program.Models.Program<any, any>[];
+    getProgram: Models.Methods.GetProgram;
+    setProgram: Models.Methods.SetProgram;
+    getOptions: Models.Methods.GetOptions;
+    setOptions: Models.Methods.SetOptions;
+  }
 }
-/**
- *
- */
-const State = t.type({});
-/**
- *
- */
-export interface ProgramStateModel<ProgramOptions, B> extends ProgramQueries {
-  program: Program.Program<ProgramOptions, B>;
-}
-/**
- *
- */
-export type GetProgram = (
-  programQueries: ProgramQueries
-) => TE.TaskEither<Error, O.Option<ProgramModel<any, any>>>;
-/**
- * @returns the new set program
- */
-export type SetProgram = (
-  programQueries: ProgramQueries
-) => TE.TaskEither<Error, O.Option<ProgramModel<any, any>>>;
-/**
- *
- */
-export type GetOptions = <ProgramOptions>(
-  programQueries: ProgramQueries
-) => TE.TaskEither<Error, O.Option<Program.ProgramOptions<ProgramOptions>>>;
-/**
- *
- */
-export type SetOptions = (
-  programQueries: ProgramQueries
-) => <ProgramOptions>(
-  options: Program.ProgramOptions<ProgramOptions>
-) => TE.TaskEither<Error, void>;
-/**
- *
- */
-export interface ProgramController {
-  launchProgram: <A>(programQueries: ProgramQueries) => TE.TaskEither<Error, A>;
-  endProgram: (programQueries: ProgramQueries) => TE.TaskEither<Error, void>;
-  getOptions: GetOptions;
-  setOptions: SetOptions;
-}
-/**
- *
- */
-export interface BuilderDeps {
-  getProgram: GetProgram;
-  setProgram: SetProgram;
-  getOptions: GetOptions;
-  setOptions: SetOptions;
-}
-// ------------------------------------
-// Constructors
-// ------------------------------------
-/**
- *
- */
-const getLaunchProgram = (setProgram: SetProgram) => (
-  getOptions: GetOptions,
-  setOptions: SetOptions
-) => <A>({ user, name }: ProgramQueries): TE.TaskEither<Error, A> =>
-  pipe(
-    setProgram({ user, name }),
-    TE.chain(
+namespace Constructors {
+  export const buildLaunchProgram = (
+    programs: Program.Models.Program<any, any>[],
+    setProgram: Models.Methods.SetProgram,
+    getOptions: Models.Methods.GetOptions,
+    setOptions: Models.Methods.SetOptions
+  ): Models.ProgramController["launchProgram"] => ({
+    user,
+    name,
+  }): TE.TaskEither<Error, void> =>
+    pipe(
+      // find if program exists
+      programs,
+      A.findFirst((program) => program.name === name),
       O.match(
         () => TE.left(new Error(`Program not found.`)),
         (program) => TE.right(program)
-      )
-    ),
-    TE.chain((program) =>
-      pipe(
-        getOptions({ user, name: program.name }),
-        TE.chain(
-          O.match(
-            () =>
-              pipe(
-                TE.of(program.program.defaultOptions),
-                TE.chainFirst(setOptions({ user, name }))
-              ),
-            TE.of
-          )
-        ),
-        TE.chain(({ extraOptions: programOptions, launchOptions }) =>
-          pipe(
-            P.launchPage(launchOptions),
-            LP_utils.startFrom<A>(program.program.self(programOptions))
+      ),
+      // get options
+      TE.chain((program) =>
+        pipe(
+          getOptions({ user, name: program.name }),
+          TE.chain(
+            O.match(
+              () =>
+                pipe(
+                  TE.of(program.defaultOptions),
+                  TE.chainFirst((dO) => setOptions({ user, name, ...dO }))
+                ),
+              (existingOptions) => TE.of(existingOptions)
+            )
+          ),
+          // run program
+          TE.chain(({ extraOptions, launchOptions }) =>
+            pipe(
+              P.launchPage(launchOptions),
+              LP_utils.startFrom(program.self(extraOptions))
+            )
           )
         )
+      ),
+      // set program as running
+      TE.chain(() =>
+        setProgram({
+          user,
+          name,
+          running: true,
+        })
       )
-    )
-  );
-/**
- *
- */
-const getEndProgram = (getProgram: GetProgram) => ({
-  user,
-  name,
-}: ProgramQueries): TE.TaskEither<Error, void> =>
-  pipe(
-    getProgram({ user, name }),
-    TE.chain(
-      O.match(
-        () => TE.left(new Error(`Program is not running.`)),
-        (program) => program.program.end()
+    );
+
+  export const buildEndProgram = (
+    getProgram: Models.Methods.GetProgram,
+    setProgram: Models.Methods.SetProgram
+  ) => ({ user, name }: Models.ProgramState): TE.TaskEither<Error, void> =>
+    pipe(
+      getProgram({ user, name }),
+      // set program on not-running
+      TE.chain(
+        O.match(
+          () => TE.left(new Error(`Program not found.`)),
+          (programState) => setProgram({ ...programState, running: false })
+        )
       )
-    )
-  );
+    );
+}
 /**
- *
+ * Given an array of programs, it asks for methods to manipulate
+ * database-ish sources.
  */
 export const buildController = ({
+  programs,
   getProgram,
   setProgram,
   getOptions,
   setOptions,
-}: BuilderDeps): ProgramController => ({
-  launchProgram: getLaunchProgram(setProgram)(getOptions, setOptions),
-  endProgram: getEndProgram(getProgram),
+}: Models.BuilderDeps): Models.ProgramController => ({
+  launchProgram: Constructors["buildLaunchProgram"](
+    programs,
+    setProgram,
+    getOptions,
+    setOptions
+  ),
+  endProgram: Constructors["buildEndProgram"](getProgram, setProgram),
   getOptions,
   setOptions,
 });
