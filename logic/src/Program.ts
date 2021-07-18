@@ -1,5 +1,4 @@
 import { pipe } from 'fp-ts/lib/function';
-import * as TE from 'fp-ts/TaskEither';
 import * as t from 'io-ts';
 import { WebDeps as WD, WebProgram as WP } from 'launch-page';
 
@@ -10,6 +9,8 @@ export namespace Models {
   });
 
   export type ProgramOptions = t.TypeOf<typeof ProgramOptions>;
+
+  export interface ProgramSpecs {}
   /**
    * It is not intended to construct instances on your own.
    * Use `getProgram` instead.
@@ -18,7 +19,6 @@ export namespace Models {
     name: string;
     defaultOptions: ProgramOptions;
     self: (extraOptions: ExtraOptions) => WP.WebProgram<B>;
-    end: () => TE.TaskEither<Error, void>;
   }
 }
 // ------------------------------------
@@ -38,7 +38,7 @@ const closeBrowserAtEnd = <A>(program: WP.WebProgram<A>) =>
     )
   );
 /**
- * Get Program
+ * Build Program
  */
 export const buildProgram = <ProgramOptions, B>(
   program: Models.Program<ProgramOptions, B>

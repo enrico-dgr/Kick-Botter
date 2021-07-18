@@ -1,6 +1,7 @@
 import * as A from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/lib/function';
+import { flow, pipe } from 'fp-ts/lib/function';
+import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 import * as t from 'io-ts';
 
@@ -118,3 +119,14 @@ export const jsonProgramController = (
     ...Dependencies.deps,
     programs,
   });
+
+//
+export const getRunning = flow(
+  Dependencies.deps.getProgram,
+  TE.map(
+    O.match(
+      () => false,
+      (programState) => programState.running
+    )
+  )
+);
