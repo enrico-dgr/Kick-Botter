@@ -8,5 +8,10 @@
     "user": "lol",
     "name": "OpenBrowser",
     "running": true
+  },
+  {
+    "user": "generic",
+    "name": "OpenBrowser",
+    "running": true
   }
 ]

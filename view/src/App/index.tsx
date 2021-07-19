@@ -56,19 +56,18 @@ export const App = () => {
   const goodResponseColor = () => "#9ffca3";
   const badReponseColor = () => "#ff5858";
   const [buttonColor, setButtonColor] = React.useState<string>(baseColor());
-  /**
-   *
-   */
-  const init = () => {
-    ipcRenderer.invoke("getQueries").then(({ users_, programs_ }) => {
-      setListUsers(users_);
-      setListPrograms(programs_);
-    });
-  };
-  init();
-  const [listPrograms, setListPrograms] = React.useState<string[]>([]);
+  // component did mount
+  React.useEffect(() => {
+    ipcRenderer
+      .invoke("getQueries")
+      .then(({ users: users_, programs: programs_ }) => {
+        setListUsers(users_);
+        setListPrograms(programs_);
+      });
+  }, []);
+  const [listPrograms, setListPrograms] = React.useState<string[]>(["none"]);
 
-  const [listUsers, setListUsers] = React.useState<string[]>([]);
+  const [listUsers, setListUsers] = React.useState<string[]>(["none"]);
   const updateListUsers = (value: string) => {
     if (listUsers.indexOf(value) < 0) setListUsers((pv) => [value, ...pv]);
   };

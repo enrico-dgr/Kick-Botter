@@ -65,7 +65,7 @@ const mapSafe = <D, A>(safeItem: Either<Error, D[]>, select: (db: D) => A) =>
 /**
  * Get Queries
  */
-ipcMain.handle("getQueries", async (event, _args) => {
+ipcMain.handle("getQueries", async () => {
   /**
    * Get DB of Settings
    */
@@ -92,7 +92,7 @@ ipcMain.handle("getQueries", async (event, _args) => {
     users,
     programs,
   };
-  event.returnValue = res;
+  return res;
 });
 /**
  * Get Settings

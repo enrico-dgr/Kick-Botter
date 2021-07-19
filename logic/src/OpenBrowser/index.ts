@@ -1,5 +1,6 @@
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
+import * as T from 'fp-ts/Task';
 import * as TE from 'fp-ts/TaskEither';
 import { WebProgram as WP } from 'launch-page';
 
@@ -18,6 +19,7 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
     while (running) {
       await pipe(
         D.running,
+        TE.chainFirst(() => TE.fromTask(T.delay(500)(T.of(undefined)))),
         TE.match(
           (e) => {
             running = false;
@@ -30,6 +32,7 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
         )
       )();
     }
+
     return res;
   });
 
