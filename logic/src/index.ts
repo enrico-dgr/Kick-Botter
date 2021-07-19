@@ -32,4 +32,7 @@ export const runProgram = (
   user: string
 ) => Executable.execute(programs[nameOfProgram](user))();
 //
-export const jPC = jsonProgramController([OB.program]);
+export const Programs = [OB.program];
+export const jsonPC = jsonProgramController(Programs);
+export * as ProgramController from "./ProgramController";
+export * as JsonProgramController from "./jsonProgramController";

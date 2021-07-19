@@ -28,9 +28,13 @@ export namespace Models {
 
   export type ProgramState = t.TypeOf<typeof ProgramState>;
 
+  export const ProgramOptionsPropsOnly = Program.Models.ProgramOptions;
+
+  export type ProgramOptionsPropsOnly = Program.Models.ProgramOptions;
+
   export const ProgramOptions = t.intersection([
     ProgramDatabasesSharedProps,
-    Program.Models.ProgramOptions,
+    ProgramOptionsPropsOnly,
   ]);
 
   export type ProgramOptions = t.TypeOf<typeof ProgramOptions>;

@@ -1,4 +1,4 @@
-import * as A from 'fp-ts/Array';
+import * as JsonProgramController from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
 import { flow, pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
@@ -13,7 +13,7 @@ namespace CONSTANTS {
   export const STATES_DB_PATH = "./programsStates.json";
   export const OPTIONS_DB_PATH = "./programsOptions.json";
 }
-namespace Models {
+export namespace Models {
   export const StatesDatabase = t.array(ProgramController.Models.ProgramState);
 
   export const OptionsDatabase = t.array(
@@ -54,7 +54,9 @@ namespace Dependencies {
       getProgramDB(),
       //
       TE.map(
-        A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
+        JsonProgramController.findFirst(
+          Utils.Array.predicateOnUserAndProgramName(programQueries)
+        )
       )
     );
 
@@ -90,7 +92,9 @@ namespace Dependencies {
     pipe(
       getOptionsDB(),
       TE.map(
-        A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
+        JsonProgramController.findFirst(
+          Utils.Array.predicateOnUserAndProgramName(programQueries)
+        )
       )
     );
 

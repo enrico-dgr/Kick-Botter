@@ -1,56 +1,19 @@
 import { ipcMain } from 'electron';
+import * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/lib/function';
 
-import { Executable, jPC } from '../../logic';
+import { jsonPC, ProgramController as PC } from '../../logic';
 
 export const runProgram = () =>
-  ipcMain.handle("runProgram", async (_event, ...args) => {
-    /**
-     * Get Queries
-     */
-    const queries = args[0];
-
-    const { nameOfProgram, user }: Executable.Queries = queries;
-
-    /**
-     * Run Program && Return
-     */
-    // default res
-    type Response = {
-      status: number;
-      statusText?: string;
-    };
-    let res: Response = {
-      status: 500,
-      statusText: "No action by the server.",
-    };
-
-    if (nameOfProgram === null || user === null) {
-      res = {
-        status: 400,
-        statusText: "Queries must have values.",
-      };
-    } else {
-      try {
-        jPC
-          .launchProgram({
-            name: nameOfProgram,
-            user,
-          })()
-          .then((either) =>
-            either._tag === "Left"
-              ? console.log(either.left.message)
-              : undefined
-          );
-        res = {
-          status: 200,
-          statusText: undefined,
-        };
-      } catch (error) {
-        res = {
-          status: 400,
-          statusText: JSON.stringify(error),
-        };
-      }
-    }
-    return res;
-  });
+  ipcMain.handle("runProgram", async (_event, ...args) =>
+    pipe(
+      PC.Models.ProgramDatabasesSharedProps.decode(args[0]),
+      E.mapLeft((es) => new Error(JSON.stringify(es))),
+      E.map(({ user, name }) => {
+        jsonPC.launchProgram({
+          name,
+          user,
+        })();
+      })
+    )
+  );

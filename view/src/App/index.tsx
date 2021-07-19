@@ -1,6 +1,9 @@
 import { ipcRenderer } from 'electron';
+import { pipe } from 'fp-ts/lib/function';
+import * as TE from 'fp-ts/TaskEither';
 import * as React from 'react';
 
+import * as fpTG from '../fp-ts-TypeGuards';
 import { DisplaySettings } from './DisplaySettings';
 import { GetText } from './GetText';
 import { Queries } from './Queries';
@@ -16,13 +19,11 @@ export const App = () => {
   /**
    * Fetch new settings
    */
-  const fetchSettings = (user_: string, program_: string) => {
-    const settings_ =
-      ipcRenderer.sendSync("getSettings", { user: user_, program: program_ }) ??
-      {};
-    setStateOfSettings((_pv) => settings_);
-    setButtonColor((_pv) => baseColor());
-  };
+  const fetchSettings = (user_: string, program_: string) =>
+    ipcRenderer
+      .invoke("getSettings", { user: user_, program: program_ })
+      .then((settings_) => setStateOfSettings((_pv) => settings_));
+
   /**
    *  util
    */
@@ -58,6 +59,7 @@ export const App = () => {
   const [buttonColor, setButtonColor] = React.useState<string>(baseColor());
   // component did mount
   React.useEffect(() => {
+    pipe(() => ipcRenderer.invoke("getQueries"), fpTG.Either.Either());
     ipcRenderer
       .invoke("getQueries")
       .then(({ users: users_, programs: programs_ }) => {
