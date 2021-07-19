@@ -22,6 +22,7 @@ export namespace Either {
         right: A,
       })
     );
+
   export const Either = <E extends t.Props, A extends t.Props>(
     E: t.TypeC<E>,
     A: t.TypeC<A>

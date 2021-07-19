@@ -1,9 +1,13 @@
 import { ipcRenderer } from 'electron';
+import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
+import * as T from 'fp-ts/Task';
 import * as TE from 'fp-ts/TaskEither';
+import * as t from 'io-ts';
 import * as React from 'react';
+import { Errors } from 'src/TypeGuards';
 
-import * as fpTG from '../fp-ts-TypeGuards';
+import * as fpTG from '../TypeGuards/fp-ts';
 import { DisplaySettings } from './DisplaySettings';
 import { GetText } from './GetText';
 import { Queries } from './Queries';
@@ -59,13 +63,44 @@ export const App = () => {
   const [buttonColor, setButtonColor] = React.useState<string>(baseColor());
   // component did mount
   React.useEffect(() => {
-    pipe(() => ipcRenderer.invoke("getQueries"), fpTG.Either.Either());
-    ipcRenderer
-      .invoke("getQueries")
-      .then(({ users: users_, programs: programs_ }) => {
-        setListUsers(users_);
-        setListPrograms(programs_);
-      });
+    // load users
+    pipe(
+      () => ipcRenderer.invoke("getUsers"),
+      T.map((either) =>
+        fpTG.Either.Either(
+          Errors.Error,
+          t.type({
+            users: t.array(t.string),
+          })
+        ).decode(either)
+      ),
+      TE.mapLeft((e) => new Error(JSON.stringify(e))),
+      TE.map(
+        E.match(
+          (e) => console.error(e.message),
+          (res) => setListUsers(res.users)
+        )
+      )
+    );
+    // load programs
+    pipe(
+      () => ipcRenderer.invoke("getPrograms"),
+      T.map((either) =>
+        fpTG.Either.Either(
+          Errors.Error,
+          t.type({
+            names: t.array(t.string),
+          })
+        ).decode(either)
+      ),
+      TE.mapLeft((e) => new Error(JSON.stringify(e))),
+      TE.map(
+        E.match(
+          (e) => console.error(e.message),
+          (res) => setListPrograms(res.names)
+        )
+      )
+    );
   }, []);
   const [listPrograms, setListPrograms] = React.useState<string[]>(["none"]);
 
