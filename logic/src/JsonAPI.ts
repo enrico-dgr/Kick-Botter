@@ -12,17 +12,23 @@ export namespace Models {
     absolutePath: string;
   };
 
-  type Json = J.Json;
+  export type Json = string | number | boolean | JsonArray | JsonRecord | null;
+
+  interface JsonArray extends ReadonlyArray<Json> {}
+
+  interface JsonRecord {
+    readonly [key: string]: Json;
+  }
 
   export const Json: t.Type<Json> = t.recursion("Json", () =>
-    t.union([
-      t.string,
-      t.number,
-      t.boolean,
-      t.readonly(Json),
-      t.readonly(t.record(t.string, Json)),
-      t.null,
-    ])
+    t.union([t.string, t.number, t.boolean, JsonArray, JsonRecord, t.null])
+  );
+
+  const JsonArray: t.Type<JsonArray> = t.recursion("JsonArray", () =>
+    t.readonlyArray(Json)
+  );
+  const JsonRecord: t.Type<JsonRecord> = t.recursion("JsonRecord", () =>
+    t.readonly(t.record(t.string, Json))
   );
 }
 // ------------------------------------

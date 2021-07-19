@@ -1,0 +1,70 @@
+[
+  {
+    "user": "generic",
+    "name": "OpenBrowser",
+    "extraOptions": {},
+    "launchOptions": {
+      "headless": false,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/generic",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
+  },
+  {
+    "user": "generic",
+    "name": "OpenBrowser",
+    "extraOptions": {},
+    "launchOptions": {
+      "headless": false,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/generic",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
+  },
+  {
+    "user": "generic",
+    "name": "OpenBrowser",
+    "extraOptions": {},
+    "launchOptions": {
+      "headless": false,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/generic",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
+  },
+  {
+    "user": "generic",
+    "name": "OpenBrowser",
+    "extraOptions": {},
+    "launchOptions": {
+      "headless": false,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/generic",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
+  }
+]

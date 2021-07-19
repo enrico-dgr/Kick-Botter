@@ -1,17 +1,37 @@
+import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
+import * as TE from 'fp-ts/TaskEither';
 import { WebProgram as WP } from 'launch-page';
-import { launchOptions } from 'src/LaunchOptions';
-import { buildProgram, Models as PModels } from 'src/Program';
 
+import { launchOptions } from '../LaunchOptions';
+import { buildProgram, Models as PModels } from '../Program';
 import { Models as PCModels } from '../ProgramController';
 
 const NAME = "OpenBrowser";
 
 const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
-  pipe(
-    WP.fromTaskEither(D.running),
-    WP.chain((running) => (running ? self(D)() : WP.of(undefined)))
-  );
+  WP.fromTaskEither<void>(async () => {
+    let running: boolean = true;
+    let res: E.Either<Error, void> = E.left(
+      new Error(`Open Browser closed instantly.`)
+    );
+    while (running) {
+      await pipe(
+        D.running,
+        TE.match(
+          (e) => {
+            running = false;
+            res = E.left(e);
+          },
+          (running_) => {
+            running = running_;
+            res = E.right(undefined);
+          }
+        )
+      )();
+    }
+    return res;
+  });
 
 const defaultOptions: PCModels.ProgramOptions = {
   name: NAME,
@@ -22,7 +42,7 @@ const defaultOptions: PCModels.ProgramOptions = {
   },
 };
 
-export const build = buildProgram({
+export const program = buildProgram({
   name: NAME,
   defaultOptions,
   self,

@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 
-import { Executable, runProgram } from './logic';
+import { Executable, jPC } from './logic';
 
 require("update-electron-app")();
 function createWindow() {
@@ -60,18 +60,16 @@ const fromSafeDB = (safeItem: Either<Error, Executable.Deps[]>) =>
   )(safeItem);
 
 //
-const mapSafe = <A>(
-  safeItem: Either<Error, Executable.Deps[]>,
-  select: (db: Executable.Deps) => A
-) => (safeItem._tag === "Right" ? safeItem.right.map(select) : []);
+const mapSafe = <D, A>(safeItem: Either<Error, D[]>, select: (db: D) => A) =>
+  safeItem._tag === "Right" ? safeItem.right.map(select) : [];
 /**
  * Get Queries
  */
-ipcMain.on("getQueries", (event, _args) => {
+ipcMain.handle("getQueries", async (event, _args) => {
   /**
    * Get DB of Settings
    */
-  const safeDB = Executable.getJson();
+  const safeDB = await jPC.getOptionsDB()();
   /**
    * Get Programs
    */
@@ -84,9 +82,7 @@ ipcMain.on("getQueries", (event, _args) => {
   /**
    * Get Users
    */
-  let users = mapSafe<string>(safeDB, (deps) =>
-    !!deps.user ? deps.user : "None"
-  );
+  let users = mapSafe(safeDB, (deps) => (!!deps.user ? deps.user : "None"));
 
   users = users.filter(array_unique);
   /**
@@ -250,18 +246,25 @@ ipcMain.handle("runProgram", async (_event, ...args) => {
       statusText: "Queries must have values.",
     };
   } else {
-    const err = await runProgram(nameOfProgram, user).catch((err) =>
-      JSON.stringify(err)
-    );
-    typeof err !== "string"
-      ? (res = {
-          status: 200,
-          statusText: undefined,
-        })
-      : (res = {
-          status: 400,
-          statusText: err,
-        });
+    try {
+      jPC
+        .launchProgram({
+          name: nameOfProgram,
+          user,
+        })()
+        .then((either) =>
+          either._tag === "Left" ? console.log(either.left.message) : undefined
+        );
+      res = {
+        status: 200,
+        statusText: undefined,
+      };
+    } catch (error) {
+      res = {
+        status: 400,
+        statusText: JSON.stringify(error),
+      };
+    }
   }
   return res;
 });

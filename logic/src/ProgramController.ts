@@ -43,6 +43,8 @@ export namespace Models {
       programState: ProgramState
     ) => TE.TaskEither<Error, void>;
 
+    export type GetOptionsDB = () => TE.TaskEither<Error, ProgramOptions[]>;
+
     export type GetOptions = (
       programQueries: Pick<ProgramOptions, "name" | "user">
     ) => TE.TaskEither<Error, O.Option<ProgramOptions>>;
@@ -58,6 +60,7 @@ export namespace Models {
     endProgram: (
       programQueries: Models.ProgramState
     ) => TE.TaskEither<Error, void>;
+    getOptionsDB: Models.Methods.GetOptionsDB;
     getOptions: Models.Methods.GetOptions;
     setOptions: Models.Methods.SetOptions;
   }
@@ -71,6 +74,7 @@ export namespace Models {
     programs: Program.Models.Program<any, any>[];
     getProgram: Models.Methods.GetProgram;
     setProgram: Models.Methods.SetProgram;
+    getOptionsDB: Models.Methods.GetOptionsDB;
     getOptions: Models.Methods.GetOptions;
     setOptions: Models.Methods.SetOptions;
   }
@@ -151,6 +155,7 @@ export const buildController = (
 ): Models.ProgramController => ({
   launchProgram: Constructors["buildLaunchProgram"](D),
   endProgram: Constructors["buildEndProgram"](D.getProgram, D.setProgram),
+  getOptionsDB: D.getOptionsDB,
   getOptions: D.getOptions,
   setOptions: D.setOptions,
 });

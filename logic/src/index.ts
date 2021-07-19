@@ -2,6 +2,8 @@ import * as Executable from './Executable';
 import {
     freeFollowerPlanMIExec, freeFollowerPlanTMExec, openBrowserExec, socialgiftExec, socialmoneyExec
 } from './executables';
+import { jsonProgramController } from './jsonProgramController';
+import * as OB from './OpenBrowser';
 
 // ----------------------------------
 // Make Visible
@@ -30,3 +32,4 @@ export const runProgram = (
   user: string
 ) => Executable.execute(programs[nameOfProgram](user))();
 //
+export const jPC = jsonProgramController([OB.program]);

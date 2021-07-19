@@ -3,11 +3,12 @@ import * as TE from 'fp-ts/TaskEither';
 import * as t from 'io-ts';
 import { WebDeps as WD, WebProgram as WP } from 'launch-page';
 
+import * as JAPI from './JsonAPI';
 import * as LO from './LaunchOptions';
 
 export namespace Models {
   export const ProgramOptions = t.type({
-    extraOptions: t.UnknownRecord,
+    extraOptions: JAPI.Models.Json,
     launchOptions: LO.Models.LaunchOptions,
   });
 

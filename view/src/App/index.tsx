@@ -6,12 +6,7 @@ import { GetText } from './GetText';
 import { Queries } from './Queries';
 import { RunProgram } from './RunProgram';
 
-export type Props = {
-  users: string[];
-  programs: string[];
-};
-
-export const App = (props: Props) => {
+export const App = () => {
   /**
    * States
    */
@@ -64,7 +59,16 @@ export const App = (props: Props) => {
   /**
    *
    */
-  const [listUsers, setListUsers] = React.useState<string[]>(props.users);
+  const init = () => {
+    ipcRenderer.invoke("getQueries").then(({ users_, programs_ }) => {
+      setListUsers(users_);
+      setListPrograms(programs_);
+    });
+  };
+  init();
+  const [listPrograms, setListPrograms] = React.useState<string[]>([]);
+
+  const [listUsers, setListUsers] = React.useState<string[]>([]);
   const updateListUsers = (value: string) => {
     if (listUsers.indexOf(value) < 0) setListUsers((pv) => [value, ...pv]);
   };
@@ -90,7 +94,7 @@ export const App = (props: Props) => {
       <Queries
         name="programs"
         id="programs"
-        queries={props.programs}
+        queries={listPrograms}
         defaultMessage="Select a Program"
         onChange={(v) => {
           setNameOfProgram((_pv) => v);

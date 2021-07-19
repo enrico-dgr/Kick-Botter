@@ -34,9 +34,7 @@ namespace Utils {
 }
 
 namespace Dependencies {
-  const getProgram: ProgramController.Models.Methods.GetProgram = (
-    programQueries
-  ) =>
+  const getProgramDB = () =>
     pipe(
       JsonAPI.getJson({ absolutePath: CONSTANTS.STATES_DB_PATH }),
       // check array type
@@ -46,11 +44,18 @@ namespace Dependencies {
           E.mapLeft((e) => new Error(JSON.stringify(e, null, 2)))
         )
       ),
-      //
-      E.map(
-        A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
-      ),
       TE.fromEither
+    );
+
+  const getProgram: ProgramController.Models.Methods.GetProgram = (
+    programQueries
+  ) =>
+    pipe(
+      getProgramDB(),
+      //
+      TE.map(
+        A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
+      )
     );
 
   const setProgram: ProgramController.Models.Methods.SetProgram = (program) =>
@@ -67,9 +72,7 @@ namespace Dependencies {
       TE.fromEither
     );
 
-  const getOptions: ProgramController.Models.Methods.GetOptions = (
-    programQueries
-  ) =>
+  const getOptionsDB: ProgramController.Models.Methods.GetOptionsDB = () =>
     pipe(
       JsonAPI.getJson({ absolutePath: CONSTANTS.OPTIONS_DB_PATH }),
       E.chain((optionsDatabase) =>
@@ -78,11 +81,17 @@ namespace Dependencies {
           E.mapLeft((e) => new Error(JSON.stringify(e, null, 2)))
         )
       ),
-      //
-      E.map(
-        A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
-      ),
       TE.fromEither
+    );
+
+  const getOptions: ProgramController.Models.Methods.GetOptions = (
+    programQueries
+  ) =>
+    pipe(
+      getOptionsDB(),
+      TE.map(
+        A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
+      )
     );
 
   const setOptions: ProgramController.Models.Methods.SetOptions = (
@@ -120,6 +129,7 @@ namespace Dependencies {
     builderRunning,
     getProgram,
     setProgram,
+    getOptionsDB,
     getOptions,
     setOptions,
   };
