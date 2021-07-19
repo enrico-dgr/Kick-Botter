@@ -1,13 +1,28 @@
+import * as t from 'io-ts';
 import { Puppeteer as P } from 'launch-page';
 import path from 'path';
 
-namespace Models {
+export namespace Models {
   export interface Deps {
     /**
      * default to `generic`
      */
     user?: string;
   }
+
+  export const LaunchOptions = t.partial({
+    headless: t.boolean,
+    userDataDir: t.string,
+    args: t.array(t.string),
+    defaultViewport: t.type({
+      width: t.number,
+      height: t.number,
+    }),
+  });
+
+  type RunTimeLO = t.TypeOf<typeof LaunchOptions>;
+
+  export type LaunchOptions = Pick<P.LaunchOptions, keyof RunTimeLO>;
 }
 namespace Builders {
   export const userDataDir = (user?: string) =>

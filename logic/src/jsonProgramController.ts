@@ -107,7 +107,22 @@ namespace Dependencies {
       TE.fromEither
     );
 
-  export const deps = { getProgram, setProgram, getOptions, setOptions };
+  const builderRunning: ProgramController.Models.BuilderRunning = flow(
+    getProgram,
+    TE.map(
+      O.match(
+        () => false,
+        (programState) => programState.running
+      )
+    )
+  );
+  export const deps = {
+    builderRunning,
+    getProgram,
+    setProgram,
+    getOptions,
+    setOptions,
+  };
 }
 // ------------------------------------
 // Implementation
@@ -119,14 +134,3 @@ export const jsonProgramController = (
     ...Dependencies.deps,
     programs,
   });
-
-//
-export const getRunning = flow(
-  Dependencies.deps.getProgram,
-  TE.map(
-    O.match(
-      () => false,
-      (programState) => programState.running
-    )
-  )
-);

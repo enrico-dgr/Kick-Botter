@@ -62,7 +62,12 @@ export namespace Models {
     setOptions: Models.Methods.SetOptions;
   }
 
+  type Running = TE.TaskEither<Error, boolean>;
+  export type BuilderRunning = (
+    queries: ProgramDatabasesSharedProps
+  ) => Running;
   export interface BuilderDeps {
+    builderRunning: BuilderRunning;
     programs: Program.Models.Program<any, any>[];
     getProgram: Models.Methods.GetProgram;
     setProgram: Models.Methods.SetProgram;
@@ -72,17 +77,14 @@ export namespace Models {
 }
 namespace Constructors {
   export const buildLaunchProgram = (
-    programs: Program.Models.Program<any, any>[],
-    setProgram: Models.Methods.SetProgram,
-    getOptions: Models.Methods.GetOptions,
-    setOptions: Models.Methods.SetOptions
+    D: Models.BuilderDeps
   ): Models.ProgramController["launchProgram"] => ({
     user,
     name,
   }): TE.TaskEither<Error, void> =>
     pipe(
       // find if program exists
-      programs,
+      D.programs,
       A.findFirst((program) => program.name === name),
       O.match(
         () => TE.left(new Error(`Program not found.`)),
@@ -91,13 +93,13 @@ namespace Constructors {
       // get options
       TE.chain((program) =>
         pipe(
-          getOptions({ user, name: program.name }),
+          D.getOptions({ user, name: program.name }),
           TE.chain(
             O.match(
               () =>
                 pipe(
                   TE.of(program.defaultOptions),
-                  TE.chainFirst((dO) => setOptions({ user, name, ...dO }))
+                  TE.chainFirst((dO) => D.setOptions({ user, name, ...dO }))
                 ),
               (existingOptions) => TE.of(existingOptions)
             )
@@ -106,14 +108,18 @@ namespace Constructors {
           TE.chain(({ extraOptions, launchOptions }) =>
             pipe(
               P.launchPage(launchOptions),
-              LP_utils.startFrom(program.self(extraOptions))
+              LP_utils.startFrom(
+                program.self({ running: D.builderRunning({ user, name }) })(
+                  extraOptions
+                )
+              )
             )
           )
         )
       ),
       // set program as running
       TE.chain(() =>
-        setProgram({
+        D.setProgram({
           user,
           name,
           running: true,
@@ -140,20 +146,11 @@ namespace Constructors {
  * Given an array of programs, it asks for methods to manipulate
  * database-ish sources.
  */
-export const buildController = ({
-  programs,
-  getProgram,
-  setProgram,
-  getOptions,
-  setOptions,
-}: Models.BuilderDeps): Models.ProgramController => ({
-  launchProgram: Constructors["buildLaunchProgram"](
-    programs,
-    setProgram,
-    getOptions,
-    setOptions
-  ),
-  endProgram: Constructors["buildEndProgram"](getProgram, setProgram),
-  getOptions,
-  setOptions,
+export const buildController = (
+  D: Models.BuilderDeps
+): Models.ProgramController => ({
+  launchProgram: Constructors["buildLaunchProgram"](D),
+  endProgram: Constructors["buildEndProgram"](D.getProgram, D.setProgram),
+  getOptions: D.getOptions,
+  setOptions: D.setOptions,
 });
