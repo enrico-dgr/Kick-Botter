@@ -15,9 +15,6 @@ import { Queries } from './Queries';
 import { RunProgram } from './RunProgram';
 
 export const App = () => {
-  /**
-   * States
-   */
   const [user, setUser] = React.useState<string>("unknown");
   const [nameOfProgram, setNameOfProgram] = React.useState<string>("unknown");
   const [settings, setStateOfSettings] = React.useState({});
@@ -33,20 +30,29 @@ export const App = () => {
       TE.chain((validatedQueries) =>
         pipe(
           () => ipcRenderer.invoke("getSettings", validatedQueries),
-          T.map((opts) => {
-            console.table(opts);
-            return PC.Models.ProgramOptionsPropsOnly.decode(opts);
-          }),
-          TE.mapLeft((e) => {
-            console.table(e);
-            return new Error(JSON.stringify(e, null, 2));
-          })
+          // validate data and extract right
+          T.map((opts) =>
+            fpTG.Either.Either(
+              Errors.Error,
+              PC.Models.ProgramOptionsPropsOnly
+            ).decode(opts)
+          ),
+          TE.mapLeft((e) => new Error(JSON.stringify(e, null, 2))),
+          TE.chain(
+            E.match(
+              TE.left,
+              (asd): TE.TaskEither<Error, PC.Models.ProgramOptionsPropsOnly> =>
+                TE.right(asd)
+            )
+          )
+          //
         )
       ),
-      TE.map((settings_) => {
-        console.log(settings_);
-        setStateOfSettings((_pv) => settings_);
-      })
+      TE.map((settings_) =>
+        setStateOfSettings((_pv) =>
+          settings_.launchOptions.userDataDir !== undefined ? settings_ : {}
+        )
+      )
     )();
 
   const areSettingsAvailable = () => Object.keys(settings).length > 0;
@@ -115,7 +121,7 @@ export const App = () => {
           name="users"
           id="users"
           queries={listUsers}
-          defaultMessage="Select a User"
+          default={{ message: "Select a User", query: "none" }}
           onChange={(v) => {
             setUser((_pv) => v);
             getSettings(v, nameOfProgram);
@@ -130,7 +136,7 @@ export const App = () => {
         name="programs"
         id="programs"
         queries={listPrograms}
-        defaultMessage="Select a Program"
+        default={{ message: "Select a Program", query: "none" }}
         onChange={(v) => {
           setNameOfProgram((_pv) => v);
           getSettings(user, v);

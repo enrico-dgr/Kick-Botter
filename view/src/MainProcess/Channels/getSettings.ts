@@ -29,7 +29,7 @@ export const getSettings = () =>
                   Programs.find(({ name }) => name === queries.name),
                   (program) =>
                     program === undefined
-                      ? TE.left(new Error(`Program not found.`))
+                      ? TE.right({ extraOptions: null, launchOptions: {} })
                       : TE.right(program.defaultOptions)
                 ),
               ({

@@ -7,15 +7,17 @@ type Props = {
   name: string;
   id: string;
   queries: string[];
-  defaultMessage?: string;
+  default: {
+    message: string;
+    query: string;
+  };
   onChange?: (query: string) => void;
 };
 /**
  *
  */
 export const Queries = (props: Props) => {
-  const defaultQuery = "none";
-  const [query, setQuery] = React.useState<string>(defaultQuery);
+  const [query, setQuery] = React.useState<string>(props.default.query);
 
   return (
     <select
@@ -29,7 +31,7 @@ export const Queries = (props: Props) => {
       }}
     >
       {/* Default */}
-      <option value={defaultQuery}>{props.defaultMessage}</option>
+      <option value={props.default.query}>{props.default.message}</option>
       {/* Values */}
       {props.queries.map((query_) => (
         <option value={query_} key={query_}>

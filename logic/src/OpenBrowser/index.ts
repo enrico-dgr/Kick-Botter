@@ -6,7 +6,6 @@ import { WebProgram as WP } from 'launch-page';
 
 import { launchOptions } from '../LaunchOptions';
 import { buildProgram, Models as PModels } from '../Program';
-import { Models as PCModels } from '../ProgramController';
 
 const NAME = "OpenBrowser";
 
@@ -36,9 +35,7 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
     return res;
   });
 
-const defaultOptions: PCModels.ProgramOptions = {
-  name: NAME,
-  user: "generic",
+const defaultOptions: PModels.ProgramOptions = {
   extraOptions: {},
   launchOptions: launchOptions({}) as {
     [key: string]: unknown;

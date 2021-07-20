@@ -107,13 +107,41 @@ namespace Dependencies {
       E.mapLeft((e) => new Error(JSON.stringify(e, null, 2))),
       // update database
       E.chain(() =>
-        JsonAPI.getJson({ absolutePath: CONSTANTS.OPTIONS_DB_PATH })
-      ),
-      E.chain((db) =>
         pipe(
-          JsonAPI.Models.Json.decode(programOptions),
+          JsonAPI.getJson({ absolutePath: CONSTANTS.OPTIONS_DB_PATH }),
+          E.chain(
+            flow(
+              Models.OptionsDatabase.decode,
+              E.mapLeft((e) => new Error(JSON.stringify(e, null, 2)))
+            )
+          )
+        )
+      ),
+      E.chain((validatedDB) =>
+        pipe(
+          ProgramController.Models.ProgramOptions.decode(programOptions),
           E.mapLeft((e) => new Error(JSON.stringify(e, null, 2))),
-          E.map((pO) => [...db, pO])
+          E.map((validatedPO) =>
+            pipe(
+              // exists in db ?
+              validatedDB.findIndex(
+                ({ name, user }) =>
+                  validatedPO.name === name && validatedPO.user === user
+              ),
+              //
+              (index) =>
+                index > -1
+                  ? // update
+                    [
+                      ...validatedDB.slice(0, index),
+                      validatedPO,
+                      ...validatedDB.slice(index + 1),
+                    ]
+                  : // or add
+                    [...validatedDB, validatedPO]
+              //
+            )
+          )
         )
       ),
       E.chain(JsonAPI.setJson({ absolutePath: CONSTANTS.OPTIONS_DB_PATH })),

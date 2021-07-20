@@ -12,7 +12,7 @@ export const postSettings = () =>
       E.mapLeft((e) => new Error(JSON.stringify(e))),
       E.chain((validatedQueries) =>
         pipe(
-          PC.Models.ProgramOptions.decode(args[1]),
+          PC.Models.ProgramOptionsPropsOnly.decode(args[1]),
           E.mapLeft((e) => new Error(JSON.stringify(e))),
           E.map(
             (validatedOptions): PC.Models.ProgramOptions => ({
