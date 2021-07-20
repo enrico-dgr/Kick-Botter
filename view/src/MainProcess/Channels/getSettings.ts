@@ -4,25 +4,44 @@ import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 
-import { jsonPC, ProgramController as PC } from '../../logic';
+import { jsonPC, ProgramController as PC, Programs } from '../../logic';
 
+/**
+ *
+ * @returns
+ * ```ts
+ * type return = Promise<PC.Models.ProgramOptionsPropsOnly>
+ * ```
+ */
 export const getSettings = () =>
   ipcMain.handle("getSettings", (_event, ...args) =>
     pipe(
       PC.Models.ProgramDatabasesSharedProps.decode(args[0]),
       E.mapLeft((e) => new Error(JSON.stringify(e))),
       TE.fromEither,
-      TE.chain((queries) => jsonPC.getOptions(queries)),
-      TE.map(
-        O.match(
-          () => ({}),
-          ({
-            extraOptions,
-            launchOptions,
-          }): PC.Models.ProgramOptionsPropsOnly => ({
-            extraOptions,
-            launchOptions,
-          })
+      TE.chain((queries) =>
+        pipe(
+          jsonPC.getOptions(queries),
+          TE.chain(
+            O.match(
+              (): TE.TaskEither<Error, PC.Models.ProgramOptionsPropsOnly> =>
+                pipe(
+                  Programs.find(({ name }) => name === queries.name),
+                  (program) =>
+                    program === undefined
+                      ? TE.left(new Error(`Program not found.`))
+                      : TE.right(program.defaultOptions)
+                ),
+              ({
+                extraOptions,
+                launchOptions,
+              }): TE.TaskEither<Error, PC.Models.ProgramOptionsPropsOnly> =>
+                TE.right({
+                  extraOptions,
+                  launchOptions,
+                })
+            )
+          )
         )
       )
     )()

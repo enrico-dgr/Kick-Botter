@@ -27,6 +27,7 @@ export namespace Models {
   const JsonArray: t.Type<JsonArray> = t.recursion("JsonArray", () =>
     t.readonlyArray(Json)
   );
+
   const JsonRecord: t.Type<JsonRecord> = t.recursion("JsonRecord", () =>
     t.readonly(t.record(t.string, Json))
   );

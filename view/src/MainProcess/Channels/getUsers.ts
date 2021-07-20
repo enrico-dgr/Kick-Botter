@@ -14,9 +14,9 @@ const array_unique = <A>(user: A, index: number, arr: A[]) =>
  *
  * @returns
  * ```ts
- * type return = {
+ * type return = E.Either<{
  *    users: string[]
- * }
+ * }>
  * ```
  */
 export const getUsers = () =>
