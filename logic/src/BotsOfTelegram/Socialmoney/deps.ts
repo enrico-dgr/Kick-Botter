@@ -5,9 +5,9 @@ import {
 } from 'launch-page';
 import { ElementHandle } from 'puppeteer';
 
-import { FollowUser, LikeToPost, WatchStoryAtUrl } from '../Instagram/index';
-import { sendMessage } from '../Telegram';
-import { OutcomeOfAction, SettingsFromBot } from './botsOfTelegram';
+import { FollowUser, LikeToPost, WatchStoryAtUrl } from '../../Instagram/index';
+import { sendMessage } from '../../Telegram';
+import { OutcomeOfAction, SettingsFromBot } from '../botsOfTelegram';
 
 // --------------------------
 // Types

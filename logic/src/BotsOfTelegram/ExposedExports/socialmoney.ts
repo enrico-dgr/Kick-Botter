@@ -1,4 +1,4 @@
 export {
   CustomStringLiteralOfActions,
   OtherPropsInStateOfCycle,
-} from "../socialmoney";
+} from "../Socialmoney/deps";

@@ -1,1 +1,1 @@
-export { CustomStringLiteralOfActions } from "../socialgift";
+export { CustomStringLiteralOfActions } from "../Socialgift/deps";

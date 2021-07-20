@@ -92,7 +92,7 @@ export const App = () => {
       TE.map(
         E.match(
           (e) => console.error(e.message),
-          (res) => setListUsers(res.users)
+          (res) => setListUsers(res.users.filter((user) => user !== "generic"))
         )
       )
     )();
@@ -117,11 +117,12 @@ export const App = () => {
     <div>
       {/* Queries */}
       <div>
+        <p>User:</p>
         <Queries
           name="users"
           id="users"
           queries={listUsers}
-          default={{ message: "Select a User", query: "none" }}
+          default={{ message: "generic", query: "generic" }}
           onChange={(v) => {
             setUser((_pv) => v);
             getSettings(v, nameOfProgram);
@@ -132,18 +133,21 @@ export const App = () => {
           onClick={(value) => updateListUsers(value)}
         />
       </div>
-      <Queries
-        name="programs"
-        id="programs"
-        queries={listPrograms}
-        default={{ message: "Select a Program", query: "none" }}
-        onChange={(v) => {
-          setNameOfProgram((_pv) => v);
-          getSettings(user, v);
-        }}
-      />
+      <div>
+        <p>Program:</p>
+        <Queries
+          name="programs"
+          id="programs"
+          queries={listPrograms}
+          default={{ message: "none", query: "none" }}
+          onChange={(v) => {
+            setNameOfProgram((_pv) => v);
+            getSettings(user, v);
+          }}
+        />
+      </div>
       {/* Editor */}
-
+      <br />
       <button
         disabled={areSettingsAvailable() === false}
         onClick={() => {

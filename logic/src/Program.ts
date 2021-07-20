@@ -46,9 +46,9 @@ const closeBrowserAtEnd = <A>(program: WP.WebProgram<A>) =>
 /**
  * Build Program
  */
-export const buildProgram = <ProgramOptions, B>(
-  program: Models.Program<ProgramOptions, B>
-): Models.Program<ProgramOptions, B> => ({
+export const buildProgram = <ExtraOptions, B>(
+  program: Models.Program<ExtraOptions, B>
+): Models.Program<ExtraOptions, B> => ({
   ...program,
   self: (D: Models.ProgramDeps) => flow(program.self(D), closeBrowserAtEnd),
 });

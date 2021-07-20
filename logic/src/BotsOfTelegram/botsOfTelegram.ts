@@ -3,12 +3,17 @@ import * as E from 'fp-ts/lib/Either';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as O from 'fp-ts/Option';
 import * as S from 'fp-ts/Semigroup';
+import * as t from 'io-ts';
 import * as EH from 'launch-page/lib/ElementHandle';
 import * as SBL from 'launch-page/lib/SettingsByLanguage';
 import * as WD from 'launch-page/lib/WebDeps';
 import * as WP from 'launch-page/lib/WebProgram';
 import { ElementHandle } from 'puppeteer';
 
+/**
+ *
+ */
+import { Models as PModels } from '../Program';
 import {
     Settings as SettingsOfTelegram, settingsByLanguage as settingsOfTelegramByLanguage
 } from '../Telegram';
@@ -217,9 +222,6 @@ type Loggers<
   ) => TE.TaskEither<Error, void>)[];
 };
 
-/**
- *
- */
 type InputOfBody<
   CustomStringLiteralOfActions extends string,
   CustomStringLiteralOfPostAction extends string,
@@ -234,6 +236,7 @@ type InputOfBody<
     InfosForAction,
     InfosFromAction
   >;
+  programDeps: PModels.ProgramDeps;
   settingsFromBot: SettingsFromBot<
     CustomStringLiteralOfActions,
     StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
@@ -248,7 +251,7 @@ type InputOfBody<
 /**
  *
  */
-const bodyOfBot = <
+export const bodyOfBot = <
   CustomStringLiteralOfActions extends string,
   CustomStringLiteralOfPostAction extends string,
   InfosForAction,
@@ -579,9 +582,7 @@ const bodyOfBot = <
         )(webDeps)();
         eitherOfWebProgram;
       }
-      /**
-       *
-       */
+
       if (eitherOfWebProgram === undefined) {
         return E.left(new Error("Cycle return value is undefined."));
       }
@@ -595,9 +596,6 @@ const bodyOfBot = <
     return WP.fromTaskEither(() => asyncLoop());
   };
 
-  /**
-   *
-   */
   return pipe(
     WD.goto(I.settingsFromBot.chatUrl.href),
     WP.chain(() => WP.ask()),
@@ -607,9 +605,22 @@ const bodyOfBot = <
 // --------------------------
 // Input
 // --------------------------
-/**
- *
- */
+
+export namespace TypeGuards {
+  export const Options = t.type({
+    skip: t.UnknownRecord,
+    delayBetweenCycles: t.number,
+  });
+
+  export const Input = t.type({
+    nameOfBot: t.string,
+    language: t.string,
+    loggers: t.UnknownRecord,
+    programDeps: t.unknown,
+    options: Options,
+  });
+}
+
 export type Options<CustomStringLiteralOfActions extends string> = {
   skip: {
     [key in StringLiteralOfActions<CustomStringLiteralOfActions>]: boolean;
@@ -633,6 +644,7 @@ export type Input<
     InfosForAction,
     InfosFromAction
   >;
+  programDeps: PModels.ProgramDeps;
   options: Options<CustomStringLiteralOfActions>;
 };
 // --------------------------
@@ -676,6 +688,42 @@ export const injectBot = <
     settingsFromBot: mapSettingsByBot(
       fromLanguageToMapOfSettingsByBot(I.language)
     )(I.nameOfBot),
+    settingsFromLanguage: {
+      message: {
+        xpath: getPropsByLanguage<string>(I.language)((sets) =>
+          sets.message.returnXPath(EnumOfBots[I.nameOfBot], "")
+        ),
+      },
+    },
+  });
+
+export const bot = <
+  CustomStringLiteralOfActions extends string,
+  CustomStringLiteralOfPostAction extends string,
+  InfosForAction,
+  InfosFromAction,
+  OtherPropsInStateOfCycle
+>(
+  settingsByBot: (
+    language: SBL.Languages
+  ) => SettingsFromBot<
+    CustomStringLiteralOfActions,
+    StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+    InfosForAction,
+    InfosFromAction,
+    OtherPropsInStateOfCycle
+  >
+) => (
+  I: Input<
+    CustomStringLiteralOfActions,
+    CustomStringLiteralOfPostAction,
+    InfosForAction,
+    InfosFromAction
+  >
+) =>
+  bodyOfBot({
+    ...I,
+    settingsFromBot: settingsByBot(I.language),
     settingsFromLanguage: {
       message: {
         xpath: getPropsByLanguage<string>(I.language)((sets) =>

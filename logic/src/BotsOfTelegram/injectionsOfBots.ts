@@ -1,6 +1,6 @@
 import { injectBot, Options } from './botsOfTelegram';
-import { socialgift } from './socialgift';
-import { socialmoney } from './socialmoney';
+import { socialgift } from './Socialgift/deps';
+import { socialmoney } from './Socialmoney/deps';
 
 const bot = injectBot((language) => ({
   Socialgift: socialgift(language),
