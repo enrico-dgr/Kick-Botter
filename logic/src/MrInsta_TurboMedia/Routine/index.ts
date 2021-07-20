@@ -2,7 +2,7 @@ import { pipe } from 'fp-ts/lib/function';
 import * as S from 'fp-ts/lib/Semigroup';
 import * as WP from 'launch-page/lib/WebProgram';
 
-import { chainNOrElse } from '../index';
+import { chainNOrElse } from '../bot';
 
 export interface RoutineDeps<ProfileType> {
   readonly preRetrieveChecks: WP.WebProgram<void>[];

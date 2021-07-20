@@ -13,5 +13,10 @@
     "user": "generic",
     "name": "OpenBrowser",
     "running": true
+  },
+  {
+    "user": "newmener2",
+    "name": "OpenBrowser",
+    "running": true
   }
 ]

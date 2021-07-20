@@ -25,5 +25,130 @@
         "height": 800
       }
     }
+  },
+  {
+    "user": "newmener2",
+    "name": "OpenBrowser",
+    "extraOptions": {},
+    "launchOptions": {
+      "headless": false,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/newmener2",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
+  },
+  {
+    "user": "newmener2",
+    "name": "Socialgift",
+    "extraOptions": {
+      "options": {
+        "skip": {
+          "Follow": false,
+          "Like": false,
+          "Comment": true,
+          "Story": false
+        },
+        "delayBetweenCycles": 500000
+      }
+    },
+    "launchOptions": {
+      "headless": true,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/newmener2",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
+  },
+  {
+    "user": "im_noone1789",
+    "name": "Socialgift",
+    "extraOptions": {
+      "options": {
+        "skip": {
+          "Follow": false,
+          "Like": false,
+          "Comment": true,
+          "Story": false
+        },
+        "delayBetweenCycles": 400000
+      }
+    },
+    "launchOptions": {
+      "headless": false,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/generic",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
+  },
+  {
+    "user": "waverener12",
+    "name": "Socialgift",
+    "extraOptions": {
+      "options": {
+        "skip": {
+          "Follow": false,
+          "Like": false,
+          "Comment": true,
+          "Story": false
+        },
+        "delayBetweenCycles": 400000
+      }
+    },
+    "launchOptions": {
+      "headless": false,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/generic",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
+  },
+  {
+    "user": "third_number_SM",
+    "name": "Socialgift",
+    "extraOptions": {
+      "options": {
+        "skip": {
+          "Follow": false,
+          "Like": false,
+          "Comment": true,
+          "Story": false
+        },
+        "delayBetweenCycles": 300000
+      }
+    },
+    "launchOptions": {
+      "headless": false,
+      "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/generic",
+      "args": [
+        "--lang=it",
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36"
+      ],
+      "defaultViewport": {
+        "width": 1050,
+        "height": 800
+      }
+    }
   }
 ]
