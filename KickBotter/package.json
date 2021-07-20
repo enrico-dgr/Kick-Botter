@@ -13,6 +13,7 @@
     "install:all": "npm run install:view && npm run install:logic && cd KickBotter npm install",
     "dev:build:main": "cd view && npm run build:main",
     "dev:build:renderer": "cd view && npm run build:renderer",
+    "dev:start": "cd view && npm run start",
     "build:prod:view": "cd view && npm run build:prod",
     "build:prod": "npm run build:prod:view",
     "start": "cd ./KickBotter && electron-forge start",

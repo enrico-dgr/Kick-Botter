@@ -1,8 +1,18 @@
 [
   {
     "user": "generic",
-    "name": "OpenBrowser",
-    "extraOptions": {},
+    "name": "SocialMoney",
+    "extraOptions": {
+      "options": {
+        "skip": {
+          "Follow": false,
+          "Like": false,
+          "Comment": true,
+          "Story": false
+        },
+        "delayBetweenCycles": 180000
+      }
+    },
     "launchOptions": {
       "headless": false,
       "userDataDir": "/Users/enricodigrazia/Desktop/desktopContent/projects/KickBotter/KickBotter/logic/userDataDirs/generic",

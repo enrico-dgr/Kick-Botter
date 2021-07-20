@@ -14,8 +14,10 @@ import { GetText } from './GetText';
 import { Queries } from './Queries';
 import { RunProgram } from './RunProgram';
 
+const DEFAULT_USER = "generic";
+
 export const App = () => {
-  const [user, setUser] = React.useState<string>("unknown");
+  const [user, setUser] = React.useState<string>(DEFAULT_USER);
   const [nameOfProgram, setNameOfProgram] = React.useState<string>("unknown");
   const [settings, setStateOfSettings] = React.useState({});
 
@@ -71,7 +73,7 @@ export const App = () => {
 
   const [listPrograms, setListPrograms] = React.useState<string[]>(["none"]);
 
-  const [listUsers, setListUsers] = React.useState<string[]>(["none"]);
+  const [listUsers, setListUsers] = React.useState<string[]>(["NO USERS"]);
   const updateListUsers = (value: string) => {
     if (listUsers.indexOf(value) < 0) setListUsers((pv) => [value, ...pv]);
   };
@@ -122,7 +124,7 @@ export const App = () => {
           name="users"
           id="users"
           queries={listUsers}
-          default={{ message: "generic", query: "generic" }}
+          default={{ message: DEFAULT_USER, query: DEFAULT_USER }}
           onChange={(v) => {
             setUser((_pv) => v);
             getSettings(v, nameOfProgram);
@@ -159,7 +161,7 @@ export const App = () => {
       <RunProgram
         user={user}
         nameOfProgram={nameOfProgram}
-        disabled={user === "unknown" || nameOfProgram === "unknown"}
+        disabled={nameOfProgram === "none"}
       />
       {areSettingsAvailable() ? (
         <>

@@ -37,13 +37,13 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
 
 const defaultOptions: PModels.ProgramOptions = {
   extraOptions: {},
-  launchOptions: launchOptions({}) as {
-    [key: string]: unknown;
-  },
+  launchOptions: launchOptions({}),
 };
 
-export const program = buildProgram({
+const program = buildProgram({
   name: NAME,
   defaultOptions,
   self,
 });
+
+export default program;
