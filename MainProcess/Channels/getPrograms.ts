@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 
-import { Programs } from '../../../../logic/src';
+import { Programs } from '../../Programs';
 
 /**
  *

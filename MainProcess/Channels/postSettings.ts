@@ -3,7 +3,7 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/TaskEither';
 
-import { jsonPC, ProgramController as PC } from '../../logic';
+import { jsonPC, ProgramController as PC } from '../../Programs';
 
 export const postSettings = () =>
   ipcMain.handle("postSettings", (_event, ...args) =>

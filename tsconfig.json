@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "noEmit": true,
+    "watch": true,
+    "noEmit": false,
+    "outDir": "./KickBotter",
     "target": "es5",
-    "outDir": "./build",
     "module": "commonjs",
     "jsx": "react",
     "esModuleInterop": true,

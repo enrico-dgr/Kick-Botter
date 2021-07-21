@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 
-import { jsonPC } from '../../../../logic/src';
+import { jsonPC } from '../../Programs';
 
 /**
  * utils

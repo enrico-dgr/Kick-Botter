@@ -6,19 +6,15 @@ import { join, relative, resolve } from 'path';
  */
 const BUILD_PATH: string = `../KickBotter`;
 //
-const pathsToCopy: string[] = [
-  "../Electron/index.html",
-  "../Electron/logic",
-  "../package.json",
-];
+const pathsToCopy: string[] = ["../index.html"];
 // --------------------------------
 // Script
 // --------------------------------
-const relativePath = (path: string) =>
-  relative(resolve(__dirname, "../.."), resolve(__dirname, path));
+const relativePathToThisDir = (path: string) =>
+  relative(resolve(__dirname, ".."), resolve(__dirname, path));
 //
-const buildPath = (relativePath_: string) =>
-  resolve(__dirname, BUILD_PATH, relativePath(relativePath_));
+const buildPathRelativeToProdBuild = (relativePath_: string) =>
+  resolve(__dirname, BUILD_PATH, relativePathToThisDir(relativePath_));
 /**
  * Copy Dir
  */
@@ -48,5 +44,5 @@ const copy = (src: string, dest: string) =>
  * Execution
  */
 pathsToCopy.forEach((path_) => {
-  copy(resolve(__dirname, path_), buildPath(path_));
+  copy(resolve(__dirname, path_), buildPathRelativeToProdBuild(path_));
 });

@@ -4,7 +4,7 @@ import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 
-import { jsonPC, ProgramController as PC, Programs } from '../../logic';
+import { jsonPC, ProgramController as PC, Programs } from '../../Programs';
 
 /**
  *
