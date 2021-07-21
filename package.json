@@ -1,7 +1,7 @@
 {
   "name": "kickbotter",
   "version": "1.0.2",
-  "main": "./KickBotter/index.js",
+  "main": "./index.js",
   "description": "Automated socials' actions",
   "author": "enrico-dgr",
   "repository": {
@@ -22,7 +22,7 @@
     "prebuild:prod": "npm run clean",
     "build:prod": "npm run build:main:prod && npm run build:renderer:prod",
     "---": "echo '-------------------------- This is just a comment command' ",
-    "start": "electron-forge start",
+    "start": "cd ./KickBotter && electron-forge start",
     "package": "cd ./KickBotter && electron-forge package",
     "make": "cd ./KickBotter && electron-forge make",
     "publish": "cd ./KickBotter && electron-forge publish"
