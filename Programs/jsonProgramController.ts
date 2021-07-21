@@ -13,11 +13,11 @@ import * as ProgramController from './ProgramController';
 namespace CONSTANTS {
   export const STATES_DB_PATH = path.resolve(
     __dirname,
-    "./programsStates.json"
+    "./local/programsStates.json"
   );
   export const OPTIONS_DB_PATH = path.resolve(
     __dirname,
-    "./programsOptions.json"
+    "./local/programsOptions.json"
   );
 }
 export namespace Models {

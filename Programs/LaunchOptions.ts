@@ -26,7 +26,7 @@ export namespace Models {
 }
 namespace Builders {
   export const userDataDir = (user: string) =>
-    path.resolve(__dirname, `../userDataDirs/${user}`);
+    path.resolve(__dirname, `./local/userDataDirs/${user}`);
 }
 
 export const launchOptions = (D: Models.Deps): P.LaunchOptions => ({
