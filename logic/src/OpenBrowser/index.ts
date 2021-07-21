@@ -4,7 +4,7 @@ import * as T from 'fp-ts/Task';
 import * as TE from 'fp-ts/TaskEither';
 import { WebProgram as WP } from 'launch-page';
 
-import { launchOptions } from '../LaunchOptions';
+import * as LO from '../LaunchOptions';
 import { buildProgram, Models as PModels } from '../Program';
 
 const NAME = "OpenBrowser";
@@ -35,10 +35,10 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
     return res;
   });
 
-const defaultOptions: PModels.ProgramOptions = {
+const defaultOptions: PModels.DefaultOptions = (D) => ({
   extraOptions: {},
-  launchOptions: launchOptions({}),
-};
+  launchOptions: LO.launchOptions(D),
+});
 
 const program = buildProgram({
   name: NAME,

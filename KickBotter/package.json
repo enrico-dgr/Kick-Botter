@@ -18,7 +18,7 @@
     "build:prod": "npm run build:prod:view",
     "start": "cd ./KickBotter && electron-forge start",
     "package": "cd ./KickBotter && electron-forge package",
-    "make": "cd ./KickBotter && electron-forge make",
+    "make": "npm run build:prod && cd ./KickBotter && electron-forge make",
     "publish": "cd ./KickBotter && electron-forge publish"
   },
   "keywords": [],

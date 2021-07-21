@@ -17,13 +17,15 @@ export namespace Models {
   export interface ProgramDeps {
     running: TE.TaskEither<Error, boolean>;
   }
+
+  export type DefaultOptions = (D: LO.Models.Deps) => ProgramOptions;
   /**
    * It is not intended to construct instances on your own.
    * Use `getProgram` instead.
    */
   export interface Program<ExtraOptions, B> {
     name: string;
-    defaultOptions: ProgramOptions;
+    defaultOptions: DefaultOptions;
     self: (D: ProgramDeps) => (extraOptions: ExtraOptions) => WP.WebProgram<B>;
   }
 }

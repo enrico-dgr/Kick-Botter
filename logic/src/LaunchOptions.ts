@@ -7,7 +7,7 @@ export namespace Models {
     /**
      * default to `generic`
      */
-    user?: string;
+    user: string;
   }
 
   export const LaunchOptions = t.partial({
@@ -25,8 +25,8 @@ export namespace Models {
   export type LaunchOptions = Pick<P.LaunchOptions, keyof RunTimeLO>;
 }
 namespace Builders {
-  export const userDataDir = (user?: string) =>
-    path.resolve(__dirname, `../userDataDirs/${user ?? "generic"}`);
+  export const userDataDir = (user: string) =>
+    path.resolve(__dirname, `../userDataDirs/${user}`);
 }
 
 export const launchOptions = (D: Models.Deps): P.LaunchOptions => ({

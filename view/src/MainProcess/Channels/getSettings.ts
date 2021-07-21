@@ -30,7 +30,7 @@ export const getSettings = () =>
                   (program) =>
                     program === undefined
                       ? TE.right({ extraOptions: null, launchOptions: {} })
-                      : TE.right(program.defaultOptions)
+                      : TE.right(program.defaultOptions({ user: queries.user }))
                 ),
               ({
                 extraOptions,

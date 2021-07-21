@@ -106,7 +106,11 @@ namespace Constructors {
             O.match(
               () =>
                 pipe(
-                  TE.of(program.defaultOptions),
+                  TE.of(
+                    program.defaultOptions({
+                      user,
+                    })
+                  ),
                   TE.chainFirst((dO) => D.setOptions({ user, name, ...dO }))
                 ),
               (existingOptions) => TE.of(existingOptions)

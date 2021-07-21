@@ -6,7 +6,7 @@
     "build:main": "tsc -p tsconfig.build.json",
     "copyFilesOfView": "ts-node ./Scripts/copyFilesOfView.ts",
     "build:renderer": "npm run copyFilesOfView && npx webpack --config webpack.config.js",
-    "clean": "rimraf ../KickBotter/view",
+    "clean": "rimraf ../KickBotter/view ../KickBotter/logic",
     "prebuild": "npm run clean",
     "build": "npm run build:main && npm run build:renderer",
     "start": "cd ../KickBotter && electron .",

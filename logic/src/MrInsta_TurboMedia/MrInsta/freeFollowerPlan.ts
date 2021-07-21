@@ -9,10 +9,10 @@ const NAME = "MrInstaFreeFollowerPlan";
 const self = (_D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
   freeFollowerPlan("MrInsta");
 
-const defaultOptions: PModels.ProgramOptions = {
+const defaultOptions: PModels.DefaultOptions = (D) => ({
   extraOptions: {},
-  launchOptions: launchOptions({}),
-};
+  launchOptions: launchOptions(D),
+});
 
 const program = buildProgram({
   name: NAME,

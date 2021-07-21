@@ -4,14 +4,21 @@ import { flow, pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 import * as t from 'io-ts';
+import path from 'path';
 
 import * as JsonAPI from './JsonAPI';
 import * as Program from './Program';
 import * as ProgramController from './ProgramController';
 
 namespace CONSTANTS {
-  export const STATES_DB_PATH = "./programsStates.json";
-  export const OPTIONS_DB_PATH = "./programsOptions.json";
+  export const STATES_DB_PATH = path.resolve(
+    __dirname,
+    "./programsStates.json"
+  );
+  export const OPTIONS_DB_PATH = path.resolve(
+    __dirname,
+    "./programsOptions.json"
+  );
 }
 export namespace Models {
   export const StatesDatabase = t.array(ProgramController.Models.ProgramState);

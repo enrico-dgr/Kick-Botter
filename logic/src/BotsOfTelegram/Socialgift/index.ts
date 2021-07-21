@@ -33,7 +33,7 @@ const self = (programDeps: PModels.ProgramDeps) => (
     language: "it",
   });
 
-const defaultOptions: PModels.ProgramOptions = {
+const defaultOptions: PModels.DefaultOptions = (D) => ({
   extraOptions: {
     options: {
       skip: {
@@ -45,8 +45,8 @@ const defaultOptions: PModels.ProgramOptions = {
       delayBetweenCycles: 3 * 60 * 1000,
     },
   },
-  launchOptions: launchOptions({}),
-};
+  launchOptions: launchOptions(D),
+});
 
 export const program = buildProgram({
   name: NAME,
