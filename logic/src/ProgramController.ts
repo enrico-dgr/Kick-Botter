@@ -116,6 +116,14 @@ namespace Constructors {
               (existingOptions) => TE.of(existingOptions)
             )
           ),
+          // set program as running
+          TE.chainFirst(() =>
+            D.setProgram({
+              user,
+              name,
+              running: true,
+            })
+          ),
           // run program
           TE.chain(({ extraOptions, launchOptions }) =>
             pipe(
@@ -129,14 +137,15 @@ namespace Constructors {
           )
         )
       ),
-      // set program as running
-      TE.chain(() =>
+      // on error set program as not-running
+      TE.mapLeft((e) => {
         D.setProgram({
           user,
           name,
           running: true,
-        })
-      )
+        });
+        return e;
+      })
     );
 
   export const buildEndProgram = (
