@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { AppPreload } from './AppPreload';
+import { App } from './App';
 
 window.addEventListener("DOMContentLoaded", () => {
   /**
@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", () => {
    *
    */
   const InjectPropsForAppPreload = () => {
-    return AppPreload();
+    return App();
   };
   /**
    *

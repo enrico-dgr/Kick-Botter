@@ -4,7 +4,7 @@ var path = require("path");
  *
  */
 module.exports = {
-  watch: true,
+  watch: false,
   target: "electron-renderer",
   mode: "development",
   devtool: "inline-source-map",
@@ -17,10 +17,10 @@ module.exports = {
   output: {
     path: path.resolve(
       __dirname,
-      "../KickBotter",
+      "./KickBotter",
       path.relative(
-        path.resolve(__dirname, ".."),
-        path.resolve(__dirname, "./src")
+        path.resolve(__dirname, "."),
+        path.resolve(__dirname, "./Electron")
       )
     ),
     filename: "[name].js",

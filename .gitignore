@@ -11,6 +11,5 @@ deps.json
 **/local
 **/playground
 out
-KickBotter/logic
-KickBotter/view
+KickBotter
 assets

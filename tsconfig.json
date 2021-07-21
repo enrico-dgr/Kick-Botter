@@ -3,22 +3,21 @@
     "baseUrl": ".",
     "noEmit": true,
     "target": "es5",
-    "outDir": "../KickBotter/logic",
+    "outDir": "./build",
     "module": "commonjs",
+    "jsx": "react",
     "esModuleInterop": true,
     "strict": true,
     "moduleResolution": "node",
     "lib": ["DOM"],
-    "sourceMap": false,
+    "sourceMap": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "stripInternal": true,
-    "declaration": true,
+    "declaration": false,
     "typeRoots": ["./node_modules/@types"]
-  },
-  "include": ["./src", "./playground"],
-  "exclude": ["node_modules", "**/node_modules/*", "build"]
+  }
 }

@@ -4,12 +4,12 @@ import { join, relative, resolve } from 'path';
 /**
  * CONSTANTS
  */
-const BUILD_PATH: string = `../../KickBotter`;
+const BUILD_PATH: string = `../KickBotter`;
 //
 const pathsToCopy: string[] = [
-  "../src/index.html",
-  "../src/logic",
-  "../../package.json",
+  "../Electron/index.html",
+  "../Electron/logic",
+  "../package.json",
 ];
 // --------------------------------
 // Script

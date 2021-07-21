@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "watch": true,
+    "noEmit": false,
+    "outDir": "./KickBotter"
+  },
+  "include": ["./Programs/*", "./Electron/*"],
+  "exclude": [
+    "./Electron/renderer.ts",
+    "./Electron/style.ts",
+    "./Electron/App",
+    "./Electron/preload.ts",
+    "./Electron/AppPreload",
+    "./Scripts"
+  ]
+}

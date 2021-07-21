@@ -6,9 +6,9 @@ import * as TE from 'fp-ts/TaskEither';
 import * as t from 'io-ts';
 import * as React from 'react';
 
-import { ProgramController as PC } from '../logic';
-import { Errors } from '../TypeGuards';
-import * as fpTG from '../TypeGuards/fp-ts';
+import { ProgramController as PC } from '../../Programs';
+import { Errors } from '../../TypeGuards';
+import * as fpTG from '../../TypeGuards/fp-ts';
 import { DisplaySettings } from './DisplaySettings';
 import { GetText } from './GetText';
 import { Queries } from './Queries';
