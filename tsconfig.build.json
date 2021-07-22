@@ -3,5 +3,13 @@
   "compilerOptions": {
     "watch": true
   },
-  "exclude": ["./KickBotter", "./Scripts", "./basket"]
+  "exclude": [
+    "./KickBotter",
+    "./Scripts",
+    "./MPPreload",
+    "./preload.ts",
+    "./RendererProcess",
+    "./renderer.ts",
+    "./basket"
+  ]
 }
