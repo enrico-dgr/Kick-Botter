@@ -1,3 +1,3 @@
-import Renderer from 'RendererProcess';
+import Renderer from './RendererProcess';
 
 Renderer();
