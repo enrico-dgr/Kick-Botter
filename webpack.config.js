@@ -7,7 +7,7 @@ module.exports = {
   watch: true,
   target: "electron-renderer",
   mode: "development",
-  devtool: "inline-source-map",
+  devtool: "eval-source-map",
   entry: {
     renderer: path.resolve(__dirname, "renderer.ts"),
     preload: path.resolve(__dirname, "preload.ts"),

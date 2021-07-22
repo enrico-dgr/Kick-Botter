@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "watch": true,
     "noEmit": false,
     "outDir": "./KickBotter",
     "target": "es5",

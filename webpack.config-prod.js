@@ -6,8 +6,7 @@ var path = require("path");
 module.exports = {
   watch: false,
   target: "electron-renderer",
-  mode: "development",
-  devtool: "inline-source-map",
+  mode: "production",
   entry: {
     renderer: path.resolve(__dirname, "renderer.ts"),
     preload: path.resolve(__dirname, "preload.ts"),

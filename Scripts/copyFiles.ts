@@ -5,8 +5,6 @@ import { join, relative, resolve } from 'path';
  * CONSTANTS
  */
 const BUILD_PATH: string = `../KickBotter`;
-//
-const pathsToCopy: string[] = ["../index.html", "../package.json"];
 // --------------------------------
 // Script
 // --------------------------------
@@ -43,6 +41,8 @@ const copy = (src: string, dest: string) =>
 /**
  * Execution
  */
-pathsToCopy.forEach((path_) => {
-  copy(resolve(__dirname, path_), buildPathRelativeToProdBuild(path_));
-});
+const copyRecur = (paths: string[]) =>
+  paths.forEach((path_) => {
+    copy(resolve(__dirname, path_), buildPathRelativeToProdBuild(path_));
+  });
+export default copyRecur;

@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "watch": true,
-    "noEmit": false
+    "watch": true
   },
   "exclude": ["./KickBotter", "./Scripts", "./basket"]
 }
