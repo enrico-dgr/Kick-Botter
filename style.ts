@@ -1,3 +1,3 @@
 import './RendererProcess/App/style.scss';
-import './Preload/App/style.scss';
+import './MPPreload/App/style.scss';
 

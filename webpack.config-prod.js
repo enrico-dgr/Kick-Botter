@@ -9,13 +9,13 @@ module.exports = {
   mode: "development",
   devtool: "inline-source-map",
   entry: {
-    renderer: path.resolve(__dirname, "RendererProcess/index.ts"),
-    preload: path.resolve(__dirname, "Preload/index.ts"),
-    style: path.resolve(__dirname, "./style.ts"),
+    renderer: path.resolve(__dirname, "renderer.ts"),
+    preload: path.resolve(__dirname, "preload.ts"),
+    style: path.resolve(__dirname, "style.ts"),
   },
 
   output: {
-    path: path.resolve(__dirname, "./KickBotter"),
+    path: path.resolve(__dirname, "KickBotter"),
     filename: "[name].js",
   },
   resolve: {

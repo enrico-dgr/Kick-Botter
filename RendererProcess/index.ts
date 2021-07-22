@@ -9,4 +9,5 @@ if (domContainer === null) throw new Error("dom container is null.");
  *
  */
 
-ReactDOM.render(React.createElement(App), domContainer);
+const Renderer = () => ReactDOM.render(React.createElement(App), domContainer);
+export default Renderer;
