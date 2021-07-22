@@ -9,6 +9,7 @@ import * as React from 'react';
 import { ProgramController as PC } from '../../Programs';
 import { Errors } from '../../TypeGuards';
 import * as fpTG from '../../TypeGuards/fp-ts';
+import BrowserUsers from '../features/browserUsers/BrowserUsers';
 import { DisplaySettings } from './DisplaySettings';
 import { GetText } from './GetText';
 import { Queries } from './Queries';
@@ -118,6 +119,7 @@ export const App = () => {
   return (
     <div>
       {/* Queries */}
+      <BrowserUsers />
       <div>
         <p>User:</p>
         <Queries
