@@ -26,7 +26,7 @@ In my list:
 - A little bit of styling :sweat_smile:
 - Settings' description on mouse-over
 
-## [Last Release](https://github.com/enrico-dgr/Kick-Botter/releases/tag/v1.0.16)
+## [Last Release](https://github.com/enrico-dgr/Kick-Botter/releases/latest)
 
 ## Usage
 
