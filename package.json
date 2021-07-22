@@ -21,7 +21,7 @@
     "build:renderer:prod": "npm run pre:build:renderer && npx webpack --config webpack.config-prod.js",
     "prebuild:prod": "npm run clean",
     "build:prod": "npm run build:main:prod && npm run build:renderer:prod",
-    "postbuild:prod": "cd ./KickBotter && npm install --production",
+    "postbuild:prod": "cd ./KickBotter && npm install",
     "---": "echo '-------------------------- This is just a comment command' ",
     "start": "cd ./KickBotter && electron-forge start",
     "package": "cd ./KickBotter && electron-forge package",

@@ -15,11 +15,11 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14
-      - name: install dependencies
-        run: npm run install:all
-      - name: build
+      - name: installing dependencies
+        run: npm run install
+      - name: building js folder for electron-forge
         run: npm run build:prod
-      - name: publish
+      - name: publishing
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run publish
@@ -30,11 +30,11 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14
-      - name: install dependencies
-        run: npm run install:all
-      - name: build
+      - name: installing dependencies
+        run: npm run install
+      - name: building js folder for electron-forge
         run: npm run build:prod
-      - name: publish
+      - name: publishing
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run publish
@@ -45,11 +45,11 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 14
-      - name: install dependencies
-        run: npm run install:all
-      - name: build
+      - name: installing dependencies
+        run: npm run install
+      - name: building js folder for electron-forge
         run: npm run build:prod
-      - name: publish
+      - name: publishing
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run publish
