@@ -19,8 +19,10 @@ const BrowserUsers = () => {
   }, []);
 
   return (
-    <>
+    <div className="program-query">
+      <p className="program-query__name">Program:</p>
       <select
+        className="program-query__select"
         name="browserUsers"
         id="browserUsers"
         value={selected}
@@ -34,7 +36,7 @@ const BrowserUsers = () => {
           </option>
         ))}
       </select>
-    </>
+    </div>
   );
 };
 export default BrowserUsers;

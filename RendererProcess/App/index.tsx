@@ -16,9 +16,7 @@ export const App = () => {
 
   return (
     <>
-      <p>User:</p>
       <BrowserUsers />
-      <p>Program:</p>
       <BrowserPrograms />
       <br />
       <RunProgram

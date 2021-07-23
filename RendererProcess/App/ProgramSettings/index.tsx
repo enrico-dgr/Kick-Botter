@@ -80,6 +80,7 @@ const ProgramSettings = (props: Models.Props) => {
   return (
     <>
       <button
+        className=""
         disabled={areSettingsAvailable() === false}
         onClick={() => {
           saveSettings(props.browserUser, props.browserProgram, settings);

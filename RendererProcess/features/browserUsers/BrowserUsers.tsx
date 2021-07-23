@@ -20,8 +20,10 @@ const BrowserUsers = () => {
   }, []);
 
   return (
-    <>
+    <div className="program-query">
+      <p className="program-query__name">User:</p>
       <select
+        className="program-query__select"
         name="browserUsers"
         id="browserUsers"
         value={selectedBrowserUser}
@@ -35,18 +37,20 @@ const BrowserUsers = () => {
           </option>
         ))}
       </select>
-      <input
-        type="text"
-        value={newUser}
-        onChange={(e) => setNewUser(e.target.value)}
-      />
-      <button
-        disabled={newUser.length < 2}
-        onClick={() => dispatch(addBrowserUser(newUser))}
-      >
-        Add user
-      </button>
-    </>
+      <div className="program-query__add">
+        <input
+          type="text"
+          value={newUser}
+          onChange={(e) => setNewUser(e.target.value)}
+        />
+        <button
+          disabled={newUser.length < 2}
+          onClick={() => dispatch(addBrowserUser(newUser))}
+        >
+          Add user
+        </button>
+      </div>
+    </div>
   );
 };
 export default BrowserUsers;
