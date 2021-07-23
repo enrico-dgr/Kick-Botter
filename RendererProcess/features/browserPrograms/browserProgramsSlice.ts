@@ -10,7 +10,7 @@ namespace Models {
     selected: string;
   }
 
-  export const GetUserResponse = t.type({
+  export const GetProgramsResponse = t.type({
     names: t.array(t.string),
   });
 }
@@ -21,7 +21,7 @@ export const initialState: Models.BrowserUsersState = {
   selected: "none",
 };
 
-const getPrograms = invoke("getPrograms")(Models.GetUserResponse);
+const getPrograms = invoke("getPrograms")(Models.GetProgramsResponse);
 
 const browserProgramsSlice = createSlice({
   name: "browserPrograms",

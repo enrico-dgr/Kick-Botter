@@ -15,7 +15,7 @@ const BrowserUsers = () => {
 
   // on mount
   React.useEffect(() => {
-    dispatch(getPrograms()).then((res) => console.table(res));
+    dispatch(getPrograms());
   }, []);
 
   return (

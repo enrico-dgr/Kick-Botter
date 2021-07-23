@@ -1,34 +1,30 @@
 import * as React from 'react';
 
-type GenericSettings =
-  | number
-  | string
-  | boolean
-  | RecordGenericSettings
-  | Array<GenericSettings>;
+namespace Models {
+  export type GenericSettings =
+    | number
+    | string
+    | boolean
+    | RecordGenericSettings
+    | Array<GenericSettings>;
 
-type RecordGenericSettings = {
-  [k: string]: GenericSettings;
-};
-/**
- *
- */
-type Props<Settings extends RecordGenericSettings> = {
-  settings: Settings;
-  onChange?: (settings: Settings) => void;
-};
-/**
- *
- */
-type RenderedSetting<
-  Settings extends RecordGenericSettings
-> = React.FunctionComponentElement<Props<Settings>>;
-/**
- *
- */
-export const DisplaySettings = <Settings extends RecordGenericSettings>(
-  props: Props<Settings>
-): RenderedSetting<Settings> => {
+  export type RecordGenericSettings = {
+    [k: string]: GenericSettings;
+  };
+
+  export type Props<Settings extends RecordGenericSettings> = {
+    settings: Settings;
+    onChange?: (settings: Settings) => void;
+  };
+
+  export type RenderedSetting<
+    Settings extends RecordGenericSettings
+  > = React.FunctionComponentElement<Props<Settings>>;
+}
+
+export const DisplaySettings = <Settings extends Models.RecordGenericSettings>(
+  props: Models.Props<Settings>
+): Models.RenderedSetting<Settings> => {
   /**
    * Change not-object property by providing an array of keys
    * of the nested objects and property.
@@ -37,10 +33,7 @@ export const DisplaySettings = <Settings extends RecordGenericSettings>(
     setting: string | number | boolean,
     keys: string[]
   ): void => {
-    /**
-     *
-     */
-    const mutateRecur = <S extends GenericSettings>(
+    const mutateRecur = <S extends Models.GenericSettings>(
       keys: string[],
       nested: S
     ): S => {
@@ -107,21 +100,14 @@ export const DisplaySettings = <Settings extends RecordGenericSettings>(
             numberOfKeys
           ) as S);
     };
-    /**
-     *
-     */
+
     if (props.onChange) props.onChange(mutateRecur(keys, props.settings));
   };
-  /**
-   * Renderer
-   */
+
   const display = (
-    settings: RecordGenericSettings = {},
+    settings: Models.RecordGenericSettings = {},
     map: string[] = []
-  ): RenderedSetting<Settings>[] => {
-    /**
-     * util
-     */
+  ): Models.RenderedSetting<Settings>[] => {
     const match = <A, B, C>(
       onBoolean: (b: boolean) => A,
       onNumber: (n: number) => B,
@@ -136,19 +122,15 @@ export const DisplaySettings = <Settings extends RecordGenericSettings>(
           return onNumber(thisSetting);
       }
     };
-    /**
-     *
-     */
-    let buffer: RenderedSetting<Settings>[] = [];
-    /**
-     * Display non object setting
-     */
-    const displayNonObject = (
+
+    let buffer: Models.RenderedSetting<Settings>[] = [];
+
+    const displayNonObjectSetting = (
       setting: string | boolean | number,
       key: string,
       mapOfKeys: string[],
       propName: string | null
-    ): RenderedSetting<Settings> => {
+    ): Models.RenderedSetting<Settings> => {
       /**
        * List property
        */
@@ -196,37 +178,33 @@ export const DisplaySettings = <Settings extends RecordGenericSettings>(
         </li>
       );
     };
-    /**
-     * Display Array recursively
-     */
-    const displayArray = (
-      setting_: GenericSettings[],
+
+    const displayArrayRecursively = (
+      setting_: Models.GenericSettings[],
       map_: string[]
-    ): RenderedSetting<Settings>[] => {
-      let buffer_: RenderedSetting<Settings>[] = [];
+    ): Models.RenderedSetting<Settings>[] => {
+      let buffer_: Models.RenderedSetting<Settings>[] = [];
 
       setting_.forEach((s__, index) => {
         const key_ = index.toString();
         const mapOfKeys = [...map_, key_];
         typeof s__ !== "object"
-          ? buffer_.push(displayNonObject(s__, key_, mapOfKeys, null))
+          ? buffer_.push(displayNonObjectSetting(s__, key_, mapOfKeys, null))
           : pushObjectOrArray(s__, key_, mapOfKeys);
       });
 
       return buffer_;
     };
-    /**
-     * Push Object Or Array
-     */
+
     const pushObjectOrArray = (
-      setting_: RecordGenericSettings | GenericSettings[],
+      setting_: Models.RecordGenericSettings | Models.GenericSettings[],
       key_: string,
       map_: string[]
     ) => {
       buffer.push(
         <ul key={map_.toString()}>
           {Array.isArray(setting_) ? (
-            <>{displayArray(setting_, map_)} </>
+            <>{displayArrayRecursively(setting_, map_)} </>
           ) : (
             <>
               {key_}:{display(setting_, map_)}
@@ -249,16 +227,12 @@ export const DisplaySettings = <Settings extends RecordGenericSettings>(
          */
         pushObjectOrArray(setting, key, mapOfKeys);
       } else {
-        buffer.push(displayNonObject(setting, key, mapOfKeys, key));
+        buffer.push(displayNonObjectSetting(setting, key, mapOfKeys, key));
       }
     });
-    /**
-     *
-     */
+
     return buffer;
   };
-  /**
-   *
-   */
+
   return <ul>{display(props.settings)}</ul>;
 };

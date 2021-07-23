@@ -6,7 +6,7 @@ import { addBrowserUser, getUsers, initialState, selectBrowserUser } from './bro
 const DEFAULT_USER = initialState.selected;
 
 const BrowserUsers = () => {
-  const users = useAppSelector((state) => state.browserUsers.names);
+  const users = useAppSelector((state) => state.browserUsers.users);
   const selectedBrowserUser = useAppSelector(
     (state) => state.browserUsers.selected
   );

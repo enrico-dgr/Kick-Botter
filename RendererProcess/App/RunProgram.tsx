@@ -1,14 +1,18 @@
 import { ipcRenderer } from 'electron';
 import * as React from 'react';
 
-type Props = {
-  user: string;
-  nameOfProgram: string;
-  disabled: boolean;
-};
-
-export const RunProgram = (props: Props) => {
-  const runProgram = ({ user, nameOfProgram: name }: Props) =>
+namespace Models {
+  export type Props = {
+    browserUser: string;
+    browserProgram: string;
+    disabled: boolean;
+  };
+}
+export const RunProgram = (props: Models.Props) => {
+  const runProgram = ({
+    browserUser: user,
+    browserProgram: name,
+  }: Models.Props) =>
     ipcRenderer.invoke("runProgram", {
       user,
       name,

@@ -6,30 +6,30 @@ import { invoke } from '../../asyncThunks/IPCs';
 
 namespace Models {
   export interface BrowserProgramsState {
-    names: string[];
+    users: string[];
     selected: string;
   }
 
-  export const GetProgramsResponse = t.type({
+  export const GetUsersResponse = t.type({
     users: t.array(t.string),
   });
 }
 
 // Define the initial state using that type
 export const initialState: Models.BrowserProgramsState = {
-  names: [],
+  users: [],
   selected: "generic",
 };
 
-const getUsers = invoke("getUsers")(Models.GetProgramsResponse);
+const getUsers = invoke("getUsers")(Models.GetUsersResponse);
 
 const browserUsersSlice = createSlice({
   name: "browserUsers",
   initialState,
   reducers: {
     add: (state, action: PayloadAction<string>) => {
-      state.names.push(action.payload);
-      state.names.sort((a, b) => {
+      state.users.push(action.payload);
+      state.users.sort((a, b) => {
         if (a < b) {
           return -1;
         }
@@ -40,7 +40,7 @@ const browserUsersSlice = createSlice({
       });
     },
     remove: (state, action: PayloadAction<string>) => {
-      state.names = state.names.filter((user) => user !== action.payload);
+      state.users = state.users.filter((user) => user !== action.payload);
     },
     select: (state, action: PayloadAction<string>) => {
       state.selected = action.payload;
@@ -48,7 +48,7 @@ const browserUsersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getUsers.fulfilled, (state, action) => {
-      state.names = action.payload.users;
+      state.users = action.payload.users;
     });
   },
 });
