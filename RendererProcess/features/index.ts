@@ -1,3 +1,7 @@
-import * as IPCs from './browserUsers';
+import * as browserProgramsSlice from './browserPrograms/browserProgramsSlice';
+import * as browserUsersSlice from './browserUsers/browserUsersSlice';
 
-export const reducers = { ...IPCs.reducers };
+export const reducers = {
+  browserUsers: browserUsersSlice.reducer,
+  browserPrograms: browserProgramsSlice.reducer,
+};

@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { actions, getUsers } from './browserUsersSlice';
+import { addBrowserUser, getUsers, initialState, selectBrowserUser } from './browserUsersSlice';
 
-const DEFAULT_USER = "generic";
+const DEFAULT_USER = initialState.selected;
 
 const BrowserUsers = () => {
-  const users = useAppSelector((state) => state.browserUsers.users);
-  const [selectedUser, setSelectedUser] = useState<string>(users[0]);
+  const users = useAppSelector((state) => state.browserUsers.names);
+  const selectedBrowserUser = useAppSelector(
+    (state) => state.browserUsers.selected
+  );
+
   const [newUser, setNewUser] = useState<string>("");
   const dispatch = useAppDispatch();
 
@@ -15,13 +18,14 @@ const BrowserUsers = () => {
   React.useEffect(() => {
     dispatch(getUsers());
   }, []);
+
   return (
     <>
       <select
         name="browserUsers"
         id="browserUsers"
-        value={selectedUser}
-        onChange={(e) => setSelectedUser(e.target.value)}
+        value={selectedBrowserUser}
+        onChange={(e) => dispatch(selectBrowserUser(e.target.value))}
       >
         <option value={DEFAULT_USER}>{DEFAULT_USER}</option>
 
@@ -38,7 +42,7 @@ const BrowserUsers = () => {
       />
       <button
         disabled={newUser.length < 2}
-        onClick={() => dispatch(actions.add(newUser))}
+        onClick={() => dispatch(addBrowserUser(newUser))}
       >
         Add user
       </button>

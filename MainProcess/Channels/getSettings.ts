@@ -10,7 +10,7 @@ import { jsonPC, ProgramController as PC, Programs } from '../../Programs';
  *
  * @returns
  * ```ts
- * type return = Promise<PC.Models.ProgramOptionsPropsOnly>
+ * type return = Promise<E.Either<Error, PC.Models.ProgramOptionsPropsOnly>>
  * ```
  */
 export const getSettings = () =>
