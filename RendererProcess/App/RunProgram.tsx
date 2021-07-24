@@ -19,7 +19,11 @@ export const RunProgram = (props: Models.Props) => {
     });
 
   return (
-    <button disabled={props.disabled} onClick={() => runProgram(props)}>
+    <button
+      className="primary-button"
+      disabled={props.disabled}
+      onClick={() => runProgram(props)}
+    >
       Run
     </button>
   );

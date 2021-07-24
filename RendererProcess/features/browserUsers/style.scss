@@ -1,0 +1,20 @@
+.program-user__description {
+  margin: 0;
+}
+
+.program-user__controller {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.program-user__controller__select {
+  width: 180px;
+}
+
+.program-user__controller__add {
+  input {
+    width: 100px;
+    margin-left: 5px;
+  }
+}

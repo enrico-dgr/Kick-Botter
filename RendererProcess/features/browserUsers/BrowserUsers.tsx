@@ -20,35 +20,39 @@ const BrowserUsers = () => {
   }, []);
 
   return (
-    <div className="program-query">
-      <p className="program-query__name">User:</p>
-      <select
-        className="program-query__select"
-        name="browserUsers"
-        id="browserUsers"
-        value={selectedBrowserUser}
-        onChange={(e) => dispatch(selectBrowserUser(e.target.value))}
-      >
-        <option value={DEFAULT_USER}>{DEFAULT_USER}</option>
-
-        {users.map((mappedUser) => (
-          <option value={mappedUser} key={mappedUser}>
-            {mappedUser}
-          </option>
-        ))}
-      </select>
-      <div className="program-query__add">
-        <input
-          type="text"
-          value={newUser}
-          onChange={(e) => setNewUser(e.target.value)}
-        />
-        <button
-          disabled={newUser.length < 2}
-          onClick={() => dispatch(addBrowserUser(newUser))}
+    <div className="program-user">
+      <p className="program-user__description">User:</p>
+      <div className="program-user__controller">
+        <select
+          className="program-user__controller__select"
+          name="browserUsers"
+          id="browserUsers"
+          value={selectedBrowserUser}
+          onChange={(e) => dispatch(selectBrowserUser(e.target.value))}
         >
-          Add user
-        </button>
+          <option value={DEFAULT_USER}>{DEFAULT_USER}</option>
+
+          {users.map((mappedUser) => (
+            <option value={mappedUser} key={mappedUser}>
+              {mappedUser}
+            </option>
+          ))}
+        </select>
+        <div className="program-user__controller__add">
+          <input
+            type="text"
+            placeholder="Add User"
+            value={newUser}
+            onChange={(e) => setNewUser(e.target.value)}
+          />
+          <button
+            className="primary-button"
+            disabled={newUser.length < 2}
+            onClick={() => dispatch(addBrowserUser(newUser))}
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
   );

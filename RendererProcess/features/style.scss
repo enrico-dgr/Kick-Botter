@@ -1,22 +1,2 @@
-$queries-color: red;
-
-.program-query {
-  flex-direction: column;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  width: 0;
-  margin: 0 0 0 0;
-}
-
-.program-query__name {
-  margin: 30px 0 5px 0;
-}
-
-.program-query__select {
-  width: 20em;
-}
-.program-query__add {
-  flex-direction: row;
-  display: block;
-}
+@import "./browserPrograms/style.scss";
+@import "./browserUsers/style.scss";

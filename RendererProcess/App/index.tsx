@@ -15,19 +15,28 @@ export const App = () => {
   );
 
   return (
-    <>
-      <BrowserUsers />
-      <BrowserPrograms />
-      <br />
-      <RunProgram
-        browserUser={selectedBrowserUser}
-        browserProgram={selectedBrowserProgram}
-        disabled={selectedBrowserProgram === "none"}
-      />
-      <ProgramSettings
-        browserUser={selectedBrowserUser}
-        browserProgram={selectedBrowserProgram}
-      />
-    </>
+    <div className="browser-program-container">
+      <div className="browser-program-container__heading">
+        <h1>Handle Browser Bots</h1>
+        <p>Here you can start and stop browser bots.</p>
+      </div>
+      <div className="browser-program-controller">
+        <div className="browser-program-controller__queries">
+          <BrowserUsers />
+          <BrowserPrograms />
+        </div>
+        <div className="browser-program-controller__main">
+          <RunProgram
+            browserUser={selectedBrowserUser}
+            browserProgram={selectedBrowserProgram}
+            disabled={selectedBrowserProgram === "none"}
+          />
+          <ProgramSettings
+            browserUser={selectedBrowserUser}
+            browserProgram={selectedBrowserProgram}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
