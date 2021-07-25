@@ -5,6 +5,7 @@ import rimrafShellPaths from './rimrafShellPaths';
 namespace CONSTANTS {
   export const pathsToCopy: string[] = ["../index.html", "../package.json"];
   export const emptyDirs: string[] = [
+    "./KickBotter",
     "./KickBotter/Programs",
     "./KickBotter/Programs/local",
   ];
