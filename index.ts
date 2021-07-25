@@ -3,7 +3,6 @@ import path from 'path';
 
 import { Channels } from './MainProcess';
 
-require("update-electron-app")();
 function createWindow() {
   const win = new BrowserWindow({
     width: 1000,

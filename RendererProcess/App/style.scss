@@ -17,13 +17,11 @@
 .browser-program-controller {
   display: flex;
   justify-content: space-evenly;
-  align-items: center;
 }
 
 .browser-program-controller__queries {
-  display: inline;
 }
 
 .browser-program-controller__main {
-  display: inline;
+  margin: 18px 0 0 0;
 }
