@@ -16,7 +16,7 @@
     "--": "echo '-------------------------- This is just a comment command' ",
     "build:main:prod": "tsc -p tsconfig.build-prod.json",
     "build:renderer:prod": "npx webpack --config webpack.config-prod.js",
-    "prebuild:prod": "npm run clean && ts-node ./Scripts/prod.ts && npm run install-build-deps",
+    "prebuild:prod": "ts-node ./Scripts/prod.ts && npm run install-build-deps",
     "build:prod": "npm run build:main:prod && npm run build:renderer:prod",
     "---": "echo '-------------------------- This is just a comment command' ",
     "start": "cd ./KickBotter && electron-forge start",
