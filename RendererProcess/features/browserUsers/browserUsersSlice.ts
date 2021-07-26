@@ -48,7 +48,9 @@ const browserUsersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getUsers.fulfilled, (state, action) => {
-      state.users = action.payload.users;
+      state.users = action.payload.users.filter(
+        (value) => value !== initialState.selected
+      );
     });
   },
 });

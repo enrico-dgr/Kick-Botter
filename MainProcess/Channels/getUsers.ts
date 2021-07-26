@@ -1,14 +1,10 @@
 import { ipcMain } from 'electron';
+import * as A from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
+import * as S from 'fp-ts/string';
 
 import { jsonPC } from '../../Programs';
-
-/**
- * utils
- */
-const array_unique = <A>(user: A, index: number, arr: A[]) =>
-  arr.indexOf(user) === index;
 
 /**
  *
@@ -24,7 +20,10 @@ export const getUsers = () =>
     pipe(
       await jsonPC.getOptionsDB()(),
       E.map((OptionsDB) => ({
-        users: OptionsDB.map((os) => os.user).filter(array_unique),
+        users: pipe(
+          OptionsDB.map((os) => os.user),
+          A.uniq(S.Eq)
+        ),
       }))
     )
   );

@@ -12,6 +12,7 @@ const BrowserUsers = () => {
   );
 
   const [newUser, setNewUser] = useState<string>("");
+  const userAlreadyExists = (): boolean => users.indexOf(newUser) > -1;
   const dispatch = useAppDispatch();
 
   // on mount
@@ -40,6 +41,11 @@ const BrowserUsers = () => {
         </select>
         <div className="program-user__controller__add">
           <input
+            style={{
+              backgroundColor: userAlreadyExists()
+                ? "rgba(255, 132, 132, 0.877)"
+                : "",
+            }}
             type="text"
             placeholder="Add User"
             value={newUser}
@@ -47,7 +53,7 @@ const BrowserUsers = () => {
           />
           <button
             className="primary-button"
-            disabled={newUser.length < 2}
+            disabled={newUser.length < 2 || userAlreadyExists()}
             onClick={() => dispatch(addBrowserUser(newUser))}
           >
             +
