@@ -15,10 +15,13 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
     let res: E.Either<Error, void> = E.left(
       new Error(`Open Browser closed instantly.`)
     );
+
+    console.log("start");
+
     while (running) {
       await pipe(
         D.running,
-        TE.chainFirst(() => TE.fromTask(T.delay(500)(T.of(undefined)))),
+        TE.chainFirst(() => TE.fromTask(T.delay(1000)(T.of(undefined)))),
         TE.match(
           (e) => {
             running = false;

@@ -5,7 +5,7 @@ import * as TE from 'fp-ts/TaskEither';
 
 import { jsonPC, ProgramController as PC } from '../../Programs';
 
-export const runProgram = () =>
+export const closeProgram = () =>
   ipcMain.handle("closeProgram", (_event, ...args) =>
     pipe(
       PC.Models.ProgramDatabasesSharedProps.decode(args[0]),

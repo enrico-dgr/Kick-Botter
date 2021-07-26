@@ -1,4 +1,4 @@
-import * as JsonProgramController from 'fp-ts/Array';
+import * as A from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
 import { flow, pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
@@ -59,26 +59,30 @@ namespace Dependencies {
   ) =>
     pipe(
       getProgramDB(),
-      //
       TE.map(
-        JsonProgramController.findFirst(
-          Utils.Array.predicateOnUserAndProgramName(programQueries)
-        )
+        A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
       )
     );
 
   const setProgram: ProgramController.Models.Methods.SetProgram = (program) =>
     pipe(
-      // check type
-      ProgramController.Models.ProgramState.decode(program),
-      E.mapLeft((e) => new Error(JSON.stringify(e, null, 2))),
-      // update database
-      E.chain(() =>
-        JsonAPI.getJson({ absolutePath: CONSTANTS.STATES_DB_PATH })
-      ),
-      E.map((db) => [...db, program]),
-      E.chain(JsonAPI.setJson({ absolutePath: CONSTANTS.STATES_DB_PATH })),
-      TE.fromEither
+      getProgramDB(),
+      TE.map((db) => {
+        const index = db.findIndex(
+          (dbProgam) =>
+            dbProgam.name === program.name && dbProgam.user === program.user
+        );
+
+        return index > -1
+          ? [...db.slice(0, index), program, ...db.slice(index + 1)]
+          : [...db, program];
+      }),
+      TE.chain(
+        flow(
+          JsonAPI.setJson({ absolutePath: CONSTANTS.STATES_DB_PATH }),
+          TE.fromEither
+        )
+      )
     );
 
   const getOptionsDB: ProgramController.Models.Methods.GetOptionsDB = () =>
@@ -99,9 +103,7 @@ namespace Dependencies {
     pipe(
       getOptionsDB(),
       TE.map(
-        JsonProgramController.findFirst(
-          Utils.Array.predicateOnUserAndProgramName(programQueries)
-        )
+        A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
       )
     );
 
@@ -155,15 +157,23 @@ namespace Dependencies {
       TE.fromEither
     );
 
-  const builderRunning: ProgramController.Models.BuilderRunning = flow(
-    getProgram,
-    TE.map(
-      O.match(
-        () => false,
-        (programState) => programState.running
+  const builderRunning: ProgramController.Models.BuilderRunning = (
+    queries: Pick<ProgramController.Models.ProgramOptions, "name" | "user">
+  ) =>
+    pipe(
+      // because `getProgram` run one time if directly called.
+      TE.of(getProgram),
+      TE.chain((func) => func(queries)),
+      // ---------------- ↑
+      TE.chainFirst((_asd) => TE.of(console.log("rofl"))),
+      TE.map(
+        O.match(
+          () => false,
+          (programState) => programState.running
+        )
       )
-    )
-  );
+    );
+
   export const deps = {
     builderRunning,
     getProgram,

@@ -142,7 +142,7 @@ namespace Constructors {
         D.setProgram({
           user,
           name,
-          running: true,
+          running: false,
         });
         return e;
       })
