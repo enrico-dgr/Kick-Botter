@@ -3,9 +3,7 @@ import path from 'path';
 
 const makeEmptyDirs = (relativePaths: string[]) => {
   const KICKBOTTER = path.resolve(__dirname, "../KickBotter");
-  fs.lstatSync(KICKBOTTER).isDirectory()
-    ? undefined
-    : fs.mkdirSync(KICKBOTTER, { recursive: false });
+  fs.mkdirSync(KICKBOTTER, { recursive: false });
   return relativePaths.forEach((dir) =>
     fs.mkdirSync(path.resolve(__dirname, dir), { recursive: false })
   );
