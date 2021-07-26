@@ -10,31 +10,38 @@ import { buildProgram, Models as PModels } from '../Program';
 const NAME = "OpenBrowser";
 
 const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
-  WP.fromTaskEither<void>(async () => {
-    let running: boolean = true;
-    let res: E.Either<Error, void> = E.left(
-      new Error(`Open Browser closed instantly.`)
-    );
+  pipe(
+    WP.ask(),
+    WP.chain((r) =>
+      WP.fromTaskEither(async () => {
+        let running: boolean = true;
+        let res: E.Either<Error, void> = E.left(
+          new Error(`Open Browser closed instantly.`)
+        );
 
-    while (running) {
-      await pipe(
-        D.running,
-        TE.chainFirst(() => TE.fromTask(T.delay(1000)(T.of(undefined)))),
-        TE.match(
-          (e) => {
-            running = false;
-            res = E.left(e);
-          },
-          (running_) => {
-            running = running_;
-            res = E.right(undefined);
-          }
-        )
-      )();
-    }
+        while (running) {
+          await pipe(
+            D.running,
+            TE.map((running) => r.page.browser().isConnected() && running),
+            TE.chainFirst(() => TE.fromTask(T.delay(1000)(T.of(undefined)))),
+            TE.chainFirst(() => TE.of(console.log("mariangiangiangelo"))),
+            TE.match(
+              (e) => {
+                running = false;
+                res = E.left(e);
+              },
+              (running_) => {
+                running = running_;
+                res = E.right(undefined);
+              }
+            )
+          )();
+        }
 
-    return res;
-  });
+        return res;
+      })
+    )
+  );
 
 const defaultOptions: PModels.DefaultOptions = (D) => ({
   extraOptions: {},
