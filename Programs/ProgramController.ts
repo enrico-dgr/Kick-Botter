@@ -62,7 +62,7 @@ export namespace Models {
       programQueries: Pick<Models.ProgramState, "name" | "user">
     ) => TE.TaskEither<Error, void>;
     endProgram: (
-      programQueries: Models.ProgramState
+      programQueries: Pick<Models.ProgramState, "name" | "user">
     ) => TE.TaskEither<Error, void>;
     getOptionsDB: Models.Methods.GetOptionsDB;
     getOptions: Models.Methods.GetOptions;
@@ -151,7 +151,10 @@ namespace Constructors {
   export const buildEndProgram = (
     getProgram: Models.Methods.GetProgram,
     setProgram: Models.Methods.SetProgram
-  ) => ({ user, name }: Models.ProgramState): TE.TaskEither<Error, void> =>
+  ): Models.ProgramController["endProgram"] => ({
+    user,
+    name,
+  }): TE.TaskEither<Error, void> =>
     pipe(
       getProgram({ user, name }),
       // set program on not-running

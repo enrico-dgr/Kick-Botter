@@ -8,12 +8,13 @@ namespace Models {
     disabled: boolean;
   };
 }
-const RunProgram = (props: Models.Props) => {
-  const runProgram = ({
+
+const CloseProgram = (props: Models.Props) => {
+  const closeProgram = ({
     browserUser: user,
     browserProgram: name,
   }: Models.Props) =>
-    ipcRenderer.invoke("runProgram", {
+    ipcRenderer.invoke("closeProgram", {
       user,
       name,
     });
@@ -22,10 +23,10 @@ const RunProgram = (props: Models.Props) => {
     <button
       className="primary-button"
       disabled={props.disabled}
-      onClick={() => runProgram(props)}
+      onClick={() => closeProgram(props)}
     >
-      Run
+      Close
     </button>
   );
 };
-export default RunProgram;
+export default CloseProgram;
