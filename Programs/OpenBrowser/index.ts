@@ -16,8 +16,6 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
       new Error(`Open Browser closed instantly.`)
     );
 
-    console.log("start");
-
     while (running) {
       await pipe(
         D.running,

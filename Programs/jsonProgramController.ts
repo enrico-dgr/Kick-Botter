@@ -165,7 +165,6 @@ namespace Dependencies {
       TE.of(getProgram),
       TE.chain((func) => func(queries)),
       // ---------------- ↑
-      TE.chainFirst((_asd) => TE.of(console.log("rofl"))),
       TE.map(
         O.match(
           () => false,
