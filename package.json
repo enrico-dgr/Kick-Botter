@@ -1,6 +1,6 @@
 {
   "name": "kickbotter",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "./index.js",
   "description": "Automated socials' actions",
   "author": "enrico-dgr",
