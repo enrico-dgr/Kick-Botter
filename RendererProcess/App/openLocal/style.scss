@@ -1,0 +1,23 @@
+.open-local-files {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.open-local-files__description {
+  display: none;
+
+  color: grey;
+  font-size: small;
+  margin: 0 0 25px 0;
+
+  position: absolute;
+}
+
+.open-local-files__btn {
+  width: max-content;
+}
+
+.open-local-files__btn:hover + .open-local-files__description {
+  display: block;
+}

@@ -1,3 +1,5 @@
+@import "./openLocal/style.scss";
+
 .browser-program-container {
   display: flex;
   flex-direction: column;
@@ -12,6 +14,10 @@
 .browser-program-container__heading p {
   font-size: 16px;
   text-align: center;
+}
+
+.browser-program__tool-bar {
+  margin: 20px 0 20px 0;
 }
 
 .browser-program-controller {

@@ -4,6 +4,7 @@ import BrowserPrograms from '../features/browserPrograms/BrowserPrograms';
 import BrowserUsers from '../features/browserUsers/BrowserUsers';
 import { useAppSelector } from '../hooks';
 import CloseProgram from './CloseProgram';
+import OpenLocal from './openLocal/OpenLocal';
 import ProgramSettings from './ProgramSettings';
 import RunProgram from './RunProgram';
 
@@ -20,6 +21,9 @@ export const App = () => {
       <div className="browser-program-container__heading">
         <h1>Handle Browser Bots</h1>
         <p>Here you can start and stop browser bots.</p>
+      </div>
+      <div className="browser-program__tool-bar">
+        <OpenLocal />
       </div>
       <div className="browser-program-controller">
         <div className="browser-program-controller__queries">
