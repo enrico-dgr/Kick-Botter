@@ -24,7 +24,6 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
             D.running,
             TE.map((running) => r.page.browser().isConnected() && running),
             TE.chainFirst(() => TE.fromTask(T.delay(1000)(T.of(undefined)))),
-            TE.chainFirst(() => TE.of(console.log("mariangiangiangelo"))),
             TE.match(
               (e) => {
                 running = false;

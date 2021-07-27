@@ -387,12 +387,24 @@ export const bodyOfBot = <
     >
   > =>
     pipe(
-      WD.runOnAnyDifferentPage(
-        I.settingsFromBot.fromBot.implementationsOfActions[action](
-          infosForAction
+      WP.ask(),
+      WP.chain((r) =>
+        WP.fromTaskEither(
+          // new page is isolated and won't affect the program.
+          pipe(
+            WD.runOnAnyDifferentPage(
+              I.settingsFromBot.fromBot.implementationsOfActions[action](
+                infosForAction
+              )
+            )
+          )(r)
         )
       ),
-      WP.chainFirst(WP.delay(1000)),
+      // without this 'useless' line, program would wait too much time
+      WP.chainFirst(() =>
+        WP.of(console.log("botsOfTelegram.ts: needed message"))
+      ),
+      WP.chainFirst(WP.delay(500)),
       WP.chainFirst(() => WD.bringToFront)
     );
 
@@ -407,7 +419,11 @@ export const bodyOfBot = <
     InfosForAction,
     InfosFromAction
   >): WP.WebProgram<void> =>
-    I.settingsFromBot.fromBot.postAction[kindOfPostAction](mess);
+    pipe(
+      I.settingsFromBot.fromBot.postAction[kindOfPostAction](mess),
+      WP.chainFirst(WP.delay(500))
+    );
+
   // -------------------------------
   // Loggers
   // -------------------------------
@@ -547,40 +563,82 @@ export const bodyOfBot = <
         I.settingsFromBot.fromBot.cycle.updateState,
         (updatedState) => (stateOfCycle = updatedState)
       );
-      /**
-       *
-       */
-      while (continueCycle) {
-        await pipe(
-          WP.delay(I.options.delayBetweenCycles)(undefined),
-          WP.chain(() => retrieveAllLoadedMessages()),
-          WP.chain((messages) => routineOfBot(messages)),
-          WP.map<
-            StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
-            StateOfCycle<
-              CustomStringLiteralOfPostAction,
-              OtherPropsInStateOfCycle
-            >
-          >((kindOfPostAction) =>
-            updateStateOfCycle({
-              ...stateOfCycle,
-              kindOfPostAction,
-            })
-          ),
-          WP.match(
-            (e) => {
-              continueCycle = false;
-              eitherOfWebProgram = E.left(e);
-            },
-            (updatedState) => {
-              continueCycle = I.settingsFromBot.fromBot.cycle.continueCycle(
-                updatedState
-              );
-              eitherOfWebProgram = E.right(updatedState);
-            }
+
+      let startTime = 0;
+      interface Get {
+        tag_: "Get";
+      }
+      interface Set {
+        tag_: "Reset";
+      }
+      const timeReducer = (action: Get | Set) => {
+        switch (action.tag_) {
+          case "Get":
+            return startTime;
+          case "Reset":
+            startTime = Date.now();
+            return startTime;
+        }
+      };
+
+      const runOnTime = async (promiseToWait: () => Promise<any>) => {
+        if (
+          Date.now() - timeReducer({ tag_: "Get" }) >
+          I.options.delayBetweenCycles
+        ) {
+          await promiseToWait();
+          timeReducer({
+            tag_: "Reset",
+          });
+        }
+      };
+
+      const wrappedCycle = pipe(
+        retrieveAllLoadedMessages(),
+        WP.chain((messages) => routineOfBot(messages)),
+        WP.map<
+          StringLiteralOfPostAction<CustomStringLiteralOfPostAction>,
+          StateOfCycle<
+            CustomStringLiteralOfPostAction,
+            OtherPropsInStateOfCycle
+          >
+        >((kindOfPostAction) =>
+          updateStateOfCycle({
+            ...stateOfCycle,
+            kindOfPostAction,
+          })
+        ),
+        WP.chain((updatedState) =>
+          pipe(
+            WP.fromTaskEither(I.programDeps.running),
+            WP.map((running) => ({
+              updatedState,
+              running,
+            }))
           )
-        )(webDeps)();
-        eitherOfWebProgram;
+        ),
+        WP.match(
+          (e) => {
+            continueCycle = false;
+            eitherOfWebProgram = E.left(e);
+          },
+          ({ updatedState, running }) => {
+            continueCycle =
+              I.settingsFromBot.fromBot.cycle.continueCycle(updatedState) &&
+              running;
+            eitherOfWebProgram = E.right(updatedState);
+          }
+        )
+      )(webDeps);
+
+      // #1 run
+      await wrappedCycle();
+
+      // begin time interval
+      timeReducer({ tag_: "Reset" });
+
+      while (continueCycle) {
+        await runOnTime(wrappedCycle);
       }
 
       if (eitherOfWebProgram === undefined) {

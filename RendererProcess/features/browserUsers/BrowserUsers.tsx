@@ -12,7 +12,8 @@ const BrowserUsers = () => {
   );
 
   const [newUser, setNewUser] = useState<string>("");
-  const userAlreadyExists = (): boolean => users.indexOf(newUser) > -1;
+  const userAlreadyExists = (): boolean =>
+    [...users, DEFAULT_USER].indexOf(newUser) > -1;
   const dispatch = useAppDispatch();
 
   // on mount
@@ -54,7 +55,10 @@ const BrowserUsers = () => {
           <button
             className="primary-button"
             disabled={newUser.length < 2 || userAlreadyExists()}
-            onClick={() => dispatch(addBrowserUser(newUser))}
+            onClick={() => {
+              dispatch(addBrowserUser(newUser));
+              setNewUser("");
+            }}
           >
             +
           </button>
