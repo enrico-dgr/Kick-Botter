@@ -15,7 +15,7 @@ const user = variables("--user")();
 // ----------------------------------
 // Run Program
 // ----------------------------------
-jsonPC.launchProgram({
+jsonPC(".").launchProgram({
   user,
   name,
 });

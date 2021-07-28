@@ -3,7 +3,8 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/TaskEither';
 
-import { jsonPC, ProgramController as PC } from '../../Programs';
+import { jsonPC } from '../../index';
+import { ProgramController as PC } from '../../Programs';
 
 export const runProgram = () =>
   ipcMain.handle("runProgram", (_event, ...args) =>

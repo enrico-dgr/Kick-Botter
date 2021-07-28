@@ -10,15 +10,11 @@ import * as JsonAPI from './JsonAPI';
 import * as Program from './Program';
 import * as ProgramController from './ProgramController';
 
-namespace CONSTANTS {
-  export const STATES_DB_PATH = path.resolve(
-    __dirname,
-    "./local/programsStates.json"
-  );
-  export const OPTIONS_DB_PATH = path.resolve(
-    __dirname,
-    "./local/programsOptions.json"
-  );
+namespace PATHS {
+  export const STATES_DB_PATH = (baseDirPath: string) =>
+    path.resolve(baseDirPath, "./programsStates.json");
+  export const OPTIONS_DB_PATH = (baseDirPath: string) =>
+    path.resolve(baseDirPath, "./programsOptions.json");
 }
 export namespace Models {
   export const StatesDatabase = t.array(ProgramController.Models.ProgramState);
@@ -41,9 +37,9 @@ namespace Utils {
 }
 
 namespace Dependencies {
-  const getProgramDB = () =>
+  const getProgramDB = (baseDirPath: string) => () =>
     pipe(
-      JsonAPI.getJson({ absolutePath: CONSTANTS.STATES_DB_PATH }),
+      JsonAPI.getJson({ absolutePath: PATHS.STATES_DB_PATH(baseDirPath) }),
       // check array type
       E.chain((statesDatabase) =>
         pipe(
@@ -54,19 +50,21 @@ namespace Dependencies {
       TE.fromEither
     );
 
-  const getProgram: ProgramController.Models.Methods.GetProgram = (
-    programQueries
-  ) =>
+  const getProgram = (
+    baseDirPath: string
+  ): ProgramController.Models.Methods.GetProgram => (programQueries) =>
     pipe(
-      getProgramDB(),
+      getProgramDB(baseDirPath)(),
       TE.map(
         A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
       )
     );
 
-  const setProgram: ProgramController.Models.Methods.SetProgram = (program) =>
+  const setProgram = (
+    baseDirPath: string
+  ): ProgramController.Models.Methods.SetProgram => (program) =>
     pipe(
-      getProgramDB(),
+      getProgramDB(baseDirPath)(),
       TE.map((db) => {
         const index = db.findIndex(
           (dbProgam) =>
@@ -79,15 +77,17 @@ namespace Dependencies {
       }),
       TE.chain(
         flow(
-          JsonAPI.setJson({ absolutePath: CONSTANTS.STATES_DB_PATH }),
+          JsonAPI.setJson({ absolutePath: PATHS.STATES_DB_PATH(baseDirPath) }),
           TE.fromEither
         )
       )
     );
 
-  const getOptionsDB: ProgramController.Models.Methods.GetOptionsDB = () =>
+  const getOptionsDB = (
+    baseDirPath: string
+  ): ProgramController.Models.Methods.GetOptionsDB => () =>
     pipe(
-      JsonAPI.getJson({ absolutePath: CONSTANTS.OPTIONS_DB_PATH }),
+      JsonAPI.getJson({ absolutePath: PATHS.OPTIONS_DB_PATH(baseDirPath) }),
       E.chain((optionsDatabase) =>
         pipe(
           Models.OptionsDatabase.decode(optionsDatabase),
@@ -97,19 +97,19 @@ namespace Dependencies {
       TE.fromEither
     );
 
-  const getOptions: ProgramController.Models.Methods.GetOptions = (
-    programQueries
-  ) =>
+  const getOptions = (
+    baseDirPath: string
+  ): ProgramController.Models.Methods.GetOptions => (programQueries) =>
     pipe(
-      getOptionsDB(),
+      getOptionsDB(baseDirPath)(),
       TE.map(
         A.findFirst(Utils.Array.predicateOnUserAndProgramName(programQueries))
       )
     );
 
-  const setOptions: ProgramController.Models.Methods.SetOptions = (
-    programOptions
-  ) =>
+  const setOptions = (
+    baseDirPath: string
+  ): ProgramController.Models.Methods.SetOptions => (programOptions) =>
     pipe(
       // check type
       ProgramController.Models.ProgramOptions.decode(programOptions),
@@ -117,7 +117,7 @@ namespace Dependencies {
       // update database
       E.chain(() =>
         pipe(
-          JsonAPI.getJson({ absolutePath: CONSTANTS.OPTIONS_DB_PATH }),
+          JsonAPI.getJson({ absolutePath: PATHS.OPTIONS_DB_PATH(baseDirPath) }),
           E.chain(
             flow(
               Models.OptionsDatabase.decode,
@@ -153,16 +153,20 @@ namespace Dependencies {
           )
         )
       ),
-      E.chain(JsonAPI.setJson({ absolutePath: CONSTANTS.OPTIONS_DB_PATH })),
+      E.chain(
+        JsonAPI.setJson({ absolutePath: PATHS.OPTIONS_DB_PATH(baseDirPath) })
+      ),
       TE.fromEither
     );
 
-  const builderRunning: ProgramController.Models.BuilderRunning = (
+  const builderRunning = (
+    baseDirPath: string
+  ): ProgramController.Models.BuilderRunning => (
     queries: Pick<ProgramController.Models.ProgramOptions, "name" | "user">
   ) =>
     pipe(
       // because `getProgram` run one time if directly called.
-      TE.of(getProgram),
+      TE.of(getProgram(baseDirPath)),
       TE.chain((func) => func(queries)),
       // ---------------- ↑
       TE.map(
@@ -173,22 +177,23 @@ namespace Dependencies {
       )
     );
 
-  export const deps = {
-    builderRunning,
-    getProgram,
-    setProgram,
-    getOptionsDB,
-    getOptions,
-    setOptions,
-  };
+  export const deps = (baseDirPath: string) => ({
+    baseDirPath,
+    builderRunning: builderRunning(baseDirPath),
+    getProgram: getProgram(baseDirPath),
+    setProgram: setProgram(baseDirPath),
+    getOptionsDB: getOptionsDB(baseDirPath),
+    getOptions: getOptions(baseDirPath),
+    setOptions: setOptions(baseDirPath),
+  });
 }
 // ------------------------------------
 // Implementation
 // ------------------------------------
 export const jsonProgramController = (
   programs: Program.Models.Program<any, any>[]
-) =>
+) => (baseDirPath: string) =>
   ProgramController.buildController({
-    ...Dependencies.deps,
+    ...Dependencies.deps(baseDirPath),
     programs,
   });

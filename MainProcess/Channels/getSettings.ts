@@ -1,10 +1,11 @@
-import { ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
 
-import { jsonPC, ProgramController as PC, Programs } from '../../Programs';
+import { jsonPC } from '../../index';
+import { ProgramController as PC, Programs } from '../../Programs';
 
 /**
  *
@@ -30,7 +31,12 @@ export const getSettings = () =>
                   (program) =>
                     program === undefined
                       ? TE.right({ extraOptions: null, launchOptions: {} })
-                      : TE.right(program.defaultOptions({ user: queries.user }))
+                      : TE.right(
+                          program.defaultOptions({
+                            user: queries.user,
+                            baseDirPath: app.getPath("userData"),
+                          })
+                        )
                 ),
               ({
                 extraOptions,

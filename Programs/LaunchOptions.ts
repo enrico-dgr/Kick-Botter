@@ -8,6 +8,7 @@ export namespace Models {
      * default to `generic`
      */
     user: string;
+    baseDirPath: string;
   }
 
   export const LaunchOptions = t.partial({
@@ -25,13 +26,13 @@ export namespace Models {
   export type LaunchOptions = Pick<P.LaunchOptions, keyof RunTimeLO>;
 }
 namespace Builders {
-  export const userDataDir = (user: string) =>
-    path.resolve(__dirname, `./local/userDataDirs/${user}`);
+  export const userDataDir = (baseDirPath: string, user: string) =>
+    path.resolve(baseDirPath, `./userDataDirs/${user}`);
 }
 
 export const launchOptions = (D: Models.Deps): P.LaunchOptions => ({
   headless: false,
-  userDataDir: Builders.userDataDir(D.user),
+  userDataDir: Builders.userDataDir(D.baseDirPath, D.user),
   args: [
     "--lang=it",
     "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4403.0 Safari/537.36",

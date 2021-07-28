@@ -4,7 +4,7 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as S from 'fp-ts/string';
 
-import { jsonPC } from '../../Programs';
+import { jsonPC } from '../../index';
 
 /**
  *

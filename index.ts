@@ -1,8 +1,11 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 
-import { Channels } from './MainProcess';
+import { Channels, Programs, WhenReady } from './MainProcess';
 
+// --------------------------------
+// WhenReady
+// --------------------------------
 function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
@@ -18,13 +21,15 @@ function createWindow() {
   win.loadFile(path.join(__dirname, "./index.html"));
 }
 
-app.whenReady().then(() => {
+const genericCreateWindow = () => {
   createWindow();
 
   app.on("activate", function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
-});
+};
+
+WhenReady([genericCreateWindow]);
 
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
@@ -33,3 +38,9 @@ app.on("window-all-closed", function () {
 // Channels
 // --------------------------------
 Channels.default.forEach((channel) => channel());
+// --------------------------------
+// Programs
+// --------------------------------
+const jsonPC = Programs.JsonProgramController(app.getPath("userData"));
+
+export { jsonPC };

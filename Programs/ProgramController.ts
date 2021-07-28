@@ -74,6 +74,7 @@ export namespace Models {
     queries: ProgramDatabasesSharedProps
   ) => Running;
   export interface BuilderDeps {
+    baseDirPath: string;
     builderRunning: BuilderRunning;
     programs: Program.Models.Program<any, any>[];
     getProgram: Models.Methods.GetProgram;
@@ -109,6 +110,7 @@ namespace Constructors {
                   TE.of(
                     program.defaultOptions({
                       user,
+                      baseDirPath: D.baseDirPath,
                     })
                   ),
                   TE.chainFirst((dO) => D.setOptions({ user, name, ...dO }))
