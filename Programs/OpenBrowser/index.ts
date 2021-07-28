@@ -23,7 +23,7 @@ const self = (D: PModels.ProgramDeps) => (): WP.WebProgram<void> =>
           await pipe(
             D.running,
             TE.map((running) => r.page.browser().isConnected() && running),
-            TE.chainFirst(() => TE.fromTask(T.delay(1000)(T.of(undefined)))),
+            TE.chainFirst(() => TE.fromTask(T.delay(300)(T.of(undefined)))),
             TE.match(
               (e) => {
                 running = false;

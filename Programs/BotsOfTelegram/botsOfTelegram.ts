@@ -638,6 +638,7 @@ export const bodyOfBot = <
       timeReducer({ tag_: "Reset" });
 
       while (continueCycle) {
+        console.log("new cycle");
         await runOnTime(wrappedCycle);
       }
 
