@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "watch": true
+  },
+  "exclude": [
+    "./KickBotter",
+    "./Scripts",
+    "./MPPreload",
+    "./preload.ts",
+    "./RendererProcess",
+    "./renderer.ts",
+    "./style.ts",
+    "./basket"
+  ]
+}

@@ -12,10 +12,12 @@ export const runProgram = () =>
       PC.Models.ProgramDatabasesSharedProps.decode(args[0]),
       E.mapLeft((es) => new Error(JSON.stringify(es))),
       E.match(TE.left, ({ user, name }) =>
-        jsonPC.launchProgram({
-          name,
-          user,
-        })
+        pipe(
+          jsonPC.launchProgram({
+            name,
+            user,
+          })
+        )
       )
     )()
   );

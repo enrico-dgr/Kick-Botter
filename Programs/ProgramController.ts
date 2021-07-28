@@ -139,6 +139,13 @@ namespace Constructors {
           )
         )
       ),
+      TE.chainFirst((anything) =>
+        TE.of(anything !== undefined ? console.table(anything) : undefined)
+      ),
+      TE.orElse((e) => {
+        console.error(e.message);
+        return TE.left(e);
+      }),
       // on error set program as not-running
       TE.mapLeft((e) => {
         D.setProgram({
