@@ -41,6 +41,12 @@ Channels.default.forEach((channel) => channel());
 // --------------------------------
 // Programs
 // --------------------------------
-const jsonPC = Programs.JsonProgramController(app.getPath("userData"));
 
+const jsonPC = Programs.JsonProgramController(
+  path.join(app.getPath("userData"), "Programs")
+);
+
+// --------------------------------
+// Exports
+// --------------------------------
 export { jsonPC };

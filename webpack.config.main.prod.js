@@ -4,7 +4,6 @@ var path = require("path");
  *
  */
 module.exports = {
-  watch: true,
   target: "electron-main",
   mode: "production",
   entry: {

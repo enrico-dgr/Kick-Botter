@@ -3,8 +3,12 @@ import { app, ipcMain } from 'electron';
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/TaskEither';
+import path from 'path';
 
-const LOCAL = app.getPath("userData");
+const LOCAL = path.join(
+  app.getPath("userData").replace(/\s/g, "\\ "),
+  "Programs"
+);
 
 export const openLocal = () =>
   ipcMain.handle("openLocal", (_event, ..._args) =>
