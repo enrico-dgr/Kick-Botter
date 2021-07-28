@@ -1,3 +1,5 @@
+import path from 'path';
+
 import copyFiles from './copyFiles';
 import rimrafShellPaths from './rimrafShellPaths';
 
@@ -9,4 +11,4 @@ namespace CONSTANTS {
  * Note: scripts order is important.
  */
 rimrafShellPaths("./KickBotter/*");
-copyFiles(CONSTANTS.pathsToCopy);
+copyFiles(CONSTANTS.pathsToCopy.map((ptc) => path.resolve(__dirname, ptc)));

@@ -43,6 +43,9 @@ const copy = (src: string, dest: string) =>
  */
 const copyRecur = (paths: string[]) =>
   paths.forEach((path_) => {
-    copy(resolve(__dirname, path_), buildPathRelativeToProdBuild(path_));
+    copy(
+      resolve(__dirname, relative(__dirname, path_)),
+      buildPathRelativeToProdBuild(path_)
+    );
   });
 export default copyRecur;
