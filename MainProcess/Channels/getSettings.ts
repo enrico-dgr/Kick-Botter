@@ -3,10 +3,15 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TE from 'fp-ts/TaskEither';
+import path from 'path';
 
 import { jsonPC } from '../../index';
 import { ProgramController as PC, Programs } from '../../Programs';
 
+const LOCAL = path.join(
+  app.getPath("userData").replace(/\s/g, "\\ "),
+  "Programs"
+);
 /**
  *
  * @returns
@@ -34,7 +39,7 @@ export const getSettings = () =>
                       : TE.right(
                           program.defaultOptions({
                             user: queries.user,
-                            baseDirPath: app.getPath("userData"),
+                            baseDirPath: LOCAL,
                           })
                         )
                 ),
