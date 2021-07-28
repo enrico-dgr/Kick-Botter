@@ -1,5 +1,6 @@
 import { flow, pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/lib/Either';
+import * as T from 'fp-ts/lib/Task';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as O from 'fp-ts/Option';
 import * as S from 'fp-ts/Semigroup';
@@ -590,6 +591,18 @@ export const bodyOfBot = <
           timeReducer({
             tag_: "Reset",
           });
+        } else {
+          I.programDeps.running().then(
+            E.match(
+              (e) => {
+                console.error(e);
+                continueCycle = false;
+              },
+              (running) => {
+                continueCycle = running;
+              }
+            )
+          );
         }
       };
 
@@ -638,7 +651,7 @@ export const bodyOfBot = <
       timeReducer({ tag_: "Reset" });
 
       while (continueCycle) {
-        console.log("new cycle");
+        await T.delay(300)(T.of(undefined))();
         await runOnTime(wrappedCycle);
       }
 

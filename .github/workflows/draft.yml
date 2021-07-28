@@ -1,11 +1,5 @@
 name: Release
-on:
-  release:
-    types:
-      # - created
-      - edited
-      # - published
-      - released
+on: push
 
 jobs:
   build_on_linux:
