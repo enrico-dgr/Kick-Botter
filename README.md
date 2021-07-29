@@ -1,5 +1,14 @@
 # Kick Botter
 
+<center>
+
+![Kick Botter Logo](assets/feelings.png)
+###### Icons made by [Freepik](https://www.freepik.com) from [Flaticon](www.flaticon.com) 
+
+</center>
+
+----
+
 [![PayPal donation](https://img.shields.io/badge/PayPal-Donate-brightgreen)](https://www.paypal.com/paypalme/enricodigrazia)
 [![Donate with Bitcoin](https://en.cryptobadges.io/badge/micro/1PszLCxv2K7saZR3TdggnMzsiEMfbe1LTg)](https://en.cryptobadges.io/donate/1PszLCxv2K7saZR3TdggnMzsiEMfbe1LTg)
 [![Donate with Ethereum](https://en.cryptobadges.io/badge/micro/0x163ad381f130a17f6c03dc38a4b3596d3069d9bb)](https://en.cryptobadges.io/donate/0x163ad381f130a17f6c03dc38a4b3596d3069d9bb)

@@ -5,7 +5,12 @@ import init from './init';
 import rimrafShellPaths from './rimrafShellPaths';
 
 namespace CONSTANTS {
-  export const pathsToCopy: string[] = ["../index.html", "../package.json"];
+  export const pathsToCopy: string[] = [
+    "../index.html",
+    "../package.json",
+    "../forge.config.js",
+    "../assets",
+  ];
 }
 
 /**
