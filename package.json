@@ -8,6 +8,7 @@
     "url": "https://github.com/enrico-dgr/Kick-Botter"
   },
   "scripts": {
+    "runFile": "ts-node ",
     "install-build-deps": "cd ./KickBotter && npm install",
     "-": "echo '-------------------------- This is just a comment command' ",
     "prebuild:main:dev": "ts-node ./Scripts/dev.ts",

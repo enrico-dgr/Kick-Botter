@@ -1,10 +1,8 @@
 import * as fs from 'fs';
 import { join, relative, resolve } from 'path';
 
-/**
- * CONSTANTS
- */
-const BUILD_PATH: string = `../KickBotter`;
+import * as CONSTANTS from './CONSTANTS';
+
 // --------------------------------
 // Script
 // --------------------------------
@@ -12,7 +10,7 @@ const relativePathToThisDir = (path: string) =>
   relative(resolve(__dirname, ".."), resolve(__dirname, path));
 //
 const buildPathRelativeToProdBuild = (relativePath_: string) =>
-  resolve(__dirname, BUILD_PATH, relativePathToThisDir(relativePath_));
+  resolve(CONSTANTS.BUILD_PATH, relativePathToThisDir(relativePath_));
 /**
  * Copy Dir
  */
