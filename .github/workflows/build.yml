@@ -15,7 +15,7 @@ jobs:
         run: npm run build:prod
       - name: electron-forge make
         run: npm run make
-  publish_on_mac:
+  build_on_mac:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2

@@ -19,7 +19,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run publish
-  publish_on_mac:
+  build_on_mac:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
