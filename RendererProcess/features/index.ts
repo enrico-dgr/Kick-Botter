@@ -1,7 +1,5 @@
-import * as browserProgramsSlice from './browserPrograms/browserProgramsSlice';
-import * as browserUsersSlice from './browserUsers/browserUsersSlice';
+import * as Programs from './Programs';
 
 export const reducers = {
-  browserUsers: browserUsersSlice.reducer,
-  browserPrograms: browserProgramsSlice.reducer,
+  ...Programs.reducers,
 };

@@ -1,33 +1,43 @@
 @import "./openLocal/style.scss";
 
-.browser-program-container {
+.app {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.app__central {
   display: flex;
   flex-direction: column;
 }
 
-.browser-program-container__heading h1 {
+.app__right {
+  width: 250px;
+}
+
+.app__central__header h1 {
   color: #f1b534;
   font-size: 38px;
   text-align: center;
 }
 
-.browser-program-container__heading p {
+.app__central__header p {
   font-size: 16px;
   text-align: center;
 }
 
-.browser-program__tool-bar {
+.program__tool-bar {
   margin: 20px 0 20px 0;
 }
 
-.browser-program-controller {
+.program-controller {
   display: flex;
   justify-content: space-evenly;
 }
 
-.browser-program-controller__queries {
+.program-controller__queries {
 }
 
-.browser-program-controller__main {
+.program-controller__main {
   margin: 18px 0 0 0;
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { addBrowserUser, getUsers, initialState, selectBrowserUser } from './browserUsersSlice';
 
 const DEFAULT_USER = initialState.selected;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { getPrograms, initialState, selectBrowserProgram } from './browserProgramsSlice';
 
 const DEFAULT_PROGRAM = initialState.selected;

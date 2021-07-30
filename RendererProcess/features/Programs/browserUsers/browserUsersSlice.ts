@@ -2,7 +2,7 @@ import * as t from 'io-ts';
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { invoke } from '../../asyncThunks/IPCs';
+import { invoke } from '../../../asyncThunks/IPCs';
 
 namespace Models {
   export interface BrowserProgramsState {
