@@ -39,10 +39,6 @@ In my list:
 
 ## Usage
 
-:warning: I used it on Mac OS and occasionally tried it on Windows, so take it for granted only on Mac OS.
-
-After downloading and extracting (or installing for .dmg), on opening it could appear a window with an error message about 'initUpdate'. This should be a temporary error due to configurations on my side, but the app should work just fine.
-
 **Steps :**
 Although bad, the GUI should be pretty clear:
 
@@ -55,5 +51,4 @@ Select 'OpenBrowser' to open a browser associated to the selected user and login
 
 **Notice :**  
 You won't have much feedback from the programs right now.
-They can run both headless (non visible) and non-headless (visible/usual browser) and should close the browser on controlled *end of activity*. If something occurs on front-end, you might not notice the program didn't run with a given user.
-If this is the case, you must restart the app in order to operate with that user.
+They can run both headless (non visible) and non-headless (visible/usual browser).
