@@ -89,12 +89,10 @@ const ProgramSettings = (props: Models.Props) => {
         Save settings
       </button>
       {areSettingsAvailable() ? (
-        <>
-          <DisplaySettings
-            settings={settings}
-            onChange={(pv) => setStateOfSettings(pv)}
-          />
-        </>
+        <DisplaySettings
+          settings={settings}
+          onChange={(pv) => setStateOfSettings(pv)}
+        />
       ) : (
         <p>This user has no settings for this program yet.</p>
       )}

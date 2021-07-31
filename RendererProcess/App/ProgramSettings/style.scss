@@ -1,0 +1,56 @@
+.display-settings {
+  margin: 20px 0 0 0;
+
+  width: 400px;
+}
+
+.display-settings__list {
+  padding: 0 0 0 0;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.display-settings__object {
+  display: flex;
+}
+
+.display-settings__list__name {
+  margin: 8px 0 0 0;
+  padding: 0;
+
+  text-transform: capitalize;
+}
+
+.display-settings__object__side-line {
+  margin: 0 10px 0 0;
+
+  height: 100%;
+  width: 1px;
+  background-color: gray;
+}
+
+.display-settings__prop {
+  margin: 8px 0 0 0;
+  padding: 0 0 0 0;
+
+  display: flex;
+
+  input[type="number"] {
+    width: 100px;
+  }
+
+  textarea {
+    display: block;
+    resize: none;
+  }
+}
+
+.display-settings__prop__name {
+  margin: 0 5px 0 0;
+  padding: 0 0 0 0;
+  display: inline;
+
+  text-transform: capitalize;
+}

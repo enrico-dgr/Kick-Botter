@@ -1,3 +1,4 @@
+import { pipe } from 'fp-ts/lib/function';
 import * as React from 'react';
 
 namespace Models {
@@ -134,48 +135,59 @@ export const DisplaySettings = <Settings extends Models.RecordGenericSettings>(
       /**
        * List property
        */
-      const prefix = (name_: string) => `${name_}:`;
+
       return (
-        <li key={key}>
-          {propName !== null ? prefix(propName) : ``}
-          {
-            <input
-              //
-              type={match(
-                (_b) => "checkbox",
-                (_n) => "number",
-                (_s) => "text"
-              )(setting)}
-              // value
-              {...{
-                [match(
-                  (_b) => "checked",
-                  (_n) => `value`,
-                  (_s) => `value`
-                )(setting)]: setting,
-              }}
-              //
-              onChange={(e) =>
-                setStateOfSettings(
-                  match(
-                    (_b) => e.target.checked,
-                    (_n) => Number(e.target.value),
-                    (_s) => e.target.value
-                  )(
-                    typeof setting !== "object"
-                      ? setting
-                      : (() => {
-                          throw new Error(
-                            "Setting cannot be an object when updating state."
-                          );
-                        })()
-                  ),
-                  mapOfKeys
-                )
-              }
-            />
-          }
-        </li>
+        <div key={key} className="display-settings__prop">
+          {propName !== null ? (
+            <p className="display-settings__prop__name">{propName}</p>
+          ) : (
+            ``
+          )}
+          {pipe(
+            setting,
+            match(
+              (b) => (
+                <input
+                  type="checkbox"
+                  checked={b}
+                  onChange={(e) =>
+                    setStateOfSettings(e.target.checked, mapOfKeys)
+                  }
+                />
+              ),
+              (n) => (
+                <input
+                  type="number"
+                  value={n}
+                  onChange={(e) =>
+                    setStateOfSettings(Number(e.target.value), mapOfKeys)
+                  }
+                />
+              ),
+              (s) => (
+                <textarea
+                  spellCheck={false}
+                  value={s}
+                  {...{
+                    ...((stringToFit: string) => {
+                      const columns = 30;
+                      const rows = Math.round(
+                        (stringToFit.length * 1.2) / columns
+                      );
+                      return {
+                        cols: columns,
+                        rows: rows === 0 ? 1 : rows,
+                      };
+                    })(s),
+                  }}
+                  onChange={(e) =>
+                    setStateOfSettings(e.target.value, mapOfKeys)
+                  }
+                ></textarea>
+              )
+            )
+          )}
+        </div>
       );
     };
 
@@ -202,15 +214,21 @@ export const DisplaySettings = <Settings extends Models.RecordGenericSettings>(
       map_: string[]
     ) => {
       buffer.push(
-        <ul key={map_.toString()}>
+        <div key={map_.toString()} className="display-settings__list">
+          <p className="display-settings__list__name">{key_}:</p>
           {Array.isArray(setting_) ? (
-            <>{displayArrayRecursively(setting_, map_)} </>
+            <>{displayArrayRecursively(setting_, map_)}</>
           ) : (
             <>
-              {key_}:{display(setting_, map_)}
+              <div className="display-settings__object">
+                <div className="display-settings__object__side-line"></div>
+                <div className="display-settings__list">
+                  {display(setting_, map_)}
+                </div>
+              </div>
             </>
           )}
-        </ul>
+        </div>
       );
     };
     /**
@@ -234,5 +252,12 @@ export const DisplaySettings = <Settings extends Models.RecordGenericSettings>(
     return buffer;
   };
 
-  return <ul>{display(props.settings)}</ul>;
+  return (
+    <div className="display-settings">
+      <div className="display-settings__object">
+        <div className="display-settings__object__side-line"></div>
+        <div className="display-settings__list">{display(props.settings)}</div>
+      </div>
+    </div>
+  );
 };
