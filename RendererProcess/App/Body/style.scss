@@ -1,0 +1,42 @@
+@import "./openLocal/style.scss";
+@import "./ProgramSettings/style.scss";
+
+.app__body {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.app__body__central {
+  display: flex;
+  flex-direction: column;
+}
+
+.app__body__right {
+  width: 250px;
+}
+
+.app__body__central__header h1 {
+  color: #f1b534;
+  font-size: 38px;
+  text-align: center;
+}
+
+.app__body__central__header p {
+  font-size: 16px;
+  text-align: center;
+}
+
+.program__tool-bar {
+  margin: 20px 0 20px 0;
+}
+
+.program-controller {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 40px 0 0 0;
+}
+
+.program-controller__main {
+  margin: 0 0 0 50px;
+}

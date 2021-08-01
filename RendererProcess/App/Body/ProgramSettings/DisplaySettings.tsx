@@ -252,12 +252,20 @@ export const DisplaySettings = <Settings extends Models.RecordGenericSettings>(
     return buffer;
   };
 
+  const areSettingsAvailable = () => Object.keys(props.settings).length > 0;
+
   return (
     <div className="display-settings">
-      <div className="display-settings__object">
-        <div className="display-settings__object__side-line"></div>
-        <div className="display-settings__list">{display(props.settings)}</div>
-      </div>
+      {areSettingsAvailable() ? (
+        <div className="display-settings__object">
+          <div className="display-settings__object__side-line"></div>
+          <div className="display-settings__list">
+            {display(props.settings)}
+          </div>
+        </div>
+      ) : (
+        <p>This user has no settings for this program yet.</p>
+      )}
     </div>
   );
 };

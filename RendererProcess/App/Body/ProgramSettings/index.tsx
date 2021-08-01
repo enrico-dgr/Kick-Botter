@@ -5,9 +5,9 @@ import * as T from 'fp-ts/Task';
 import * as TE from 'fp-ts/TaskEither';
 import * as React from 'react';
 
-import { ProgramController as PC } from '../../../Programs';
-import { Errors } from '../../../TypeGuards';
-import * as fpTG from '../../../TypeGuards/fp-ts';
+import { ProgramController as PC } from '../../../../Programs';
+import { Errors } from '../../../../TypeGuards';
+import * as fpTG from '../../../../TypeGuards/fp-ts';
 import { DisplaySettings } from './DisplaySettings';
 
 namespace Models {
@@ -88,14 +88,11 @@ const ProgramSettings = (props: Models.Props) => {
       >
         Save settings
       </button>
-      {areSettingsAvailable() ? (
-        <DisplaySettings
-          settings={settings}
-          onChange={(pv) => setStateOfSettings(pv)}
-        />
-      ) : (
-        <p>This user has no settings for this program yet.</p>
-      )}
+
+      <DisplaySettings
+        settings={settings}
+        onChange={(pv) => setStateOfSettings(pv)}
+      />
     </>
   );
 };

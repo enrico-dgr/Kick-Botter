@@ -1,0 +1,12 @@
+.app__header {
+  height: 35px;
+
+  display: flex;
+  justify-content: space-between;
+
+  background-color: lightgrey;
+
+  .app--night & {
+    background-color: rgb(40, 40, 40);
+  }
+}

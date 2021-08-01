@@ -1,56 +1,142 @@
-@import "./openLocal/style.scss";
-@import "./ProgramSettings/style.scss";
+@import "./Body/style.scss";
+@import "./Header/style.scss";
+
 .app {
   margin: 0;
   height: 100vh;
   overflow-y: scroll;
+
+  &::-webkit-scrollbar,
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 3px;
+  }
+  &::-webkit-scrollbar-button,
+  ::-webkit-scrollbar-button {
+    background-color: #aaa;
+  }
+  &::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-track {
+    background-color: #aaa;
+  }
+  &::-webkit-scrollbar-track-piece,
+  ::-webkit-scrollbar-track-piece {
+    background-color: #ddd;
+  }
+  &::-webkit-scrollbar-thumb,
+  ::-webkit-scrollbar-thumb {
+    height: 50px;
+    background-color: #aaa;
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-corner,
+  ::-webkit-scrollbar-corner {
+    background-color: #aaa;
+  }
+  &::-webkit-resizer,
+  ::-webkit-resizer {
+    background-color: #aaa;
+  }
 }
 
-.app__header {
-  height: 35px;
+$black-shade: 12;
+$white-shade: 190;
+$gray-shade: 60;
 
-  display: flex;
-  justify-content: space-between;
+input {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
 
-  background-color: grey;
+  &:focus-visible {
+    outline-color: gray;
+    outline-style: solid;
+    outline-width: 1px;
+  }
 }
 
-.app__body {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+select {
+  margin: 0;
+  padding: 0;
+
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+
+  $border-radius: 40px;
+  -webkit-border-radius: $border-radius;
+  border-radius: $border-radius;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 3pt 2pt gray;
+  }
 }
 
-.app__body__central {
-  display: flex;
-  flex-direction: column;
-}
+.app--night {
+  scrollbar-face-color: #646464;
+  scrollbar-base-color: #646464;
+  scrollbar-3dlight-color: #646464;
+  scrollbar-highlight-color: #646464;
+  scrollbar-track-color: #000;
+  scrollbar-arrow-color: #000;
+  scrollbar-shadow-color: #646464;
+  scrollbar-darkshadow-color: #646464;
 
-.app__body__right {
-  width: 250px;
-}
+  &::-webkit-scrollbar-button,
+  ::-webkit-scrollbar-button {
+    background-color: #666;
+  }
+  &::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-track {
+    background-color: #666;
+  }
+  &::-webkit-scrollbar-track-piece,
+  ::-webkit-scrollbar-track-piece {
+    background-color: #222;
+  }
+  &::-webkit-scrollbar-thumb,
+  ::-webkit-scrollbar-thumb {
+    height: 50px;
+    background-color: #666;
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-corner,
+  ::-webkit-scrollbar-corner {
+    background-color: #666;
+  }
+  &::-webkit-resizer,
+  ::-webkit-resizer {
+    background-color: #666;
+  }
 
-.app__body__central__header h1 {
-  color: #f1b534;
-  font-size: 38px;
-  text-align: center;
-}
+  background-color: rgb($black-shade, $black-shade, $black-shade);
 
-.app__body__central__header p {
-  font-size: 16px;
-  text-align: center;
-}
+  color: rgb($white-shade, $white-shade, $white-shade);
 
-.program__tool-bar {
-  margin: 20px 0 20px 0;
-}
+  scrollbar-color: black rgb($black-shade, $black-shade, $black-shade);
 
-.program-controller {
-  display: flex;
-  justify-content: space-evenly;
-  margin: 40px 0 0 0;
-}
+  input {
+    background-color: rgb($black-shade, $black-shade, $black-shade);
+    color: rgb($white-shade, $white-shade, $white-shade);
 
-.program-controller__main {
-  margin: 0 0 0 50px;
+    border-color: rgb($gray-shade, $gray-shade, $gray-shade);
+
+    &:focus-visible {
+      outline-color: lightgray;
+      outline-style: solid;
+      outline-width: 1px;
+    }
+  }
+
+  select {
+    background-color: rgb($black-shade, $black-shade, $black-shade);
+    color: rgb($white-shade, $white-shade, $white-shade);
+
+    border-color: rgb($gray-shade, $gray-shade, $gray-shade);
+
+    &:focus-visible {
+      box-shadow: 0 0 3pt 2pt lightgray;
+    }
+  }
 }
