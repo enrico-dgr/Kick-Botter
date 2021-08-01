@@ -39,10 +39,6 @@
   }
 }
 
-$black-shade: 12;
-$white-shade: 190;
-$gray-shade: 60;
-
 input {
   border-color: black;
   border-style: solid;
@@ -53,6 +49,12 @@ input {
     outline-style: solid;
     outline-width: 1px;
   }
+}
+
+.card {
+  background-color: darken($color: white, $amount: 5%);
+
+  border-radius: 40px;
 }
 
 select {
@@ -72,6 +74,10 @@ select {
     box-shadow: 0 0 3pt 2pt gray;
   }
 }
+
+$black-shade: rgb(12, 12, 12);
+$white-shade: 190;
+$gray-shade: 60;
 
 .app--night {
   scrollbar-face-color: #646464;
@@ -110,14 +116,12 @@ select {
     background-color: #666;
   }
 
-  background-color: rgb($black-shade, $black-shade, $black-shade);
+  background-color: $black-shade;
 
   color: rgb($white-shade, $white-shade, $white-shade);
 
-  scrollbar-color: black rgb($black-shade, $black-shade, $black-shade);
-
   input {
-    background-color: rgb($black-shade, $black-shade, $black-shade);
+    background-color: $black-shade;
     color: rgb($white-shade, $white-shade, $white-shade);
 
     border-color: rgb($gray-shade, $gray-shade, $gray-shade);
@@ -129,8 +133,12 @@ select {
     }
   }
 
+  .card {
+    background-color: lighten($color: $black-shade, $amount: 5%);
+  }
+
   select {
-    background-color: rgb($black-shade, $black-shade, $black-shade);
+    background-color: $black-shade;
     color: rgb($white-shade, $white-shade, $white-shade);
 
     border-color: rgb($gray-shade, $gray-shade, $gray-shade);
@@ -138,5 +146,10 @@ select {
     &:focus-visible {
       box-shadow: 0 0 3pt 2pt lightgray;
     }
+  }
+
+  textarea {
+    background-color: $black-shade;
+    color: rgb($white-shade, $white-shade, $white-shade);
   }
 }

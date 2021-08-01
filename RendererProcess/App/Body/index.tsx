@@ -29,7 +29,7 @@ const Body = () => {
             <Programs.BrowserUsers />
             <Programs.BrowserPrograms />
           </div>
-          <div className="program-controller__main">
+          <div className="program-controller__main card">
             <Programs.Controller.Run
               user={selectedBrowserUser}
               name={selectedBrowserProgram}
