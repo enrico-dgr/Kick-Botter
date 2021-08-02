@@ -1,8 +1,9 @@
-$color: #0cf;
+$color-day: #0cf;
+$color-night: rgb(46, 11, 141);
 
 .theme__button {
   display: inline-block;
-  padding: 0.45rem 0.95rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 10rem;
   color: #fff;
   text-transform: uppercase;
@@ -20,7 +21,11 @@ $color: #0cf;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: $color;
+      background-color: $color-day;
+      .app--night & {
+        background-color: $color-night;
+      }
+
       border-radius: 10rem;
       z-index: -2;
     }
@@ -31,7 +36,7 @@ $color: #0cf;
       left: 0;
       width: 0%;
       height: 100%;
-      background-color: darken($color, 15%);
+      background-color: darken($color-day, 15%);
       transition: all 0.3s;
       border-radius: 10rem;
       z-index: -1;
