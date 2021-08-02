@@ -186,11 +186,14 @@ export const socialgift: (
                   infosFromAction: outputOfLike,
                 })
               : pipe(
-                  LikeToPost.likeToPost({
-                    language,
-                    urlOfPost: url,
-                    options: {},
-                  }),
+                  WP.delay(2000)(undefined),
+                  WP.chain(() =>
+                    LikeToPost.likeToPost({
+                      language,
+                      urlOfPost: url,
+                      options: {},
+                    })
+                  ),
                   WP.map<
                     LikeToPost.Output,
                     OutcomeOfAction<
