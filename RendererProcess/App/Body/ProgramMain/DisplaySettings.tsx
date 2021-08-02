@@ -171,12 +171,16 @@ export const DisplaySettings = <Settings extends Models.RecordGenericSettings>(
                   {...{
                     ...((stringToFit: string) => {
                       const columns = 30;
-                      const rows = Math.round(
-                        (stringToFit.length * 1.2) / columns
-                      );
+
+                      const floatRows = stringToFit.length / columns;
+                      const roundedRows = Math.round(floatRows);
+                      const rows =
+                        roundedRows - floatRows > 0
+                          ? roundedRows
+                          : roundedRows + 1;
                       return {
                         cols: columns,
-                        rows: rows === 0 ? 1 : rows,
+                        rows,
                       };
                     })(s),
                   }}

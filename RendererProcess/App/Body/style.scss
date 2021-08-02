@@ -1,5 +1,6 @@
 @import "./openLocal/style.scss";
-@import "./ProgramSettings/style.scss";
+@import "./ProgramMain/style.scss";
+@import "./Programs/style.scss";
 
 .app__body {
   display: flex;
@@ -27,16 +28,20 @@
   text-align: center;
 }
 
-.program__tool-bar {
+.app__body__central__tool-bar {
   margin: 20px 0 20px 0;
 }
 
-.program-controller {
+.app__body__central__program-controller {
   display: flex;
   justify-content: space-evenly;
-  margin: 40px 0 0 0;
+  margin: 30px 0 0 0;
 }
 
-.program-controller__main {
+.app__body__central__program-controller__queries {
+  padding: 20px !important;
+}
+
+.app__body__central__program-controller__main {
   margin: 0 0 0 50px;
 }

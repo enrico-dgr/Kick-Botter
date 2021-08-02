@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import Programs from '../../../features/Programs';
-import { useAppSelector } from '../../../hooks';
+import Programs from '../../../../features/Programs';
+import { useAppSelector } from '../../../../hooks';
 
 const ListRunningOnes = () => {
   const runningPrograms = useAppSelector(

@@ -4,3 +4,7 @@ export * from "./WatchStory";
 export * from "./goto";
 export * from "./postNewMedia";
 export * from "./login";
+
+import { program as PPProgram } from './PostPhotos';
+
+export default [PPProgram];

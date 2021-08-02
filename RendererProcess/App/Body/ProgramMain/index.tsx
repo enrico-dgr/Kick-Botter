@@ -8,6 +8,7 @@ import * as React from 'react';
 import { ProgramController as PC } from '../../../../Programs';
 import { Errors } from '../../../../TypeGuards';
 import * as fpTG from '../../../../TypeGuards/fp-ts';
+import Programs from '../../../features/Programs';
 import { DisplaySettings } from './DisplaySettings';
 
 namespace Models {
@@ -17,7 +18,7 @@ namespace Models {
   };
 }
 
-const ProgramSettings = (props: Models.Props) => {
+const ProgramMain = (props: Models.Props) => {
   const [settings, setStateOfSettings] = React.useState({});
 
   const getSettings = (user_: string, program_: string) =>
@@ -79,15 +80,22 @@ const ProgramSettings = (props: Models.Props) => {
 
   return (
     <>
-      <button
-        className="primary-button"
-        disabled={areSettingsAvailable() === false}
-        onClick={() => {
-          saveSettings(props.browserUser, props.browserProgram, settings);
-        }}
-      >
-        Save settings
-      </button>
+      <div className="horizontal-bar--centered">
+        <Programs.Controller.Run
+          user={props.browserUser}
+          name={props.browserProgram}
+          disabled={props.browserProgram === "none"}
+        />
+        <button
+          className="primary-button"
+          disabled={areSettingsAvailable() === false}
+          onClick={() => {
+            saveSettings(props.browserUser, props.browserProgram, settings);
+          }}
+        >
+          Save settings
+        </button>
+      </div>
 
       <DisplaySettings
         settings={settings}
@@ -96,4 +104,4 @@ const ProgramSettings = (props: Models.Props) => {
     </>
   );
 };
-export default ProgramSettings;
+export default ProgramMain;

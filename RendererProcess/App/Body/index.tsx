@@ -3,8 +3,8 @@ import * as React from 'react';
 import Programs from '../../features/Programs';
 import { useAppSelector } from '../../hooks';
 import OpenLocal from './openLocal/OpenLocal';
+import ProgramMain from './ProgramMain';
 import ProgramsComponents from './Programs';
-import ProgramSettings from './ProgramSettings';
 
 const Body = () => {
   const selectedBrowserUser = useAppSelector(
@@ -21,22 +21,16 @@ const Body = () => {
           <h1>Handle Browser Bots</h1>
           <p>Here you can start and stop browser bots.</p>
         </div>
-        <div className="program__tool-bar">
+        <div className="app__body__central__tool-bar">
           <OpenLocal />
         </div>
-        <div className="program-controller">
-          <div className="program-controller__queries">
+        <div className="app__body__central__program-controller">
+          <div className="app__body__central__program-controller__queries card">
             <Programs.BrowserUsers />
             <Programs.BrowserPrograms />
           </div>
-          <div className="program-controller__main card">
-            <Programs.Controller.Run
-              user={selectedBrowserUser}
-              name={selectedBrowserProgram}
-              disabled={selectedBrowserProgram === "none"}
-            />
-
-            <ProgramSettings
+          <div className="app__body__central__program-controller__main card">
+            <ProgramMain
               browserUser={selectedBrowserUser}
               browserProgram={selectedBrowserProgram}
             />
