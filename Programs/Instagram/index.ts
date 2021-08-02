@@ -5,6 +5,7 @@ export * from "./goto";
 export * from "./postNewMedia";
 export * from "./login";
 
+import { program as GFProgram } from './GrowFollowers';
 import { program as PPProgram } from './PostPhotos';
 
-export default [PPProgram];
+export default [PPProgram, GFProgram];
