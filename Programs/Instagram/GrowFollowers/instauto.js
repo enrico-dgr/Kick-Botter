@@ -682,7 +682,7 @@ const Instauto = async (db, browser, options) => {
       throw new Error(`Invalid parameter maxFollowsTotal ${maxFollowsTotal}`);
     }
     if (keepGoing() === false) {
-      process.exit();
+      return;
     }
     // If maxFollowsTotal turns out to be lower than the user list size, slice off the user list
     const usersToFollowFollowersOfSliced = shuffleArray(
