@@ -1,6 +1,8 @@
 name: Draft
 on:
   push:
+    branches:
+      - master
     tags:
       - "v*"
 jobs:
