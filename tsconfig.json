@@ -4,6 +4,7 @@
     "outDir": "./KickBotter",
     "target": "es5",
     "module": "commonjs",
+    "allowJs": true,
     "jsx": "react",
     "esModuleInterop": true,
     "strict": true,

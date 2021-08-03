@@ -1,10 +1,14 @@
+import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
+import * as T from 'fp-ts/lib/Task';
+import * as TE from 'fp-ts/TaskEither';
 import fs from 'fs';
 import * as t from 'io-ts';
 import { WebDeps as WD, WebProgram as WP } from 'launch-page';
 import path from 'path';
+import { Browser } from 'puppeteer';
 
-const Instauto = require("instauto"); // eslint-disable-line import/no-unresolved
+const Instauto = require("./instauto.js");
 
 export namespace Models {
   const DB = t.type({
@@ -13,6 +17,7 @@ export namespace Models {
     unfollowedDb: t.string,
     likedPhotosDb: t.string,
     cookiesPath: t.string,
+    screenshotsDbDir: t.string,
   });
 
   interface _DB {
@@ -23,6 +28,7 @@ export namespace Models {
     // Will store all likes here
     likedPhotosDb: string;
     cookiesPath: string;
+    screenshotsDbDir: string;
   }
 
   type DB = Extract<_DB, t.TypeOf<typeof DB>>;
@@ -46,9 +52,9 @@ const options = {
   password: "asdf4ssHrd",
 
   // Global limit that prevents follow or unfollows (total) to exceed this number over a sliding window of one hour:
-  maxFollowsPerHour: 20,
+  maxFollowsPerHour: 40,
   // Global limit that prevents follow or unfollows (total) to exceed this number over a sliding window of one day:
-  maxFollowsPerDay: 150,
+  maxFollowsPerDay: 300,
   // (NOTE setting the above parameters too high will cause temp ban/throttle)
 
   maxLikesPerDay: 50,
@@ -82,72 +88,97 @@ const options = {
 const existOrCreate = (path: string) =>
   fs.existsSync(path) ? undefined : fs.writeFileSync(path, "");
 
-const growFollowers = (D: Models.Deps) =>
+const main = async (
+  D: Models.Deps,
+  browser: Browser,
+  keepGoing: () => boolean
+) => {
+  try {
+    fs.existsSync(D.db.path)
+      ? undefined
+      : fs.mkdirSync(D.db.path, { recursive: true });
+
+    const mainDB = {
+      followedDbPath: path.join(D.db.path, D.db.followedDb),
+      unfollowedDbPath: path.join(D.db.path, D.db.unfollowedDb),
+      likedPhotosDbPath: path.join(D.db.path, D.db.likedPhotosDb),
+    };
+
+    const optionsPaths = {
+      screenshotsPath: path.join(D.db.path, D.db.screenshotsDbDir),
+      cookiesPath: path.join(D.db.path, D.db.cookiesPath),
+    };
+
+    Object.entries({ ...mainDB, ...optionsPaths }).forEach(([_key, value]) =>
+      existOrCreate(value)
+    );
+    // Create a database where state will be loaded/saved to
+    const instautoDb = await Instauto.JSONDB(mainDB);
+
+    const instauto = await Instauto(instautoDb, browser, {
+      ...options,
+      ...optionsPaths,
+    });
+
+    const unfollowedCount = await instauto.unfollowOldFollowed({
+      ageInDays: 14,
+      limit: options.maxFollowsPerDay * (2 / 3),
+    });
+
+    if (unfollowedCount > 0) await instauto.sleep(10 * 60 * 1000);
+
+    // Now go through each of these and follow a certain amount of their followers
+    await instauto.followUsersFollowers(
+      {
+        usersToFollowFollowersOf: D.usersToFollowFollowersOf,
+        maxFollowsTotal: options.maxFollowsPerDay - unfollowedCount,
+        skipPrivate: true,
+        enableLikeImages: true,
+        likeImagesMax: 3,
+      },
+      keepGoing
+    );
+
+    await instauto.sleep(10 * 60 * 1000);
+
+    console.log("Done running");
+
+    await instauto.sleep(10000);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const growFollowers = (running: TE.TaskEither<Error, boolean>) => (
+  D: Models.Deps
+) =>
   pipe(
     WD.browser,
     WP.chain((browser) =>
-      WP.fromTaskK(() => async () => {
-        try {
-          fs.existsSync(D.db.path)
-            ? undefined
-            : fs.mkdirSync(D.db.path, { recursive: true });
+      WP.fromTaskEither(async () => {
+        let keepGoing: boolean = true;
+        let res: E.Either<Error, void> = E.of(undefined);
 
-          const mainDB = {
-            followedDbPath: path.join(D.db.path, D.db.followedDb),
-            unfollowedDbPath: path.join(D.db.path, D.db.unfollowedDb),
-            likedPhotosDbPath: path.join(D.db.path, D.db.likedPhotosDb),
-          };
+        main(D, browser, () => keepGoing);
 
-          const cookiesPath = path.join(D.db.path, D.db.cookiesPath);
-
-          Object.entries({ ...mainDB, cookiesPath }).forEach(
-            ([_key, value]) => {
-              console.log(value);
-              existOrCreate(value);
-            }
-          );
-          // Create a database where state will be loaded/saved to
-          const instautoDb = await Instauto.JSONDB(mainDB);
-
-          const instauto = await Instauto(instautoDb, browser, {
-            ...options,
-            cookiesPath,
-          });
-
-          // This can be used to unfollow people:
-          // Will unfollow auto-followed AND manually followed accounts who are not following us back, after some time has passed
-          // The time is specified by config option dontUnfollowUntilTimeElapsed
-          // await instauto.unfollowNonMutualFollowers();
-          // await instauto.sleep(10 * 60 * 1000);
-
-          // Unfollow previously auto-followed users (regardless of whether or not they are following us back)
-          // after a certain amount of days (2 weeks)
-          // Leave room to do following after this too (unfollow 2/3 of maxFollowsPerDay)
-          const unfollowedCount = await instauto.unfollowOldFollowed({
-            ageInDays: 14,
-            limit: options.maxFollowsPerDay * (2 / 3),
-          });
-
-          if (unfollowedCount > 0) await instauto.sleep(10 * 60 * 1000);
-
-          // Now go through each of these and follow a certain amount of their followers
-          await instauto.followUsersFollowers({
-            usersToFollowFollowersOf: D.usersToFollowFollowersOf,
-            maxFollowsTotal: options.maxFollowsPerDay - unfollowedCount,
-            skipPrivate: true,
-            enableLikeImages: true,
-            likeImagesMax: 3,
-          });
-
-          await instauto.sleep(10 * 60 * 1000);
-
-          console.log("Done running");
-
-          await instauto.sleep(10000);
-        } catch (err) {
-          console.error(err);
+        while (keepGoing) {
+          await pipe(
+            running,
+            TE.chainTaskK((b) => T.delay(400)(T.of(b))),
+            TE.match(
+              (e) => {
+                console.error(e.message);
+                res = E.left(e);
+              },
+              (keepGoing_) => {
+                keepGoing = keepGoing_;
+              }
+            )
+          )();
         }
-      })()
+
+        return res;
+      })
     )
   );
 

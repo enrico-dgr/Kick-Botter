@@ -16,6 +16,7 @@ const extraOptionsType = t.type({
     // Will store all likes here
     likedPhotosDb: t.string,
     cookiesPath: t.string,
+    screenshotsDbDir: t.string,
   }),
   usersToFollowFollowersOf: t.array(t.string),
 });
@@ -31,8 +32,9 @@ const extraOptions: ExtraOptions = {
     // Will store all likes here
     likedPhotosDb: "liked-photos.json",
     cookiesPath: "cookies.json",
+    screenshotsDbDir: ".",
   },
-  usersToFollowFollowersOf: ["lostleblanc", "sam_kolder"],
+  usersToFollowFollowersOf: ["sam_kolder"],
 };
 
 const defaultOptions: PModels.DefaultOptions = (D) => ({
@@ -40,9 +42,9 @@ const defaultOptions: PModels.DefaultOptions = (D) => ({
   launchOptions: launchOptions(D),
 });
 
-const self = (_programDeps: PModels.ProgramDeps) => (
+const self = (programDeps: PModels.ProgramDeps) => (
   extraOptions: ExtraOptions
-): WP.WebProgram<void> => growFollowers(extraOptions);
+): WP.WebProgram<void> => growFollowers(programDeps.running)(extraOptions);
 
 const program = buildProgram({
   name: NAME,
