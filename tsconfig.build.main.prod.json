@@ -2,6 +2,7 @@
   "extends": "./tsconfig.build.main.json",
   "compilerOptions": {
     "watch": false,
-    "sourceMap": false
+    "sourceMap": false,
+    "downlevelIteration": true
   }
 }

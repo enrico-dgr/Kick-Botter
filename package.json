@@ -73,6 +73,7 @@
     "io-ts": "^2.2.16",
     "launch-page": "^1.0.9",
     "lodash": "^4.17.21",
+    "update-electron-app": "^2.0.1",
     "user-agents": "^1.0.732"
   },
   "config": {

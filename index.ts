@@ -1,7 +1,14 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
+import update from 'update-electron-app';
 
 import { Channels, Programs, WhenReady } from './MainProcess';
+
+try {
+  update();
+} catch (error) {
+  console.error(error);
+}
 
 // --------------------------------
 // WhenReady
