@@ -25,22 +25,11 @@
 - It was born exclusively as a self-learning project
 - It is supposed to be used to automate some actions on telegram bots like SocialMedia, which pays you (with Amazon Coupons) for Instagram interactions. *NOTE* : It is intended to be in accordance with the rules that these legal bots place you on (e.g. Instagram profiles' type).
 
-## Development
-
-User interface will be pretty messy for a while, so just tell me what could be useful.  
-In my list:
-
-- List of running processes
-- Better result logging (there could be problems non-programmers would solve by themselves. E.g. instagram blocks due to excessive number of requests)
-- A little bit of styling :sweat_smile:
-- Settings' description on mouse-over
-
 ## [Last Release](https://github.com/enrico-dgr/Kick-Botter/releases/latest)
 
 ## Usage
 
 **Steps :**
-Although bad, the GUI should be pretty clear:
 
 - select user
 - select the program
@@ -48,6 +37,9 @@ Although bad, the GUI should be pretty clear:
 
 **For first user's run :**  
 Select 'OpenBrowser' to open a browser associated to the selected user and login on socials (the ones you will use through the programs).
+
+**Example**:  
+The program *Socialgift* uses Telegram and Instagram. Once you added a user, you must run *OpenBrowser* and login on TG and IG. Then you can close *OpenBrowser* and run *Socialgift* (with that same user of *OpenBrowser*).
 
 **Notice :**  
 You won't have much feedback from the programs right now.
