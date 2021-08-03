@@ -1,6 +1,16 @@
 name: Build
 on:
   push:
+    paths:
+      - "MainProcess/**"
+      - "Programs/**"
+      - "MPPreload/**"
+      - "RendererProcess/**"
+      - "Scripts/**"
+      - "TypeGuards/**"
+      - "forge.config.js"
+      - "tsconfig.**"
+      - "TypeGuards/**"
     branches:
       - master
     tags-ignore:
