@@ -365,8 +365,8 @@ export const socialmoney: (
       continueCycle: (stateOfCycle) =>
         stateOfCycle.kindOfPostAction === "End"
           ? false
-          : stateOfCycle.consecutiveNewActions < 3 &&
-            stateOfCycle.consecutiveSkips < 5,
+          : stateOfCycle.consecutiveNewActions < 25 &&
+            stateOfCycle.consecutiveSkips < 7,
     },
   },
 });

@@ -332,8 +332,8 @@ export const socialgift: (
       continueCycle: (stateOfCycle) =>
         stateOfCycle.kindOfPostAction === "End"
           ? false
-          : stateOfCycle.consecutiveNewActions < 5 &&
-            stateOfCycle.consecutiveSkips < 5,
+          : stateOfCycle.consecutiveNewActions < 25 &&
+            stateOfCycle.consecutiveSkips < 7,
     },
   },
 });
